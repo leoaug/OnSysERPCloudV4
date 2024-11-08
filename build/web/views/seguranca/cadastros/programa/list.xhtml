@@ -97,7 +97,7 @@
                             
                             <f:facet name="header">
                                 <div class="products-table-header">
-                                    <span style="font-weight: bold">SEG0104 - Programa</span>
+                                    <span style="font-weight: bold">SEG0104 - Empresa</span>
                                 
                                     <span class="filter-container ui-input-icon-left">
                                         <i class="pi pi-search"></i>
@@ -125,7 +125,7 @@
                                                  title="Alterar registro selecionado."
                                                  update=":form:manage-registro-content,:form:manageDialog" 
                                                  oncomplete="PF('manageDialog').show()"
-                                                 action="#{programaFace.alterar()}" 
+                                                 action="#{empresaFace.alterar()}" 
                                                  styleClass="edit-button rounded-button ui-button-success"
                                                  process="@this">
                                     <f:setPropertyActionListener value="#{registro}" target="#{programaFace.registroSelecionado}"/>

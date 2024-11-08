@@ -28,7 +28,58 @@
         <h:form id="form">
             <div class="grid crud-demo">
                 <div class="col-12">
-                    <div class="card">
+                    <div class="card">                 
+                    	<p:growl id="messages" showDetail="true"/>
+                        <p:toolbar styleClass="mb-4" id="toolbar">
+                            <p:toolbarGroup>
+                                <p:commandButton value="Novo" 
+                                                 icon="pi pi-plus" 
+                                                 title="Incluir um novo registro."
+                                                 actionListener="#{empresaFace.incluir}"
+                                                 update="manageDialog,dataView" 
+                                                 oncomplete="PF('manageDialog').show()"
+                                                 style="text-align: center; width: 100px;margin-right: .5rem"
+                                                 styleClass="ui-button-success"/>
+                                <span class="ui-separator">
+                                    <span class="pi pi-ellipsis-v leaden"/>
+                                </span>
+                                <p:menuButton style="text-align: center; width: 140px;margin-right: .5rem"
+                                              value="Mais opções">  
+                                    <c:if test="#{!favoritosFace.validaExistente()}">
+                                        <p:menuitem value="Adicionar aos favoritos" 
+                                                    icon="pi pi-star" 
+                                                    update="toolbar"
+                                                    actionListener="#{favoritosFace.criaFavorito(usuarioFace.loggedUser.empresa.codigo)}"/>
+                                    </c:if>
+                                    <c:if test="#{favoritosFace.validaExistente()}">
+                                        <p:menuitem value="Remover dos favoritos" 
+                                                    icon="pi pi-star-fil" 
+                                                    update="toolbar"
+                                                    actionListener="#{favoritosFace.deletaFavorito()}"/>
+                                    </c:if>                                    
+                                    <p:menuitem value="Ajuda" icon="pi pi-question"/>
+                                </p:menuButton> 
+                                <p:spacer width="3" height="3"/>  
+                                <p:commandButton id="limparFiltro"
+                                                 title="Atualizar lista e limpar pesquisa"
+                                                 style="text-align: center; width: 30px;margin-right: .5rem"
+                                                 actionListener="#{empresaFace.limparFiltros}"
+                                                 icon="pi pi-bolt Fs14 white"
+                                                 update="dataView,toolbar">
+                                    <p:resetInput target="dataView"/>
+                                </p:commandButton>                                
+                            </p:toolbarGroup>
+                            <p:toolbarGroup align="right">
+                                <p:commandButton value="Exportar" 
+                                                 icon="pi pi-upload" 
+                                                 styleClass="ui-button-help" 
+                                                 ajax="false" style="text-align: center; width: 100px;margin-right: .5rem">
+                                    <p:dataExporter type="xls" target="form:dataView" postProcessor="#{postProcessXLS.postProcessXLS}" fileName="SPR0103"/>
+                                </p:commandButton>
+                            </p:toolbarGroup>
+                        </p:toolbar>
+                        
+                        
                     
                     	<h:panelGrid columns="2" style="margin-bottom: 20px;">
 				            <h:outputLabel value="Filtro:" />
@@ -44,9 +95,11 @@
 				        			listIcon="pi pi-bars">
 				          
 				          				          
-				             <f:facet name="header">
-        						 <h:outputText value="Empresas" />
-    						</f:facet>
+				            <f:facet name="header">
+                                <div class="products-table-header">
+                                    <span style="font-weight: bold">SEG0104 - Empresa</span>                               
+                                </div>
+                            </f:facet>
 				          
 				          	<p:dataViewGridItem>
 				          		 <p:panel style="text-align:center">
