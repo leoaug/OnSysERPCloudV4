@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DRE" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="zebra" isDefault="false" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style isDefault="false" style="zebra" mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="idEmpresa" class="java.lang.Integer"/>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT saldocontabil.`VLCREDITO` - saldocontabil.`VLDEBITO` AS Saldo,
+       planocontas.`id` AS planocontas_id,
+       planocontas.`CONTA` AS planocontas_CONTA,
+       planocontas.`DESCRICAO` AS planocontas_DESCRICAO,
+       saldocontabil.`PERIODO` AS saldocontabil_PERIODO
+FROM `empresa` empresa,
+     `saldocontabil` saldocontabil,
+     `planocontas` planocontas
+where saldocontabil.`EMPRESA_id` = empresa.`id`
+  and saldocontabil.`CONTA_id`   = planocontas.`id`
+  and planocontas.`TIPO` = 'Analitica'
+  and (planocontas.grupo = "Receitas" or planocontas.grupo = "Despesas")
+  and (saldocontabil.`VLDEBITO` <> 0
+    or saldocontabil.`VLCREDITO` <> 0)
+$P!{cCondicao}
+order by planocontas.`CONTA` desc]]>
+	</queryString>
+	<field name="Saldo" class="java.math.BigDecimal"/>
+	<field name="planocontas_id" class="java.lang.Integer"/>
+	<field name="planocontas_CONTA" class="java.lang.String"/>
+	<field name="planocontas_DESCRICAO" class="java.lang.String"/>
+	<field name="saldocontabil_PERIODO" class="java.lang.String"/>
+	<variable name="Saldo_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Saldo}]]></variableExpression>
+	</variable>
+	<variable name="Saldo_2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Saldo}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="124" y="0" width="333" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEMONSTRAÇÃO DO RESULTADO DO EXERCÍCIO (DRE)]]></text>
+			</staticText>
+			<image>
+				<reportElement x="0" y="0" width="100" height="59"/>
+				<imageExpression class="java.awt.Image"><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="234" y="35" width="124" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="24" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="20" width="555" height="1" forecolor="#999999"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="0" width="453" height="20" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Título]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="454" y="0" width="100" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[R$]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="1" y="0" width="453" height="20" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{planocontas_DESCRICAO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;(#,##0.00)">
+				<reportElement style="zebra" mode="Opaque" x="454" y="0" width="100" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{Saldo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="24" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="0" width="555" height="1"/>
+			</line>
+			<textField>
+				<reportElement x="435" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="0" width="40" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="121" y="0" width="128" height="16" forecolor="#0000FF"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[OnSys - Sistemas Online - iDesk]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="1" y="0" width="100" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="20">
+			<staticText>
+				<reportElement x="320" y="0" width="115" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lucro líquido]]></text>
+			</staticText>
+			<textField pattern="#,##0.00;(#,##0.00)">
+				<reportElement x="435" y="0" width="119" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{Saldo_2}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

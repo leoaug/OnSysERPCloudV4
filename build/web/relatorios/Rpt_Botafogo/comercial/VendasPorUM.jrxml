@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VendasPorUM" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT
+     item.`CODIGO` AS item_CODIGO,
+     item.`DESCRICAO` AS item_DESCRICAO,
+     unidademedida.`DESCRICAO` AS unidademedida_DESCRICAO,
+     SUM(itemdoctosai.`QUANTIDADE`) AS itemdoctosai_QUANTIDADE,
+     SUM(itemdoctosai.`VLTOTLIQITEM`) AS itemdoctosai_VLTOTLIQITEM
+FROM
+     `doctosai` doctosai INNER JOIN `itemdoctosai` itemdoctosai ON doctosai.`id` = itemdoctosai.`DOCTOSAI_id`
+     INNER JOIN `item` item ON itemdoctosai.`ITEM_id` = item.`id`
+     INNER JOIN `unidademedida` unidademedida ON item.`UNIDADEMEDIDA_id` = unidademedida.`id`
+where  doctosai.`DTEMISSAO` BETWEEN '2014-04-01' AND '2014-04-30' and doctosai.empresa_id = 6
+GROUP BY item.`CODIGO`, item.`DESCRICAO`, unidademedida.`DESCRICAO`
+ORDER BY unidademedida_DESCRICAO, item_DESCRICAO ]]>
+	</queryString>
+	<field name="item_CODIGO" class="java.lang.String"/>
+	<field name="item_DESCRICAO" class="java.lang.String"/>
+	<field name="unidademedida_DESCRICAO" class="java.lang.String"/>
+	<field name="itemdoctosai_QUANTIDADE" class="java.math.BigDecimal"/>
+	<field name="itemdoctosai_VLTOTLIQITEM" class="java.math.BigDecimal"/>
+	<variable name="vTotQtdUnid" class="java.math.BigDecimal" resetType="Group" resetGroup="Unidade" calculation="Sum">
+		<variableExpression><![CDATA[$F{itemdoctosai_QUANTIDADE}]]></variableExpression>
+	</variable>
+	<variable name="vTotValotUnid" class="java.math.BigDecimal" resetType="Group" resetGroup="Unidade" calculation="Sum">
+		<variableExpression><![CDATA[$F{itemdoctosai_VLTOTLIQITEM}]]></variableExpression>
+	</variable>
+	<group name="Unidade">
+		<groupExpression><![CDATA[$F{unidademedida_DESCRICAO}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<staticText>
+					<reportElement x="0" y="0" width="44" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Unidade:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="44" y="0" width="231" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{unidademedida_DESCRICAO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="18">
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="369" y="3" width="55" height="15"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{vTotQtdUnid}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="440" y="3" width="100" height="15"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{vTotValotUnid}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="369" y="2" width="174" height="1"/>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="169" y="11" width="200" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vendas por Porduto ]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="16" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="44" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="54" y="0" width="192" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Descrição]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="258" y="0" width="100" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Unidade de Medida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="369" y="0" width="55" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Quantidade]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="440" y="0" width="100" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="44" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{item_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="54" y="0" width="192" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{item_DESCRICAO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="258" y="0" width="100" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{unidademedida_DESCRICAO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="369" y="0" width="55" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{itemdoctosai_QUANTIDADE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="440" y="0" width="100" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{itemdoctosai_VLTOTLIQITEM}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

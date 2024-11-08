@@ -1,0 +1,73 @@
+<html xmlns:c="http://java.sun.com/jsp/jstl/core"    
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"                   
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+    
+    <h:head>
+        <title>Pesquisa referência</title>
+    </h:head>
+    <h:body>
+        <p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" widgetVar="statusDialog" />
+        <p:dialog modal="true" widgetVar="statusDialog" header="Processando..." draggable="false" closable="false" resizable="false">                               
+            <p:graphicImage value="#{pageContext.servletContext.contextPath}/resources/imagens/onsys/bar180.gif" /> 
+        </p:dialog>         
+        <script type="text/javascript">
+            function startMessage() {
+                 statusDialog.show();
+            }
+            function finishMessage() {
+                statusDialog.hide();
+            }
+        </script>
+        <h:form style="color:dodgerblue" id="frmReferencia">
+            <div class="ui-fluid"> 
+                <p:growl id="msgs" showDetail="true"/>
+                <p:treeTable id="dtbReferencia" var="item" value="#{componenteConfiguradoFace.treeNodeGrupos}"
+                             selectionMode="checkbox" selection="#{componenteConfiguradoFace.selectedNodes2}"
+                             emptyMessage="Não há registros a exibir" widgetVar="tabela" 
+                             resizableColumns="true" liveResize="true" scrollable="true"  
+                             style="height: 350px"
+                             rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}"> 
+
+                    <p:column  style="color: #1578c9;" styleClass="Fs12" 
+                               headerText="Referência" sortBy="#{item.componente}">
+                        <h:outputText value="#{item.componente}" styleClass="Fs12" style="color: black"/>
+                    </p:column>                                    
+                </p:treeTable>
+                <p:commandButton id="btTotal" style="height: 30px; width: 165px; font-size: 10px"
+                                 action="#{componenteConfiguradoFace.displaySelectedMultiple(componenteConfiguradoFace.selectedNodes2)}"
+                                 oncomplete="PF('referenciaDialog').show()"
+                                 update=":frmReferencia" 
+                                 value="Consultar total" icon="fa fa-dollar Fs16 white"/>
+                <p:spacer width="3" height="3"/>            
+                <p:commandButton id="confirmaSelecao" style="height: 30px; width: 165px; font-size: 10px"
+                                 styleClass="GreenButton"
+                                 process="@this"
+                                 action="#{pesquisaReferenciaFace.selecionarConfigurado(componenteConfiguradoFace.selectedNodes2)}"
+                                 value="Confirma seleção" 
+                                 icon="fa fa-check Fs16 white"/>
+                
+                <c:if test="${componenteConfiguradoFace.referenciaValida eq true}">
+                    <p:dialog header="Configuração selecionada" modal="true"  widgetVar="referenciaDialog">  
+                        <p:dataList id="display" styleClass="Fs10"  
+                                    value="#{componenteConfiguradoFace.listReferencia}"
+                                    var="item"
+                                    type="definition">  
+                            <h:outputText value="#{item.componentePai.componente}" styleClass="Fs12"/>
+                            <h:outputText value=" : "      styleClass="Fs12"/>
+                            <h:outputText value="#{item.componente}" styleClass="Fs12"/>
+                        </p:dataList> 
+                        <h:outputText value="Total : R$ "  style="color: blue; font-weight: 700" styleClass="Fs12"/>
+                    </p:dialog> 
+                </c:if>
+                <c:if test="${componenteConfiguradoFace.referenciaValida eq false}">
+                    <p:dialog header="Configuração selecionada" modal="true"  widgetVar="referenciaDialog">  
+                        <h:outputText value="Configuração inválida, favor revisar." 
+                                      style="color: blue; font-weight: 700" styleClass="Fs12"/>
+                    </p:dialog> 
+                </c:if>                    
+            </div>
+        </h:form>
+    </h:body>
+</html>

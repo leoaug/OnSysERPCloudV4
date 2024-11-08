@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EtiquetasOP" printOrder="Horizontal" pageWidth="600" pageHeight="250" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="590" leftMargin="5" rightMargin="5" topMargin="5" bottomMargin="5">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="nEtiq" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     item.`CODIGO` AS item_CODIGO,
+     item.`DESCRICAO` AS item_DESCRICAO,
+     item.`UNIDADEMEDIDA_id` AS item_UNIDADEMEDIDA_id,
+     unidademedida.`UN` AS unidademedida_UN,
+     etiquetaSeq.`CODIGO` AS Codido
+FROM
+     `unidademedida` unidademedida INNER JOIN `item` item ON unidademedida.`id` = item.`UNIDADEMEDIDA_id`
+     INNER JOIN onsys.etiquetaseq etiquetaseq
+WHERE item.`EMPRESA_id` = 11 AND item.`CODIGO` = '00030002' AND
+etiquetaSeq.`id` <= 3]]>
+	</queryString>
+	<field name="item_CODIGO" class="java.lang.String"/>
+	<field name="item_DESCRICAO" class="java.lang.String"/>
+	<field name="item_UNIDADEMEDIDA_id" class="java.lang.Integer"/>
+	<field name="unidademedida_UN" class="java.lang.String"/>
+	<field name="Codido" class="java.lang.String"/>
+	<group name="Codigo" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{Codido}]]></groupExpression>
+		<groupHeader>
+			<band height="234">
+				<textField>
+					<reportElement x="145" y="122" width="100" height="26"/>
+					<textElement rotation="UpsideDown">
+						<font size="20" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{item_CODIGO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="245" y="122" width="266" height="26"/>
+					<textElement rotation="UpsideDown">
+						<font size="20" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{item_DESCRICAO}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Report">
+					<reportElement x="245" y="48" width="35" height="12"/>
+					<textElement rotation="UpsideDown">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["/"+$V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="280" y="48" width="31" height="12"/>
+					<textElement rotation="UpsideDown">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{Codido}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="465" y="148" width="46" height="26"/>
+					<textElement rotation="UpsideDown">
+						<font size="20" isBold="true"/>
+					</textElement>
+					<text><![CDATA[02]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="412" y="59" width="57" height="12"/>
+					<textElement rotation="UpsideDown">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[05/05/2014]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="423" y="47" width="46" height="12"/>
+					<textElement rotation="UpsideDown">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[4593]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="412" y="36" width="57" height="12"/>
+					<textElement rotation="UpsideDown">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[05/05/2015]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="245" y="58" width="66" height="13"/>
+					<textElement rotation="UpsideDown">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[00179569]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="258" y="37" width="53" height="13"/>
+					<textElement rotation="UpsideDown">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[24.000]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="258" y="27" width="53" height="12"/>
+					<textElement rotation="UpsideDown">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[24.000]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="116" y="59" width="76" height="12"/>
+					<textElement rotation="UpsideDown">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[0049406-0]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="36" y="47" width="156" height="12"/>
+					<textElement rotation="UpsideDown">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[186813 - CLAUDIO FREITAS]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+</jasperReport>

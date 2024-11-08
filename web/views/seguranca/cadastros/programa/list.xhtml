@@ -1,0 +1,388 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">SEG0104 - Programa</ui:define>
+    <ui:define name="content">
+        <style>
+            .ui-menu {
+                min-width: 300px;
+            }                    
+        </style>
+        <style> 
+            .ui-datatable .ui-datatable-data .even-row td{
+                background-color: #EEF5FF;                          
+                font-size: 12px; 
+                height: 10px;  
+            }
+            .ui-datatable .ui-datatable-data .odd-row td{
+                background-color:#E8EDF0;
+                font-size: 12px; 
+                height: 10px;                         
+            }                    
+        </style>        
+        <h:form id="form">
+            <div class="grid crud-demo">
+                <div class="col-12">
+                    <div class="card">
+                        <p:growl id="messages" showDetail="true"/>
+                        <p:toolbar styleClass="mb-4" id="toolbar">
+                            <p:toolbarGroup>
+                                <p:commandButton value="Novo" 
+                                                 icon="pi pi-plus" 
+                                                 title="Incluir um novo registro."
+                                                 actionListener="#{programaFace.incluir}"
+                                                 update="manageDialog,dtb" 
+                                                 oncomplete="PF('manageDialog').show()"
+                                                 style="text-align: center; width: 100px;margin-right: .5rem"
+                                                 styleClass="ui-button-success"/>
+                                <span class="ui-separator">
+                                    <span class="pi pi-ellipsis-v leaden"/>
+                                </span>
+                                <p:menuButton style="text-align: center; width: 140px;margin-right: .5rem"
+                                              value="Mais opções">  
+                                    <c:if test="#{!favoritosFace.validaExistente()}">
+                                        <p:menuitem value="Adicionar aos favoritos" 
+                                                    icon="pi pi-star" 
+                                                    update="toolbar"
+                                                    actionListener="#{favoritosFace.criaFavorito(usuarioFace.loggedUser.empresa.codigo)}"/>
+                                    </c:if>
+                                    <c:if test="#{favoritosFace.validaExistente()}">
+                                        <p:menuitem value="Remover dos favoritos" 
+                                                    icon="pi pi-star-fil" 
+                                                    update="toolbar"
+                                                    actionListener="#{favoritosFace.deletaFavorito()}"/>
+                                    </c:if>                                    
+                                    <p:menuitem value="Ajuda" icon="pi pi-question"/>
+                                </p:menuButton> 
+                                <p:spacer width="3" height="3"/>  
+                                <p:commandButton id="limparFiltro"
+                                                 title="Atualizar lista e limpar pesquisa"
+                                                 style="text-align: center; width: 30px;margin-right: .5rem"
+                                                 actionListener="#{programaFace.limparFiltros}"
+                                                 icon="pi pi-bolt Fs14 white"
+                                                 update="dtb,toolbar">
+                                    <p:resetInput target="dtb"/>
+                                </p:commandButton>                                
+                            </p:toolbarGroup>
+                            <p:toolbarGroup align="right">
+                                <p:commandButton value="Exportar" 
+                                                 icon="pi pi-upload" 
+                                                 styleClass="ui-button-help" 
+                                                 ajax="false" style="text-align: center; width: 100px;margin-right: .5rem">
+                                    <p:dataExporter type="xls" target="form:dtb" postProcessor="#{postProcessXLS.postProcessXLS}" fileName="SPR0103"/>
+                                </p:commandButton>
+                            </p:toolbarGroup>
+                        </p:toolbar>
+                        <p:dataTable id="dtb" 
+                                     widgetVar="tabela" 
+                                     var="registro" 
+                                     value="#{programaFace.lazy}" 
+                                     reflow="true" 
+                                     styleClass="products-table"
+                                     rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}"
+                                     rowKey="#{registro.id}" 
+                                     paginator="true" 
+                                     rows="5" 
+                                     rowSelectMode="add" 
+                                     rowIndexVar="rowIx"
+                                     paginatorPosition="both"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                                     rowsPerPageTemplate="5,10,{ShowAll|'Todos'}">
+                            
+                            <f:facet name="header">
+                                <div class="products-table-header">
+                                    <span style="font-weight: bold">SEG0104 - Programa</span>
+                                
+                                    <span class="filter-container ui-input-icon-left">
+                                        <i class="pi pi-search"></i>
+                                        <p:inputText id="globalFilter" onkeyup="PF('tabela').filter()" placeholder="Pesquisar" />
+                                    </span>
+                                </div>
+                            </f:facet>
+                            
+                            <p:column style="width:16px; height: 25px;" exportable="false">
+                                <p:rowToggler />
+                            </p:column>         
+                            <p:column id="id" visible="false" exportable="false">                                    
+                                <h:outputText value="#{item.id}"/>
+                            </p:column>                              
+                            <p:column headerText="Código" 
+                                      style="height: 25px; width: 160px"
+                                      sortBy="#{registro.codigo}" filterBy="#{registro.codigo}">
+                                <h:outputText value="#{registro.codigo}" style="color: black"/>
+                            </p:column>
+                            <p:column headerText="Descrição" sortBy="#{registro.descricao}" filterBy="#{registro.descricao}">
+                                <h:outputText value="#{registro.descricao}" style="color: black"/>
+                            </p:column>
+                            <p:column style="height: 25px; width: 160px" exportable="false">
+                                <p:commandButton icon="pi pi-pencil" 
+                                                 title="Alterar registro selecionado."
+                                                 update=":form:manage-registro-content,:form:manageDialog" 
+                                                 oncomplete="PF('manageDialog').show()"
+                                                 action="#{programaFace.alterar()}" 
+                                                 styleClass="edit-button rounded-button ui-button-success"
+                                                 process="@this">
+                                    <f:setPropertyActionListener value="#{registro}" target="#{programaFace.registroSelecionado}"/>
+                                </p:commandButton>
+                                <p:commandButton icon="pi pi-eye" 
+                                                 title="Consultar registro selecionado."                                                 
+                                                 update=":form:manage-registro-contentConsulta,:form:manageDialogConsulta"                                                  
+                                                 oncomplete="PF('manageDialogConsulta').show()"
+                                                 action="#{programaFace.consultar()}" 
+                                                 styleClass="ui-button-info rounded-button mr-2 mb-2"
+                                                 process="@this">
+                                    <f:setPropertyActionListener value="#{registro}" target="#{programaFace.registroSelecionado}"/>
+                                </p:commandButton>
+                                <p:commandButton class="ui-button-warning rounded-button" 
+                                                 icon="pi pi-trash" 
+                                                 title="Deletar registro selecionado."
+                                                 process="@this" 
+                                                 oncomplete="PF('deleteProductDialog').show()" >
+                                    <f:setPropertyActionListener value="#{registro}" target="#{programaFace.registroSelecionado}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:rowExpansion>
+                                <p:panelGrid columns="2" layout="grid"
+                                             style="background-color: #F2E6E6"
+                                             columnClasses="ui-grid-col-2, ui-grid-col-10" >
+
+                                    <h:outputText value="Registro inativado em - " style="height: 25px ;color: black" styleClass="Fs12"/>
+                                    <h:outputText value="#{registro.datainativo}" 
+                                                  style="color: red; font-weight: 700; opacity: 1!important" styleClass="Fs12">
+                                        <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+                                    </h:outputText>
+
+                                 </p:panelGrid>
+                            </p:rowExpansion>
+                            
+                        </p:dataTable>
+                        
+                        <p:dialog id="manageDialog"
+                                  header="#{programaFace.titulo}"
+                                  style="max-width: 1000px!important"
+                                  width="90%" height="90%"
+                                  showEffect="fade" 
+                                  modal="true" 
+                                  widgetVar="manageDialog" 
+                                  responsive="true">
+                            <p:outputPanel rendered="#{not empty programaFace.registroSelecionado}" id="manage-registro-content"  class="ui-fluid">
+                                <c:choose>
+                                    <c:when test="#{programaFace.operacao == 'A'}">
+                                        <p:focus for="descricaoInterna"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <p:focus for="codigo"/>
+                                    </c:otherwise>
+                                </c:choose>
+                                <div class="field">
+                                    <c:choose>
+                                        <c:when test="#{programaFace.operacao == 'A'}">
+                                            <p:outputLabel style="color: black" for="codigo">Código</p:outputLabel>
+                                            <p:inputText id="codigo"
+                                                         disabled="true"
+                                                         style="color: blue; font-weight: 700; opacity: 1!important"
+                                                         value="#{programaFace.registroSelecionado.codigo}"/>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <p:outputLabel style="color: red" for="codigo">Código</p:outputLabel>
+                                            <p:inputText id="codigo" 
+                                                         value="#{programaFace.registroSelecionado.codigo}"/>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                                <div class="field">
+                                    <p:outputLabel style="color: red" for="descricaoInterna">Decrição interna</p:outputLabel>
+                                    <p:inputText id="descricaoInterna" 
+                                                     value="#{programaFace.registroSelecionado.descricao}"/>
+                                </div>
+                                <div class="field">
+                                    <p:outputLabel style="color: red" for="descricaoMenu">Decrição menu</p:outputLabel>
+                                    <p:inputText id="descricaoMenu" 
+                                                     value="#{programaFace.registroSelecionado.descricaomenu}"/>
+                                </div>
+                                <div class="field">
+                                    <p:outputLabel style="color: red" for="descricaoAtalho">Decrição atalho</p:outputLabel>
+                                    <p:inputText id="descricaoAtalho" 
+                                                     value="#{programaFace.registroSelecionado.descatalho}"/>
+                                </div>
+                                <div class="field">
+                                    <p:outputLabel style="color: red" for="caminho">Caminho</p:outputLabel>
+                                    <p:inputText id="caminho" 
+                                                     value="#{programaFace.registroSelecionado.caminho}"/>
+                                </div>
+                                <div class="field">
+                                    <p:selectBooleanCheckbox id="verMenu"
+                                        value="#{programaFace.registroSelecionado.vermenu}"
+                                        title="Se marcado é efetuado o cálculo do IPI."
+                                        itemLabel="Visualizar no menu"/> 
+                                </div>
+                                <hr/>
+                                <div class="field">
+                                    <p:outputLabel value="Observação" for="obs" style="color: black"/>
+                                    <p:inputTextarea id="obs" value="#{programaFace.registroSelecionado.obs}"
+                                                     counter="display" 
+                                                     maxlength="200"                                                         
+                                                     cols="40" rows="5" 
+                                                     counterTemplate="{0} caracteres restantes." autoResize="false"/>
+                                </div>
+                                <h:outputText id="display" style="color: blue; font-weight: 700"/>
+                            </p:outputPanel>
+                            <f:facet name="footer">
+                                <c:if test="#{programaFace.operacao == 'A'}">
+                                    <c:if test="#{programaFace.getInativo() == 'S'}">
+                                        <h:outputText value="Registro inativado em - #{programaFace.registroSelecionado.datainativo}" 
+                                                      style="color: red; font-weight: 700; opacity: 1!important">
+                                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+                                        </h:outputText>
+                                    </c:if>
+                                </c:if>                                        
+                                <p:spacer width="30" height="30"/>
+                                <h:outputText value="Campo(s) obrigatório(s)." style="color: red; font-weight: 700"/>
+                                <p:spacer width="30" height="30"/>
+                                <p:commandButton value="Salvar" 
+                                                 style="text-align: center; width: 100px;margin-right: .5rem"
+                                                 icon="pi pi-check" 
+                                                 action="#{programaFace.salvar(false)}" 
+                                                 update="manage-registro-content" process="manage-registro-content @this"/>
+                                <c:if test="#{programaFace.operacao == 'I'}">
+                                    <p:commandButton value="Salvar e novo" 
+                                                     style="text-align: center; width: 125px;margin-right: .5rem"
+                                                     action="#{programaFace.salvar(true)}" 
+                                                     update="manage-registro-content" 
+                                                     process="manage-registro-content @this"/>
+                                </c:if>
+                                <c:if test="#{programaFace.operacao == 'A'}">
+                                    <c:if test="#{programaFace.getInativo() == 'N'}">
+                                        <p:commandButton immediate="true" title="Inativar"
+                                                         style="text-align: center; width: 100px;margin-right: .5rem"
+                                                         value="Inativar"
+                                                         class="ui-button-danger"                                                         
+                                                         process="manage-registro-content @this"
+                                                         action="#{programaFace.inativar()}" alt="Inativar" icon="pi pi-lock white"/>
+                                    </c:if>
+                                    <c:if test="#{programaFace.getInativo() == 'S'}">
+                                        <p:commandButton immediate="true" title="Ativar" 
+                                                         action="#{programaFace.ativar()}" alt="Ativar" 
+                                                         style="text-align: center; width: 100px;margin-right: .5rem"
+                                                         process="manage-registro-content @this"
+                                                         value="Ativar"
+                                                         class="ui-button-success"
+                                                         icon="pi pi-unlock white"/>
+                                    </c:if>
+
+                                </c:if>
+                                <p:commandButton value="Cancelar" 
+                                                 style="text-align: center; width: 100px;margin-right: .5rem"
+                                                 icon="pi pi-times" 
+                                                 onclick="PF('manageDialog').hide()" 
+                                                 class="ui-button-secondary"/>
+                            </f:facet>
+                        </p:dialog> 
+
+                        <p:confirmDialog widgetVar="deleteProductDialog" showEffect="fade" width="300" message="Deletar registro(s)?" header="Confirmação" severity="warn">
+                            <p:commandButton value="Sim" icon="pi pi-check" actionListener="#{programaFace.remover()}" process="@this" oncomplete="PF('deleteProductDialog').hide()"/>
+                            <p:commandButton value="Não" type="button" styleClass="ui-button-secondary" icon="pi pi-times" onclick="PF('deleteProductDialog').hide()" />
+                        </p:confirmDialog>
+
+                        <p:confirmDialog global="true" showEffect="fade" width="300">
+                            <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                            <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times" />
+                        </p:confirmDialog>
+                        
+                        <p:dialog id="manageDialogConsulta"
+                                  header="#{programaFace.titulo}"
+                                  style="max-width: 1000px!important"
+                                  width="90%" height="90%"
+                                  showEffect="fade" 
+                                  modal="true" 
+                                  widgetVar="manageDialogConsulta" 
+                                  responsive="true">
+                            <p:outputPanel rendered="#{not empty programaFace.registroSelecionado}" id="manage-registro-contentConsulta" class="ui-fluid">
+                                <div class="field">
+                                    <p:outputLabel style="color: black" for="codigoConsulta">Código</p:outputLabel>
+                                    <p:inputText id="codigoConsulta"
+                                                 disabled="true"
+                                                 style="color: blue; font-weight: 700; opacity: 1!important"
+                                                 value="#{programaFace.registroSelecionado.codigo}"/>
+                                </div>
+                                <div class="field">
+                                    <p:outputLabel style="color: black" for="descricaoInternaConsulta">Decrição interna</p:outputLabel>
+                                    <p:inputText id="descricaoInternaConsulta"
+                                                 disabled="true"
+                                                 style="color: blue; font-weight: 700; opacity: 1!important"
+                                                 value="#{programaFace.registroSelecionado.descricao}"/>
+                                </div>
+                                <div class="field">
+                                    <p:outputLabel style="color: black" for="descricaoMenuConsulta">Decrição menu</p:outputLabel>
+                                    <p:inputText id="descricaoMenuConsulta" 
+                                                 disabled="true"
+                                                 style="color: blue; font-weight: 700; opacity: 1!important"
+                                                 value="#{programaFace.registroSelecionado.descricaomenu}"/>
+                                </div>
+                                <div class="field">
+                                    <p:outputLabel style="color: black" for="descricaoAtalhoConsulta">Decrição atalho</p:outputLabel>
+                                    <p:inputText id="descricaoAtalhoConsulta" 
+                                                 disabled="true"
+                                                 style="color: blue; font-weight: 700; opacity: 1!important"
+                                                 value="#{programaFace.registroSelecionado.descatalho}"/>
+                                </div>
+                                <div class="field">
+                                    <p:outputLabel style="color: black" for="caminhoConsulta">Caminho</p:outputLabel>
+                                    <p:inputText id="caminhoConsulta" 
+                                                 disabled="true"
+                                                 style="color: blue; font-weight: 700; opacity: 1!important"
+                                                 value="#{programaFace.registroSelecionado.caminho}"/>
+                                </div>
+                                <div class="field">
+                                    <p:selectBooleanCheckbox id="verMenuConsulta"
+                                                             disabled="true"
+                                                             style="color: blue; font-weight: 700; opacity: 1!important"
+                                                             value="#{programaFace.registroSelecionado.vermenu}"
+                                                             title="Se marcado é efetuado o cálculo do IPI."
+                                                             itemLabel="Visualizar no menu"/> 
+                                </div>
+                                <hr/>
+                                <div class="field">
+                                    <p:outputLabel value="Observação" for="obsConsulta" style="color: black"/>
+                                    <p:inputTextarea id="obsConsulta" 
+                                                     value="#{programaFace.registroSelecionado.obs}"
+                                                     style="color: blue; font-weight: 700; opacity: 1!important"
+                                                     counter="display" 
+                                                     maxlength="200"
+                                                     disabled="true"
+                                                     cols="40" 
+                                                     rows="5" 
+                                                     autoResize="false"/>
+                                </div>
+                            </p:outputPanel>
+                            <f:facet name="footer">
+                                <c:if test="#{programaFace.getInativo() == 'S'}">
+                                    <h:outputText value="Registro inativado em - #{programaFace.registroSelecionado.datainativo}" 
+                                                  style="color: red; font-weight: 700; opacity: 1!important">
+                                        <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+                                    </h:outputText>
+                                </c:if>
+                                <p:spacer width="30" height="30"/>
+                                <p:commandButton value="Cancelar" 
+                                                 style="text-align: center; width: 100px;margin-right: .5rem"
+                                                 icon="pi pi-times" 
+                                                 onclick="PF('manageDialogConsulta').hide()" 
+                                                 class="ui-button-secondary"/>
+                            </f:facet>
+                        </p:dialog> 
+                        
+                    </div>
+                </div>
+            </div>
+            
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

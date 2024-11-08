@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Item" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="aa298e6a-458e-4b59-ae62-1335a7865b0d">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="zebra" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="idEmpresa" class="java.lang.Integer"/>
+	<parameter name="cCodIni" class="java.lang.String"/>
+	<parameter name="cCodFin" class="java.lang.String"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     catitem.`CODIGO` AS catitem_CODIGO,
+     subcatitem.`CODIGO` AS subcatitem_CODIGO,
+     item.`CODIGO` AS item_CODIGO,
+     item.`DESCRICAO` AS item_DESCRICAO,
+     unidademedida.`UN` AS unidademedida_UN,
+     catitem.`DESCRICAO` AS catitem_DESCRICAO,
+     subcatitem.`DESCRICAO` AS subcatitem_DESCRICAO,
+     empresa.`logoimg` AS empresa_logo
+FROM
+     `catitem` catitem INNER JOIN `item` item ON catitem.`id` = item.`CATITEM_id`
+     INNER JOIN `subcatitem` subcatitem ON item.`SUBCATITEM_id` = subcatitem.`id`
+     INNER JOIN `unidademedida` unidademedida ON item.`UNIDADEMEDIDA_id` = unidademedida.`id`
+     INNER JOIN `empresa` empresa ON item.`empresa_id` = empresa.`id`
+WHERE
+     item.`EMPRESA_id` = $P{idEmpresa}
+     and item.`CODIGO` >= $P{cCodIni}
+     and item.`CODIGO` <= $P{cCodFin} ORDER BY catitem.`CODIGO`,  subcatitem.`CODIGO`]]>
+	</queryString>
+	<field name="catitem_CODIGO" class="java.lang.String"/>
+	<field name="subcatitem_CODIGO" class="java.lang.String"/>
+	<field name="item_CODIGO" class="java.lang.String"/>
+	<field name="item_DESCRICAO" class="java.lang.String"/>
+	<field name="unidademedida_UN" class="java.lang.String"/>
+	<field name="catitem_DESCRICAO" class="java.lang.String"/>
+	<field name="subcatitem_DESCRICAO" class="java.lang.String"/>
+	<field name="empresa_logo" class="java.io.InputStream"/>
+	<group name="Categoria">
+		<groupExpression><![CDATA[$F{catitem_CODIGO}]]></groupExpression>
+		<groupHeader>
+			<band height="22">
+				<textField>
+					<reportElement x="50" y="0" width="88" height="20" uuid="d743f8c3-2c84-47fc-86c2-a7debc2c5623"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="SansSerif" size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{catitem_CODIGO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="0" width="49" height="20" uuid="0c28c09e-fc6b-47e3-854f-e690e2eb4c3e">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="SansSerif" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Categoria :]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="138" y="0" width="417" height="20" uuid="31e76ca4-94ce-452d-a455-d9e891bfac0d"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="SansSerif" size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{catitem_DESCRICAO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="61">
+			<staticText>
+				<reportElement x="100" y="0" width="455" height="28" uuid="46c09fe2-a991-4c70-a2e0-d2a88a8cb710"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Itens]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="34" width="455" height="20" uuid="ad46e512-c4d7-41fd-9748-15710ce9d6c5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Comic Sans MS"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="0" y="0" width="100" height="59" uuid="b1f9bfc0-3077-417b-a678-0c65fde420fc"/>
+				<imageExpression><![CDATA[$F{empresa_logo}]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="24" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="111" height="20" backcolor="#CCCCCC" uuid="e2cb1045-e0a0-41d0-b663-c9421bf3b32b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="20" width="555" height="1" forecolor="#999999" uuid="ceb35d0a-eac6-4dc0-ad5d-b3ac6ffd45dc"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="111" y="0" width="314" height="20" backcolor="#CCCCCC" uuid="02b1b26d-097d-44d0-8873-091994414f58"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descrição]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="425" y="0" width="40" height="20" backcolor="#CCCCCC" uuid="a744bb3f-2f80-438d-819f-1c39dfe9b801"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Un]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="465" y="0" width="90" height="20" backcolor="#CCCCCC" uuid="bfc153da-24a4-4589-b525-8637149ace45"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Subcategoria]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="111" height="20" forecolor="#000000" uuid="795cd1e1-2c28-4049-9543-631ff7a8c71e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{item_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="111" y="0" width="314" height="20" forecolor="#000000" uuid="8c17e51a-90e7-4b4e-a170-54de76110e40"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{item_DESCRICAO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="425" y="0" width="40" height="20" forecolor="#000000" uuid="bc617289-a40a-49b5-b0ca-2949b1f0c1ca"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{unidademedida_UN}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="465" y="0" width="90" height="20" forecolor="#000000" uuid="acba749f-24d5-4cc0-bdde-3e771335ea93"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{subcatitem_DESCRICAO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="24" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="0" width="555" height="1" uuid="ebd97337-54f9-421e-b92c-8b5d44fb768f"/>
+			</line>
+			<textField>
+				<reportElement x="363" y="0" width="119" height="20" uuid="ad7722a2-4fbe-4310-ba84-103f0883e0d1"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="482" y="0" width="73" height="20" uuid="f1f413d1-64d9-4d53-ba2f-28268915f407"/>
+				<textElement>
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="206" y="2" width="160" height="16" forecolor="#0000FF" uuid="70a1abc8-b1c3-4e51-888d-79d5f8f9a89e">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OnSys ERP Cloud - www.onsys.com.br]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="1" y="0" width="100" height="20" uuid="7110016a-1ed2-4378-a310-a77927be8a6b"/>
+				<textElement>
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

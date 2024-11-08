@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TabPrecoExcel" pageWidth="595" pageHeight="15000" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="idEmpresa" class="java.lang.Integer"/>
+	<parameter name="cCodIni" class="java.lang.String"/>
+	<parameter name="cCodFin" class="java.lang.String"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     tabelapreco.`CODIGO` AS tabelapreco_CODIGO,
+     tabelapreco.`DESCRICAO` AS tabelapreco_DESCRICAO,
+     tabelapreco.`DATAVALINI` AS tabelapreco_DATAVALINI,
+     tabelapreco.`DATAVALFIM` AS tabelapreco_DATAVALFIM,
+     itemtabelapreco.`ITEM_id` AS itemtabelapreco_ITEM_id,
+     itemtabelapreco.`PRECO` AS itemtabelapreco_PRECO,
+     itemtabelapreco.`DESCONTO` AS itemtabelapreco_DESCONTO,
+     itemtabelapreco.`BASECOMIS` AS itemtabelapreco_BASECOMIS,
+     item.`DESCRICAO` AS item_DESCRICAO,
+     item.`CODIGO` AS item_CODIGO,
+     tabelapreco.`EMPRESA_id` AS tabelapreco_EMPRESA_id
+FROM
+     `tabelapreco` tabelapreco INNER JOIN `itemtabelapreco` itemtabelapreco ON tabelapreco.`id` = itemtabelapreco.`TABELAPRECO_id`
+     INNER JOIN `item` item ON itemtabelapreco.`ITEM_id` = item.`id`
+ $P!{cCondicao}
+ORDER BY tabelapreco.`CODIGO`, item.`DESCRICAO`]]>
+	</queryString>
+	<field name="tabelapreco_CODIGO" class="java.lang.String"/>
+	<field name="tabelapreco_DESCRICAO" class="java.lang.String"/>
+	<field name="tabelapreco_DATAVALINI" class="java.sql.Date"/>
+	<field name="tabelapreco_DATAVALFIM" class="java.sql.Date"/>
+	<field name="itemtabelapreco_ITEM_id" class="java.lang.Integer"/>
+	<field name="itemtabelapreco_PRECO" class="java.math.BigDecimal"/>
+	<field name="itemtabelapreco_DESCONTO" class="java.math.BigDecimal"/>
+	<field name="itemtabelapreco_BASECOMIS" class="java.math.BigDecimal"/>
+	<field name="item_DESCRICAO" class="java.lang.String"/>
+	<field name="item_CODIGO" class="java.lang.String"/>
+	<field name="tabelapreco_EMPRESA_id" class="java.lang.Integer"/>
+	<variable name="counter" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA["1"]]></variableExpression>
+	</variable>
+	<group name="Tabela" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{tabelapreco_CODIGO}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="62" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="45" width="480" height="17" backcolor="#CCCCCC"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="0" y="26" width="480" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="46" width="85" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tabela]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="85" y="46" width="44" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="129" y="46" width="274" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descrição]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="403" y="46" width="77" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Preço]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="61" width="480" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="0" width="480" height="26"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Tabela de preço]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="480" height="15" backcolor="#CCFFFF">
+					<printWhenExpression><![CDATA[(new Integer(($V{counter}.intValue())%2).equals(new Integer("1")))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="129" y="0" width="274" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{item_DESCRICAO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="403" y="0" width="77" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{itemtabelapreco_PRECO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="85" y="0" width="44" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{item_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="85" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tabelapreco_CODIGO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

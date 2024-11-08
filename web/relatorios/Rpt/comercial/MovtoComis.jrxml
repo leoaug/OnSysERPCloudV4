@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MovtoComis" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="zebra" isDefault="false" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style isDefault="false" style="zebra" mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     empresa.`logoimg`  AS empresa_logo,
+     empresa.`DESCRICAO` AS empresa_DESCRICAO,
+     comissaomovto.`DTMOVTO` AS comissaomovto_DTMOVTO,
+     comissaomovto.`TPMOVTO` AS comissaomovto_TPMOVTO,
+     comissaomovto.`VLMOVTO` AS comissaomovto_VLMOVTO,
+     comissaotpmov.`CODIGO` AS comissaotpmov_CODIGO,
+     comissaotpmov.`DESCRICAO` AS comissaotpmov_DESCRICAO,
+     comissaotpmov.`TIPO` AS comissaotpmov_TIPO,
+     representante.`APELIDO` AS representante_APELIDO,
+     representante.`CODIGO` AS representante_CODIGO,
+     comissaomovto.`HISTORICO` AS comissaomovto_HISTORICO
+FROM
+     `empresa` empresa INNER JOIN `comissaomovto` comissaomovto ON empresa.`id` = comissaomovto.`EMPRESA_id`
+     INNER JOIN `comissaotpmov` comissaotpmov ON comissaomovto.`COMISSAOTPMOV_id` = comissaotpmov.`id`
+     INNER JOIN `representante` representante ON comissaomovto.`REPRESENTANTE_id` = representante.`id`
+$P!{cCondicao}]]>
+	</queryString>
+	<field name="empresa_logo" class="java.io.InputStream"/>
+	<field name="empresa_DESCRICAO" class="java.lang.String"/>
+	<field name="comissaomovto_DTMOVTO" class="java.sql.Date"/>
+	<field name="comissaomovto_TPMOVTO" class="java.lang.Integer"/>
+	<field name="comissaomovto_VLMOVTO" class="java.math.BigDecimal"/>
+	<field name="comissaotpmov_CODIGO" class="java.lang.String"/>
+	<field name="comissaotpmov_DESCRICAO" class="java.lang.String"/>
+	<field name="comissaotpmov_TIPO" class="java.lang.String"/>
+	<field name="representante_APELIDO" class="java.lang.String"/>
+	<field name="representante_CODIGO" class="java.lang.String"/>
+	<field name="comissaomovto_HISTORICO" class="java.lang.String"/>
+	<variable name="comissaomovto_VLMOVTO_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{comissaomovto_VLMOVTO}]]></variableExpression>
+	</variable>
+	<group name="Representante">
+		<groupExpression><![CDATA[$F{representante_CODIGO}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<staticText>
+					<reportElement x="1" y="0" width="74" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Representante :]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="75" y="0" width="46" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{representante_CODIGO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="121" y="0" width="207" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{representante_APELIDO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<staticText>
+					<reportElement x="651" y="0" width="85" height="15"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total do representante :]]></text>
+				</staticText>
+				<textField pattern="¤ #,##0.00">
+					<reportElement x="736" y="0" width="65" height="15"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{comissaomovto_VLMOVTO_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="121" y="2" width="681" height="39"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Outros(receitas ou descontos) movimentos de comissão]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="121" y="41" width="681" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="2" y="2" width="119" height="50"/>
+				<imageExpression class="java.io.InputStream"><![CDATA[$F{empresa_logo}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="16" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="65" height="15" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<line>
+				<reportElement x="1" y="15" width="800" height="1"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="65" y="0" width="222" height="15" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo de movimento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="287" y="0" width="364" height="15" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Histórico]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="651" y="0" width="85" height="15" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Entrada/Saída]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="736" y="0" width="66" height="15" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="65" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{comissaomovto_DTMOVTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="65" y="0" width="222" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{comissaotpmov_DESCRICAO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="736" y="0" width="65" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{comissaomovto_VLMOVTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="651" y="0" width="85" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{comissaotpmov_TIPO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="287" y="0" width="364" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{comissaomovto_HISTORICO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="0" y="0" width="100" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="0" width="801" height="1"/>
+			</line>
+			<textField>
+				<reportElement x="670" y="0" width="92" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="762" y="0" width="40" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="332" y="0" width="128" height="16" forecolor="#0000FF"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OnSys - Sistemas Online - NeoSIGE]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>

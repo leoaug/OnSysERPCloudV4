@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Clientes_sintetico_PDF" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c10dabc-9b04-477c-9d52-644f542d2a63">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="OnSys"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<style name="zebra" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+    participante.`CODIGO` AS participante_CODIGO,
+    participante.`NOMEFANTASIA` AS participante_RAZAOSOCIAL,
+    participante.`FONE` AS participante_FONE,
+    participante.`EMAIL` AS participante_EMAIL,
+    participante.`DATACADASTRO` as participante_DATACADASTRO,
+    participante.`CNPJCPF` AS participante_CNPJCPF,
+    enderecoparticipante.`LOGRADOURO` AS enderecoparticipante_LOGRADOURO,
+    enderecoparticipante.`NUMERO` AS enderecoparticipante_NUMERO,
+    enderecoparticipante.`BAIRRO` AS enderecoparticipante_BAIRRO,
+    enderecoparticipante.`CIDADE` AS enderecoparticipante_CIDADE,
+    enderecoparticipante.`UF` AS enderecoparticipante_UF,
+    representante.`CODIGO` AS representante_CODIGO,
+    representante.`NOME` AS representante_NOME,
+    regiao.`DESCRICAO` AS regiao_DESCRICAO,
+    bcofebraban.`DESCRICAO` AS banco_DESCRICAO,
+    bcofebraban.`CODIGO` AS banco_CODIGO,
+    portador.`CODIGO` AS portador_CODIGO,
+    CASE participante.`INATIVO`
+	WHEN 'S' THEN "Inativos"
+     ELSE
+	"Ativos"
+     END INATIVO,
+    empresa.`logoimg`  AS empresa_logo
+FROM
+    `bcofebraban` bcofebraban RIGHT OUTER JOIN `participante` participante ON bcofebraban.`id` = participante.`BANCO_id`
+    INNER JOIN `representante` representante ON participante.`REPRESENTANTE_id` = representante.`id`
+    INNER JOIN `enderecoparticipante` enderecoparticipante ON participante.`id` = enderecoparticipante.`PARTICIPANTE_id`
+    INNER JOIN `empresa`       empresa       ON participante.`empresa_id` = empresa.`id`
+    LEFT OUTER JOIN `regiao` regiao ON representante.`REGIAO_id` = regiao.`id`
+    LEFT OUTER JOIN `portador` portador ON participante.`PORTADOR_id` = portador.`id`
+    LEFT OUTER JOIN `catcliente` catcliente ON participante.`CATCLIENTE_id` = catcliente.`id`
+$P!{cCondicao}
+ORDER BY regiao_DESCRICAO, representante_NOME, participante_RAZAOSOCIAL]]>
+	</queryString>
+	<field name="participante_CODIGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="participante_CODIGO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="participante"/>
+	</field>
+	<field name="participante_RAZAOSOCIAL" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="participante_RAZAOSOCIAL"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="participante"/>
+	</field>
+	<field name="participante_FONE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="participante_FONE"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="participante"/>
+	</field>
+	<field name="participante_EMAIL" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="participante_EMAIL"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="participante"/>
+	</field>
+	<field name="participante_DATACADASTRO" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="participante_DATACADASTRO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="participante"/>
+	</field>
+	<field name="participante_CNPJCPF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="participante_CNPJCPF"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="participante"/>
+	</field>
+	<field name="enderecoparticipante_LOGRADOURO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="enderecoparticipante_LOGRADOURO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="enderecoparticipante"/>
+	</field>
+	<field name="enderecoparticipante_NUMERO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="enderecoparticipante_NUMERO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="enderecoparticipante"/>
+	</field>
+	<field name="enderecoparticipante_BAIRRO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="enderecoparticipante_BAIRRO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="enderecoparticipante"/>
+	</field>
+	<field name="enderecoparticipante_CIDADE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="enderecoparticipante_CIDADE"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="enderecoparticipante"/>
+	</field>
+	<field name="enderecoparticipante_UF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="enderecoparticipante_UF"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="enderecoparticipante"/>
+	</field>
+	<field name="representante_CODIGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="representante_CODIGO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="representante"/>
+	</field>
+	<field name="representante_NOME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="representante_NOME"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="representante"/>
+	</field>
+	<field name="regiao_DESCRICAO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="regiao_DESCRICAO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="regiao"/>
+	</field>
+	<field name="banco_DESCRICAO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="banco_DESCRICAO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="bcofebraban"/>
+	</field>
+	<field name="banco_CODIGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="banco_CODIGO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="bcofebraban"/>
+	</field>
+	<field name="portador_CODIGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="portador_CODIGO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="portador"/>
+	</field>
+	<field name="INATIVO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="INATIVO"/>
+	</field>
+	<field name="empresa_logo" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.label" value="empresa_logo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<variable name="cCliente" class="java.lang.String">
+		<variableExpression><![CDATA[$F{participante_CODIGO}+" - "+$F{participante_RAZAOSOCIAL}]]></variableExpression>
+	</variable>
+	<group name="Regiao" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{regiao_DESCRICAO}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<staticText>
+					<reportElement x="0" y="0" width="35" height="20" uuid="f3490ff3-faec-4c00-9057-2cddc65f93ad"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Região:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="35" y="0" width="526" height="20" uuid="5169dd52-2bb1-4510-b8a7-37af59ee5646"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{regiao_DESCRICAO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="11"/>
+		</groupFooter>
+	</group>
+	<group name="Representante" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{representante_NOME}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<staticText>
+					<reportElement x="0" y="0" width="61" height="20" uuid="fcbea824-f333-437d-97ae-e94779962a5a"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Representante:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="100" y="0" width="461" height="20" uuid="f6938351-6ca3-40dc-b9b3-f967d8aa61ed"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{representante_NOME}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="61" y="0" width="35" height="20" uuid="13c2ee07-a086-48a2-af57-733737c23c9f"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{representante_CODIGO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="10"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="73" splitType="Stretch">
+			<staticText>
+				<reportElement x="125" y="10" width="573" height="26" uuid="afa8ee64-3d50-445d-9d80-42704dbd472c"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relatório de clientes - Sintético]]></text>
+			</staticText>
+			<image>
+				<reportElement x="0" y="0" width="125" height="72" uuid="bec75d0f-36e6-4b99-a8ee-f63dd668bee9"/>
+				<imageExpression><![CDATA[$F{empresa_logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="125" y="36" width="573" height="20" uuid="3200e22f-d141-4422-8357-681048675f41"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="33" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="85" height="20" backcolor="#CCCCCC" uuid="6c3214a6-8942-4d88-85c9-c659dfd5be59"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cliente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="161" y="0" width="182" height="20" backcolor="#CCCCCC" uuid="02f981cd-f342-4054-a1fb-9e13e7a49a32">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Endereço]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="343" y="0" width="86" height="20" backcolor="#CCCCCC" uuid="308cc0a6-d65a-48ad-ac10-38792dc580b3">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Bairro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="429" y="0" width="75" height="20" backcolor="#CCCCCC" uuid="14eab46f-302a-464d-93f7-590f85bc03e6">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cidade]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="504" y="0" width="23" height="20" backcolor="#CCCCCC" uuid="e7d2da70-546e-41c6-959f-a7db60efc7fd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[UF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="527" y="0" width="55" height="20" backcolor="#CCCCCC" uuid="90cd78b8-587c-4b95-8fed-e34da259f67a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Telefone]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="582" y="0" width="140" height="20" backcolor="#CCCCCC" uuid="bdc194fd-a857-4ebd-8510-37e734c76a71"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[E-mail]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="767" y="0" width="35" height="20" backcolor="#CCCCCC" uuid="a27f031e-516f-4750-b032-2d15b1828403"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Situação]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="20" width="802" height="1" uuid="069a360f-55a0-46d5-8a34-902b7c61dcb9"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="722" y="0" width="45" height="19" backcolor="#CCCCCC" uuid="33aed507-005c-4e01-b0b2-cfaaf1bdf0c7">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dt.Cadas.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="85" y="0" width="76" height="19" backcolor="#CCCCCC" uuid="52a5b004-2db4-49ec-af4e-804e02a994d4">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CNPJ/CPF]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="85" height="15" forecolor="#000000" uuid="9db83e3e-af09-4a76-957c-06cf5265a554"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{cCliente}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="161" y="0" width="182" height="15" forecolor="#000000" uuid="5d2ee9cd-8611-4029-b61b-d99ac19c5cf5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{enderecoparticipante_LOGRADOURO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="343" y="0" width="86" height="15" forecolor="#000000" uuid="2ba99bbc-0d0b-48ed-b36d-7b1990793e8d">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{enderecoparticipante_BAIRRO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="429" y="0" width="75" height="15" forecolor="#000000" uuid="94d68d37-3ab4-42a1-8744-f9ef728dc8e5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{enderecoparticipante_CIDADE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="504" y="0" width="23" height="15" forecolor="#000000" uuid="db550bd6-744d-4f1c-9a80-7527cff090b1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{enderecoparticipante_UF}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="527" y="0" width="55" height="15" forecolor="#000000" uuid="29f9c067-8fb1-494e-95be-3629cc09e89c">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{participante_FONE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="582" y="0" width="140" height="15" forecolor="#000000" uuid="90f689a7-3988-4afb-a49b-964c4a270253"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{participante_EMAIL}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="767" y="0" width="35" height="15" forecolor="#000000" uuid="7febb6d1-a925-4969-8a6f-9605d68bf2b7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{INATIVO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="722" y="0" width="45" height="15" forecolor="#000000" uuid="3e3c1239-123e-484d-9244-e8a71d6686c8"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{participante_DATACADASTRO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="85" y="0" width="76" height="15" forecolor="#000000" uuid="8a3500ec-4c40-42ea-83e6-32807f3ef44d">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3e343a1f-96f6-4dd1-8282-715468ab4770"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{participante_CNPJCPF}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="24" splitType="Stretch">
+			<staticText>
+				<reportElement x="280" y="4" width="247" height="20" forecolor="#0000FF" uuid="4a50b4cf-bfee-46c5-84d8-b2bfe004d71d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OnSys ERP Cloud - www.onsys.com.br]]></text>
+			</staticText>
+			<textField evaluationTime="Report">
+				<reportElement x="762" y="4" width="40" height="20" uuid="d7ef6843-4654-4211-ba55-7667ee7e6be7"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="682" y="4" width="80" height="20" uuid="a6234583-c2d5-4df4-a44d-4ba32f3dd4fc"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="0" y="4" width="100" height="20" uuid="f16f4b58-1ad3-4633-9623-61c316ec9f6c"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="1" width="802" height="1" uuid="9f512981-7aa2-486b-8b53-83cfbf56ca03"/>
+				<graphicElement>
+					<pen lineWidth="1.5"/>
+				</graphicElement>
+			</line>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

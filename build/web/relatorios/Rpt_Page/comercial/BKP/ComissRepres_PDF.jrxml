@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComissRepres_PDF" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="380"/>
+	<property name="ireport.y" value="0"/>
+	<style name="zebra" isDefault="false" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style isDefault="false" style="zebra" mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String"/>
+	<parameter name="cEmpresa" class="java.lang.String"/>
+	<parameter name="pDataIni" class="java.lang.String"/>
+	<parameter name="pDataFim" class="java.lang.String"/>
+	<parameter name="ano" class="java.lang.String"/>
+	<parameter name="mes" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     CASE WHEN ((SELECT SUM(1)
+		FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+			INNER JOIN `representante`    representanteX   ON representanteX.`id` = participanteX.`REPRESENTANTE_id`
+                        INNER JOIN `metapremiorepres` metapremiorepres ON metapremiorepres.`representante_id` = representanteX.`id` and
+                                   metapremiorepres.ano = year($P{pDataIni}) and metapremiorepres.mes = month($P{pDataIni})
+		WHERE (pedidovendasX.`EMPRESA_id` = $P{cEmpresa}) AND (pedidovendasX.`DATAEMISSAO` >= $P{pDataIni} AND pedidovendasX.`DATAEMISSAO` <= $P{pDataFim}) AND
+			(representanteX.`id` = representante.`id` and pedidovendasX.VLTOTPEDIDO > 0
+  AND pedidovendasX.SITUACAO <> 'Cancelado'
+  AND pedidovendasX.SITUACAO <> 'Aberto'
+  AND pedidovendasX.SITUACAO <> 'Bloqueado'
+  and pedidovendasX.SITUACAO <> 'Obs')) >= metapremiorepres.`METAPEDIDO`) and metapremiorepres.`METAPEDIDO` <> 0 THEN (doctosai.`VLTOTDOCTOLIQ` * (pedidovendas.`PERCCOMISSAO` / 100)) * (4 / 100)
+     ELSE
+	0 END AS PremQtdPed,
+     CASE WHEN ((SELECT SUM(pedidovendasX.`VLTOTPEDIDO`)
+		FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+			INNER JOIN `representante` representanteX ON representanteX.`id` = participanteX.`REPRESENTANTE_id`
+                        INNER JOIN `metapremiorepres` metapremiorepres ON metapremiorepres.`representante_id` = representanteX.`id` and
+                                   metapremiorepres.ano = year($P{pDataIni}) and metapremiorepres.mes = month($P{pDataIni})
+		WHERE (pedidovendasX.`EMPRESA_id` = $P{cEmpresa}) AND (pedidovendasX.`DATAEMISSAO` >= $P{pDataIni} AND pedidovendasX.`DATAEMISSAO` <= $P{pDataFim}) AND
+			(representanteX.`id` = representante.`id` and pedidovendasX.VLTOTPEDIDO > 0
+  AND pedidovendasX.SITUACAO <> 'Cancelado'
+  AND pedidovendasX.SITUACAO <> 'Bloqueado'
+  AND pedidovendasX.SITUACAO <> 'Aberto'
+  and pedidovendasX.SITUACAO <> 'Obs')) >= metapremiorepres.`METAVALOR`) and metapremiorepres.`METAVALOR` <> 0  THEN (doctosai.`VLTOTDOCTOLIQ` * (pedidovendas.`PERCCOMISSAO` / 100)) * (6 / 100)
+     ELSE
+	0 END AS  PremValorPed,
+CASE WHEN ((SELECT MIN(pedidovendasCN.`NRPEDCLI`) FROM `participante` as  participanteCN, `pedidovendas` as  pedidovendasCN
+                     where   participanteCN.`id`     = pedidovendasCN.`CLIENTE_id`
+                       and   participanteCN.`codigo` = participante.`CODIGO`
+		       and   pedidovendasCN.`EMPRESA_id` = $P{cEmpresa} AND pedidovendasCN.`DATAEMISSAO` <= $P{pDataFim}
+                       AND  (pedidovendasCN.VLTOTPEDIDO > 0
+  AND pedidovendasCN.SITUACAO <> 'Cancelado'
+  AND pedidovendasCN.SITUACAO <> 'Aberto'
+  AND pedidovendasCN.SITUACAO <> 'Bloqueado'
+  and pedidovendasCN.SITUACAO <> 'Obs') AND (participante.`DATACADASTRO` >= '2017-03-01')) = pedidovendas.`NRPEDCLI`) THEN doctosai.`VLTOTDOCTOLIQ` * (pedidovendas.`PERCCOMISSAO` / 100)
+  ELSE 0 END AS PremNovoCli,
+     doctosai.`NRODOCTO` AS doctosai_NRODOCTO,
+     serienotafiscal.`SERIE` AS serienotafiscal_SERIE,
+     metapremiorepres.`METAPEDIDO`,
+     metapremiorepres.`METAVALOR`,
+     representante.`CODIGO` AS representante_CODIGO,
+     representante.`NOME` AS representante_NOME,
+     participante.`CODIGO` AS participante_CODIGO,
+     doctosai.`DTEMISSAO` AS doctosai_DTEMISSAO,
+     empresa.`logoimg` AS empresa_logo,
+     participante.`RAZAOSOCIAL` AS participante_RAZAOSOCIAL,
+     doctosai.`VLTOTDOCTOLIQ`  AS pedidovendas_VLTOTLIQPEDIDO,
+     pedidovendas.`PERCCOMISSAO` AS pedidovendas_PERCCOMISSAO,
+     doctosai.`VLTOTDOCTOLIQ` * (pedidovendas.`PERCCOMISSAO` / 100) AS pedidovendas_VLCOMISSAO,
+     pedidovendas.`NRPEDCLI` AS pedidovendas_NRPEDCLI,
+     pedidovendas.`PERCDESCTOTAL` AS pedidovendas_PERCDESCTOTAL,
+     0 AS IR
+FROM
+     `doctosai` doctosai INNER JOIN `pedidovendas` pedidovendas ON doctosai.`NRPEDCLI` = pedidovendas.`NRPEDCLI` and
+                                     pedidovendas.`CLIENTE_id` = doctosai.`participante_id`
+     INNER JOIN `serienotafiscal` serienotafiscal ON serienotafiscal.`id` = doctosai.`SERIE_id`
+     INNER JOIN `participante` participante ON pedidovendas.`CLIENTE_id` = participante.`id`
+     INNER JOIN `doctosairep` doctosairep ON doctosai.`id` = doctosairep.`doctosai_id`
+     INNER JOIN `representante` representante ON representante.`id` = doctosairep.`REPRESENTANTE_id`
+     LEFT JOIN `metapremiorepres` metapremiorepres ON metapremiorepres.`representante_id` = representante.`id` and
+                                   metapremiorepres.ano = year($P{pDataIni}) and metapremiorepres.mes = month($P{pDataIni})
+     INNER JOIN `empresa` empresa ON empresa.`id` = doctosai.`EMPRESA_id`
+$P!{cCondicao}
+ ORDER BY representante.`CODIGO`, doctosai.`DTEMISSAO`, doctosai.`NRODOCTO`]]>
+	</queryString>
+	<field name="PremQtdPed" class="java.math.BigDecimal"/>
+	<field name="PremValorPed" class="java.math.BigDecimal"/>
+	<field name="PremNovoCli" class="java.math.BigDecimal"/>
+	<field name="doctosai_NRODOCTO" class="java.lang.String"/>
+	<field name="serienotafiscal_SERIE" class="java.lang.String"/>
+	<field name="representante_CODIGO" class="java.lang.String"/>
+	<field name="representante_NOME" class="java.lang.String"/>
+	<field name="participante_CODIGO" class="java.lang.String"/>
+	<field name="doctosai_DTEMISSAO" class="java.sql.Date"/>
+	<field name="empresa_logo" class="java.io.InputStream"/>
+	<field name="participante_RAZAOSOCIAL" class="java.lang.String"/>
+	<field name="pedidovendas_VLTOTLIQPEDIDO" class="java.math.BigDecimal"/>
+	<field name="pedidovendas_PERCCOMISSAO" class="java.math.BigDecimal"/>
+	<field name="pedidovendas_VLCOMISSAO" class="java.math.BigDecimal"/>
+	<field name="pedidovendas_NRPEDCLI" class="java.lang.String"/>
+	<field name="pedidovendas_PERCDESCTOTAL" class="java.math.BigDecimal"/>
+	<field name="IR" class="java.lang.Long"/>
+	<variable name="vTotRepValor" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{pedidovendas_VLTOTLIQPEDIDO}]]></variableExpression>
+	</variable>
+	<variable name="vTotRepComissao" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{pedidovendas_VLCOMISSAO}]]></variableExpression>
+	</variable>
+	<variable name="vTotGerValor" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{pedidovendas_VLTOTLIQPEDIDO}]]></variableExpression>
+	</variable>
+	<variable name="vTotGerComissao" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{pedidovendas_VLCOMISSAO}]]></variableExpression>
+	</variable>
+	<variable name="vTotRepPQP" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremQtdPed}]]></variableExpression>
+	</variable>
+	<variable name="vTotGerPQP" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremQtdPed}]]></variableExpression>
+	</variable>
+	<variable name="vTotRepPVP" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremValorPed}]]></variableExpression>
+	</variable>
+	<variable name="vTotGerPVP" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremValorPed}]]></variableExpression>
+	</variable>
+	<variable name="vTotRepNC" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremNovoCli}]]></variableExpression>
+	</variable>
+	<variable name="vTotGerNC" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremNovoCli}]]></variableExpression>
+	</variable>
+	<variable name="vTotRepCFim" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$F{pedidovendas_VLCOMISSAO}.add($F{PremQtdPed}).add($F{PremValorPed}).add($F{PremNovoCli})]]></variableExpression>
+	</variable>
+	<variable name="vTotRepresCFim" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$V{vTotRepCFim}]]></variableExpression>
+	</variable>
+	<variable name="vTotGerCFim" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$V{vTotRepCFim}]]></variableExpression>
+	</variable>
+	<variable name="PremValorPed_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremValorPed}]]></variableExpression>
+	</variable>
+	<variable name="PremQtdPed_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremQtdPed}]]></variableExpression>
+	</variable>
+	<variable name="vTotalGerComis" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremQtdPed}.add($F{PremValorPed}).add($F{PremNovoCli}).add($F{pedidovendas_VLCOMISSAO})]]></variableExpression>
+	</variable>
+	<variable name="totGeral" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremQtdPed}.add($F{PremValorPed}).add($F{PremNovoCli}).add($F{pedidovendas_VLCOMISSAO})]]></variableExpression>
+	</variable>
+	<group name="Representante">
+		<groupExpression><![CDATA[$F{representante_NOME}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<staticText>
+					<reportElement x="0" y="0" width="77" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Representante]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="77" y="0" width="37" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{representante_CODIGO}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="114" y="0" width="405" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{representante_NOME}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="84">
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="351" y="4" width="50" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{vTotRepValor}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="351" y="1" width="451" height="1"/>
+				</line>
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="475" y="4" width="50" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{vTotRepComissao}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="229" y="4" width="122" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total da comissão  ==>]]></text>
+				</staticText>
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="525" y="4" width="50" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{vTotRepNC}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="525" y="44" width="50" height="20"/>
+					<textElement textAlignment="Right">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{PremValorPed_1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="229" y="44" width="122" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Premiação meta valor  ==>]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="229" y="24" width="122" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Premiação meta quantidade  ==>]]></text>
+				</staticText>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="525" y="24" width="50" height="20"/>
+					<textElement textAlignment="Right">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{PremQtdPed_1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="229" y="64" width="122" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total geral do representante  ==>]]></text>
+				</staticText>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="525" y="64" width="50" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{vTotalGerComis}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="53" splitType="Stretch">
+			<textField>
+				<reportElement x="106" y="32" width="596" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="106" y="0" width="596" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Extrato de comissão - analítico]]></text>
+			</staticText>
+			<image>
+				<reportElement x="0" y="0" width="106" height="50"/>
+				<imageExpression class="java.io.InputStream"><![CDATA[$F{empresa_logo}]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="46" height="20" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Emissão]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="93" y="0" width="30" height="20" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="123" y="0" width="21" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Série]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="144" y="0" width="207" height="20" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[     Cliente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="351" y="0" width="50" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Base da comissão]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="436" y="0" width="39" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[% Comiss.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="475" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor da comissão]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="20" width="802" height="1"/>
+				<graphicElement>
+					<pen lineWidth="1.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="46" y="0" width="47" height="19" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pedido]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="401" y="0" width="35" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[% Desc.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="525" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Premiação clientes novos]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="46" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{doctosai_DTEMISSAO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="93" y="0" width="30" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{doctosai_NRODOCTO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="123" y="0" width="21" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{serienotafiscal_SERIE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="144" y="0" width="32" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{participante_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="351" y="0" width="50" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{pedidovendas_VLTOTLIQPEDIDO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="436" y="0" width="39" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{pedidovendas_PERCCOMISSAO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="475" y="0" width="50" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{pedidovendas_VLCOMISSAO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="176" y="0" width="175" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{participante_RAZAOSOCIAL}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" x="46" y="0" width="47" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{pedidovendas_NRPEDCLI}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="401" y="0" width="35" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{pedidovendas_PERCDESCTOTAL}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="525" y="0" width="50" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{PremNovoCli}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="23" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="1" width="802" height="1"/>
+			</line>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="0" y="3" width="100" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="682" y="3" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="762" y="3" width="40" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="257" y="3" width="309" height="16" forecolor="#0000FF"/>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[OnSys - Sistemas Online - www.onsys.com.br - NeoSIGE]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="24" splitType="Stretch">
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="351" y="4" width="50" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{vTotGerValor}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="351" y="1" width="451" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="229" y="1" width="103" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total geral ==>]]></text>
+			</staticText>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="515" y="4" width="60" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{totGeral}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

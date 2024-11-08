@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComissaoRepres" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4e34f9ba-95b7-4994-a9eb-44a1e954d85a">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     representante.`CODIGO` AS representante_CODIGO,
+     representante.`NOME` AS representante_NOME,
+     representante.`COMISSAO` AS representante_COMISSAO,
+     doctosai.`DTLANCAMENTO` AS doctosai_DTLANCAMENTO,
+     doctosai.`NRODOCTO` AS doctosai_NRODOCTO,
+     doctosai.`DTEMISSAO` AS doctosai_DTEMISSAO,
+     participante.`CODIGO` AS participante_CODIGO,
+     participante.`RAZAOSOCIAL` AS participante_RAZAOSOCIAL,
+     doctosai.`VLTOTDOCTOLIQ` AS doctosai_VLTOTDOCTOLIQ,
+     ((doctosai.`VLTOTDOCTOLIQ` * representante.`COMISSAO`) / 100) AS ComissaoRepres
+FROM
+     `representante` representante INNER JOIN `participante` participante ON representante.`id` = participante.`REPRESENTANTE_id`
+     INNER JOIN `doctosai` doctosai ON participante.`id` = doctosai.`PARTICIPANTE_id`
+$P!{cCondicao}
+ORDER BY representante_CODIGO, doctosai_DTLANCAMENTO]]>
+	</queryString>
+	<field name="representante_CODIGO" class="java.lang.String"/>
+	<field name="representante_NOME" class="java.lang.String"/>
+	<field name="representante_COMISSAO" class="java.math.BigDecimal"/>
+	<field name="doctosai_DTLANCAMENTO" class="java.sql.Date"/>
+	<field name="doctosai_NRODOCTO" class="java.lang.String"/>
+	<field name="doctosai_DTEMISSAO" class="java.sql.Date"/>
+	<field name="participante_CODIGO" class="java.lang.String"/>
+	<field name="participante_RAZAOSOCIAL" class="java.lang.String"/>
+	<field name="doctosai_VLTOTDOCTOLIQ" class="java.math.BigDecimal"/>
+	<field name="ComissaoRepres" class="java.math.BigDecimal"/>
+	<variable name="vTotValorReprs" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{doctosai_VLTOTDOCTOLIQ}]]></variableExpression>
+	</variable>
+	<variable name="vTotComisRepres" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{ComissaoRepres}]]></variableExpression>
+	</variable>
+	<variable name="counter" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA["1"]]></variableExpression>
+	</variable>
+	<group name="Representante" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{representante_CODIGO}]]></groupExpression>
+		<groupHeader>
+			<band height="16">
+				<textField>
+					<reportElement x="52" y="0" width="41" height="16" uuid="a055b5eb-6350-4140-bde2-e7bcd8865254"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{representante_CODIGO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="0" width="51" height="16" uuid="aef868fa-0f88-41ac-86e1-7db977389571"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Vendedor:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="96" y="0" width="240" height="16" uuid="6a68bb53-fe74-4bb6-9466-29d39468ccc1"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{representante_NOME}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="21">
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="371" y="4" width="67" height="15" uuid="96db3eb1-d4d9-45cb-a433-e783de4733fc"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{vTotValorReprs}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="389" y="1" width="148" height="1" uuid="97b62c0e-bb8b-4ec1-b681-f14657356b02"/>
+				</line>
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="482" y="4" width="55" height="15" uuid="524653ff-1e73-4aa4-ad62-fd60822d4761"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{vTotComisRepres}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="101" y="1" width="376" height="20" uuid="206966fb-cf89-4a20-8d8d-4e2dddb0981f"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Extrato de Comissões]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="101" y="30" width="380" height="20" uuid="79d4aeb0-06ea-4a06-bd24-3e70e441c601"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="1" y="1" width="100" height="59" uuid="911d6281-e5e0-436f-96d0-b8fae0b2baa1"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="16" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="16" backcolor="#CCCCCC" uuid="d0e7b082-7252-437d-acd4-2f900953f64e"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="57" y="0" width="33" height="15" uuid="5678a8b7-27c6-4679-970e-92786767985d"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Docto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="93" y="0" width="51" height="15" uuid="377d2700-23c0-4ea8-97b8-ee52a3f70ec9"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Emissão]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="147" y="0" width="29" height="15" uuid="be826d7a-f045-40db-8604-b07c45f84b71"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[CodCli]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="179" y="0" width="206" height="15" uuid="7771a75b-fda6-4903-87ce-cc70e5311fbf"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Razão Social]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="389" y="0" width="49" height="15" uuid="2fc95528-f726-48cc-8458-78d37f18fdc5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Valor ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="443" y="0" width="39" height="15" uuid="ae1981f5-4233-47ba-a6cb-e60a1f753a2f"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Perct]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="493" y="0" width="44" height="15" uuid="bcaa5ee7-e708-4995-808b-3abc0d08606c"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Comissão]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="15" width="555" height="1" uuid="3f936ac1-283f-4a97-8004-e45bbf9bdd47"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="0" width="51" height="15" uuid="b879fd2b-0887-4627-929d-69978edd7ad1"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Data Movto]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="1" width="555" height="15" backcolor="#CCFFFF" uuid="8cfe9de8-c380-4c64-83ee-ebc389b840d5">
+					<printWhenExpression><![CDATA[(new Integer(($V{counter}.intValue())%2).equals(new Integer("1")))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="57" y="0" width="33" height="15" uuid="50e8e7de-f86b-4728-a309-eed84da2602f"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{doctosai_NRODOCTO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="93" y="1" width="51" height="15" uuid="1f6f0b38-7a08-4dfd-8155-7f96bf6cdfd8"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{doctosai_DTEMISSAO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="147" y="0" width="29" height="15" uuid="80746815-95e7-4d16-b5ca-5bae28d98d5b"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{participante_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="179" y="0" width="206" height="15" uuid="06bfc3fd-e176-481e-840d-7593c6909098"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{participante_RAZAOSOCIAL}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="389" y="1" width="49" height="15" uuid="27c4252e-e7ac-45a1-9ab9-ecb118476c7a"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{doctosai_VLTOTDOCTOLIQ}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="443" y="0" width="39" height="15" uuid="5546b549-3002-489a-bc81-fd7e5287b788"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{representante_COMISSAO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="492" y="0" width="45" height="15" uuid="35fedbd6-8c26-4dfc-a183-c381bb4765a2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ComissaoRepres}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="483" y="0" width="10" height="15" uuid="f4bcabc5-ba80-4175-9f23-7c52ed3c9a3d"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[%]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement isPrintRepeatedValues="false" x="0" y="0" width="51" height="15" uuid="92468b59-306a-4056-b7f2-bbcff6bed95a"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{doctosai_DTLANCAMENTO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="3" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="27" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement x="516" y="5" width="40" height="20" uuid="dbe400bc-2dfd-4906-8ef0-e78c2f5104b3"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="1" y="5" width="100" height="20" uuid="06326b36-8296-4f94-a378-2244bd587e81"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="190" y="3" width="190" height="16" forecolor="#0000FF" uuid="0f96ac95-7b83-4931-aed1-44a47fc12ec0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OnSys ERP Cloud  - https://www.onsys.com.br]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="436" y="5" width="80" height="20" uuid="0bc2c28f-7ba0-4f09-81e1-92989106f156"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="2" width="555" height="1" uuid="4d413fbc-f9b6-400d-9787-29b1af698629"/>
+			</line>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="10" splitType="Stretch"/>
+	</summary>
+</jasperReport>

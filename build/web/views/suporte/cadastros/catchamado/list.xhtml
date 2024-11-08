@@ -1,0 +1,167 @@
+<html xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                    xmlns:p="http://primefaces.org/ui"
+                    template="/WEB-INF/template.xhtml"
+                    xmlns:f="http://java.sun.com/jsf/core"
+                    xmlns:h="http://java.sun.com/jsf/html">
+        <ui:define name="conteudo">                
+            <f:view contentType="text/html; charset=utf-8">
+                <h:head>  
+                    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>  
+                </h:head>
+                <p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" widgetVar="statusDialog" />
+                <p:dialog modal="true" widgetVar="statusDialog" header="Processando..." draggable="false" closable="false" resizable="false">                               
+                    <p:graphicImage value="#{pageContext.servletContext.contextPath}/resources/imagens/onsys/bar180.gif" /> 
+                </p:dialog>         
+                <script type="text/javascript">
+                    function startMessage() {
+                         statusDialog.show();
+                    }
+                    function finishMessage() {
+                        statusDialog.hide();
+                    }
+                </script>
+                <h:form id="fmListar">
+                    <p:panel>
+                        <p:toolbar style="height: 35px" id="toolbar">
+                            <f:facet name="left">
+                                <c:if test="#{validaAcesso.validaAcesso('/views/suporte/cadastros/catchamado/list.faces', 'I')}">
+                                    <p:commandButton style="text-align: center; height: 30px; width: 120px;" 
+                                                     title="Incluir uma nova categoria de chamado."
+                                                     update="dialogo"
+                                                     value="Incluir"
+                                                     styleClass="OrangeButton"
+                                                     action="#{catChamadoFace.incluir()}"
+                                                     onclick="PF('PrimeFaces.monitorDownload(startMessage, finishMessage)')"
+                                                     process="@this" icon="fa fa-plus Fs16 white">
+                                    </p:commandButton>
+                                    <p:spacer width="4" height="3"/>
+                                </c:if>
+                                <c:if test="#{validaAcesso.validaAcesso('/views/suporte/cadastros/catchamado/list.faces', 'E')}">
+                                    <p:commandButton style="text-align: center; height: 30px; width: 120px;"
+                                                     update="dialogo"
+                                                     value="Alterar"
+                                                     styleClass="BrownButton"
+                                                     title="Selecione uma categoria de chamado na lista abaixo, para utilizar a função de alteração."
+                                                     action="#{catChamadoFace.alterar()}" id="bt_editar" icon="fa fa-pencil Fs16 white" 
+                                                     ajax="true" onclick="PF('PrimeFaces.monitorDownload(startMessage, finishMessage)')">                                            
+                                    </p:commandButton>
+                                    <p:spacer width="3" height="3"/>  
+                                </c:if>                          
+                                <c:if test="#{validaAcesso.validaAcesso('/views/suporte/cadastros/catchamado/list.faces', 'C')}">
+                                    <p:commandButton style="text-align: center; height: 30px; width: 120px;" 
+                                                     update="dialogoConsultar"
+                                                     value="Consultar"
+                                                     styleClass="CyanButton"
+                                                     title="Selecione uma categoria de chamado na lista abaixo, para utilizar a função de consulta." 
+                                                     action="#{catChamadoFace.consultar()}" icon="fa fa-eye Fs16 white"
+                                                     ajax="true" onclick="PF('PrimeFaces.monitorDownload(startMessage, finishMessage)')">                                            
+                                    </p:commandButton>   
+                                    <span class="ui-separator">
+                                        <span class="fa fa-ellipsis-v leaden"/>
+                                    </span>                                    
+                                </c:if>                     
+                                <p:menuButton style="text-align: center; height: 30px; width: 140px;" 
+                                              value="Mais opções">  
+                                    <c:if test="#{validaAcesso.validaAcesso('/views/suporte/cadastros/catchamado/list.faces', 'R')}">
+                                        <p:menuitem value="Deletar" action="#{catChamadoFace.remover()}" 
+                                                    update="Dtb"
+                                                    icon="fa fa-trash">
+                                            <p:confirm header="Confirma eliminação ?"
+                                                message="Confirma eliminação da categoria de chamado ?"
+                                                icon="ui-icon-alert"/>
+                                        </p:menuitem>
+                                    </c:if>
+                                    <p:menuitem value="Relatório" icon="fa fa-print"/>
+                                    <c:if test="#{!favoritosFace.validaExistente()}">
+                                        <p:menuitem value="Adicionar aos favoritos" icon="fa fa-star-o" update="toolbar"
+                                                    actionListener="#{favoritosFace.criaFavorito(usuarioFace.loggedUser.empresa.codigo)}"/>
+                                    </c:if>
+                                    <c:if test="#{favoritosFace.validaExistente()}">
+                                        <p:menuitem value="Remover dos favoritos" icon="fa fa-star" update="toolbar"
+                                                    actionListener="#{favoritosFace.deletaFavorito()}"/>
+                                    </c:if>                                    
+                                    <p:menuitem value="Ajuda" icon="fa fa-question"/>
+                                </p:menuButton> 
+                                <p:spacer width="3" height="3"/>  
+                                <p:commandButton id="limparFiltro"
+                                                 title="Atualizar lista e limpar filtros" 
+                                                 style="height: 30px; width: 30px;"
+                                                 onclick="PF('tabela').clearFilters()" 
+                                                 actionListener="#{catChamadoFace.limparFiltros}"
+                                                 icon="fa fa-flash Fs14 white"
+                                                 update="Dtb,toolbar">
+                                    <p:resetInput target="Dtb"/>
+                                </p:commandButton>                                
+                                <p:spacer width="3" height="3"/>
+                                <p:growl id="messages" showDetail="true" sticky="true" autoUpdate="true"/>  
+                            </f:facet>                        
+                        </p:toolbar>
+                        <p:dataTable id="Dtb" var="item" value="#{catChamadoFace.lazy}"  
+                                     lazy="true" widgetVar="tabela"
+                                     first="#{catChamadoFace.pagina}" 
+                                     selection="#{catChamadoFace.registroSelecionado}" 
+                                     selectionMode="single" filterDelay="1000"
+                                     paginator="true" rows="10" paginatorPosition="top"                                              
+                                     emptyMessage="Não há registros a exibir"                                        
+                                     rowIndexVar="rowIx" reflow="true">
+
+                            <f:facet name="header">                                                     
+                                <h:outputText value="SUP0010 - Categorias de chamado" styleClass="Fs14"/>
+                                <p:spacer width="20" height="5"/>
+                                <h:commandLink>
+                                    <p:graphicImage title="Gera planilha" value="#{pageContext.servletContext.contextPath}/resources/imagens/onsys/excel.png" width="20"/>
+                                    <p:dataExporter type="xls" target="Dtb" fileName="SUP0010"/>                                    
+                                </h:commandLink>
+                                <p:spacer width="40" height="5"/>
+                                <h:outputText value="  Filtrar  "/>
+                                <p:inputText id="globalFilter" onkeyup="PF('tabela').filter()" styleClass="Fs12"  
+                                             style="text-align: right; height: 10px"/>
+                            </f:facet>
+                           
+                            <p:ajax event="filter" update="Dtb"/>
+                            <p:ajax event="page" listener="#{catChamadoFace.datatablePagina}"/>
+                        
+                            <p:column style="width:16px">
+                                <p:rowToggler/>
+                            </p:column>    
+                            <p:column sortBy="#{item.codigo}" filterBy="#{item.codigo}"
+                                      filterStyle="width: 100px; overflow: hidden"
+                                      filterFunction="#{catChamadoFace.filterByCodigo}" filterValue="#{catChamadoFace.codigoFiltro}"
+                                      style="color: #1578c9; height: 25px;" styleClass="Fs12"
+                                      headerText="Código">  
+                                <h:outputText value="#{item.codigo}" style="height: 25px ;color: black" styleClass="Fs12"/>
+                            </p:column>                              
+                            <p:column sortBy="#{item.descricao}" style="color: #1578c9; height: 25px;" styleClass="Fs12"
+                                      filterFunction="#{catChamadoFace.filterByDescricao}" filterValue="#{catChamadoFace.descricaoFiltro}"
+                                      filterStyle="width: 100px; overflow: hidden"
+                                      filterBy="#{item.descricao}" headerText="Descrição">  
+                                <h:outputText value="#{item.descricao}" style="height: 25px ;color: black" styleClass="Fs12"/>
+                            </p:column>     
+                            <p:rowExpansion>
+                                <p:panelGrid columns="2" layout="grid"
+                                     columnClasses="ui-grid-col-2, ui-grid-col-10" >
+                                    
+                                    <h:outputText value="Registro inativado em - " style="height: 25px ;color: black" styleClass="Fs12"/>
+                                    <h:outputText value="#{item.datainativo}" 
+                                                  style="height: 25px ;color: black" styleClass="Fs12">
+                                        <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+                                    </h:outputText>
+                                    
+                                 </p:panelGrid>
+                            </p:rowExpansion>
+                        </p:dataTable> 
+                        <ui:include src="/views/suporte/cadastros/catchamado/incluirAlterar.xhtml"/>
+                        <ui:include src="/views/suporte/cadastros/catchamado/consultar.xhtml"/>                        
+                    </p:panel>
+                </h:form>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Sim" type="button"
+                        styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="Não" type="button"
+                        styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>                         
+            </f:view>
+        </ui:define>
+    </ui:composition>        
+</html>

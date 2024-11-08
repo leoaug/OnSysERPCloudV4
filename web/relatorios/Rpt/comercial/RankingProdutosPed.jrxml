@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RankingProdutosPed" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="569a7d66-2458-4a26-a1b1-efa28ec002ab">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="155"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="OnSys"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<style name="zebra" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     item.`CODIGO` AS Codigo,
+     item.`DESCRICAO` AS Descricao,
+     'valor_tot' as vvl_tot,
+     empresa.`logoimg`  AS empresa_logo,
+     sum(itempedidovendas.`VLTOT`) AS Valor,
+     sum(itempedidovendas.`QUANTIDADE`) AS Quantidade,
+    (sum(itempedidovendas.`VLTOT`)/sum(itempedidovendas.`QUANTIDADE`)) AS precoMedido,
+(SELECT sum(pedidovendas.`VLTOTPEDIDO`)
+FROM
+    pedidovendas pedidovendas INNER JOIN `representante` representante ON pedidovendas.`REPRESENTANTE_id` = representante.`id`
+     $P!{cCondicao}
+     order by sum(pedidovendas.`VLTOTPEDIDO`) ) AS Valor_tot
+FROM
+    `pedidovendas` pedidovendas INNER JOIN `itempedidovendas` itempedidovendas ON pedidovendas.`id` = itempedidovendas.`PEDIDOVENDAS_id` 
+     INNER JOIN `empresa`       empresa       ON pedidovendas.`empresa_id` = empresa.`id`
+     INNER JOIN `item` item ON itempedidovendas.`ITEM_id` = item.`id`
+     INNER JOIN `participante` participante ON pedidovendas.`CLIENTE_id` = participante.`id`
+     INNER JOIN `representante` representante ON pedidovendas.`REPRESENTANTE_id` = representante.`id`
+     INNER JOIN `enderecoparticipante` enderecoparticipante ON participante.`id` = enderecoparticipante.`PARTICIPANTE_id`
+     LEFT OUTER JOIN `REGIAO` regiao ON representante.`REGIAO_id` = regiao.`id`
+$P!{cCondicao}
+group by item.`CODIGO`
+order by sum(itempedidovendas.`VLTOT`) desc]]>
+	</queryString>
+	<field name="Codigo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Codigo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="item"/>
+	</field>
+	<field name="Descricao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Descricao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="item"/>
+	</field>
+	<field name="vvl_tot" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="vvl_tot"/>
+	</field>
+	<field name="empresa_logo" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.label" value="empresa_logo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="Valor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="Valor"/>
+	</field>
+	<field name="Quantidade" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="Quantidade"/>
+	</field>
+	<field name="precoMedido" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="precoMedido"/>
+	</field>
+	<field name="Valor_tot" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="Valor_tot"/>
+	</field>
+	<variable name="perc_valor_item" class="java.lang.String"/>
+	<variable name="percMedio" class="java.lang.Double">
+		<variableExpression><![CDATA[((($F{Valor}.doubleValue() / $F{Valor_tot}.doubleValue())*100)/$F{Quantidade}.doubleValue())*100]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="61">
+			<textField>
+				<reportElement x="102" y="39" width="371" height="20" uuid="b07865a4-fc71-424b-9b98-de6913b87f4b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="102" y="6" width="371" height="25" uuid="d050ac87-2956-4e13-a7ba-f089d3406057"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ranking de produto - Pedidos emitidos]]></text>
+			</staticText>
+			<image>
+				<reportElement x="2" y="0" width="100" height="50" uuid="449c543f-cb44-415e-b144-6d20fc82fb3d"/>
+				<imageExpression><![CDATA[$F{empresa_logo}]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="16" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="63" height="15" backcolor="#CCCCCC" uuid="6d901217-42d6-4f70-b635-30444d6d1555"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="63" y="0" width="186" height="15" backcolor="#CCCCCC" uuid="c07f5ef5-3a1e-43db-b6d6-eeafd88bdd58"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descrição]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="308" y="0" width="66" height="15" backcolor="#CCCCCC" uuid="52dbe83c-a382-4540-8f3c-1814fd2d61bb"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor da venda]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="444" y="0" width="52" height="15" backcolor="#CCCCCC" uuid="57d98f6a-3000-49c5-92c1-feab00f243bb"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Percentual]]></text>
+			</staticText>
+			<line>
+				<reportElement x="2" y="15" width="553" height="1" uuid="54c98a3c-921d-420f-9364-95c480b1ce94"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="249" y="0" width="59" height="15" backcolor="#CCCCCC" uuid="426483cb-3998-4f8b-82fe-9ae6e69d507d"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quantidade]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="374" y="0" width="70" height="15" backcolor="#CCCCCC" uuid="2baed31b-b5d5-4ee4-85d6-ce63448ed882"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Preço médio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="496" y="0" width="59" height="15" backcolor="#CCCCCC" uuid="719d2690-db3f-4600-abe6-2febad721242"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Perc. Med.]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="63" height="15" forecolor="#000000" uuid="2df7d891-da7a-4841-9a30-fa17eb60d052"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Codigo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement style="zebra" x="308" y="0" width="66" height="15" forecolor="#000000" uuid="5bae0ae8-3a2a-4e25-b704-f5a4eab49a2e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Valor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="63" y="0" width="186" height="15" forecolor="#000000" uuid="d3bc58d2-b0f7-4eb9-8147-8357e78d89f4"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Descricao}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="444" y="0" width="52" height="15" forecolor="#000000" uuid="71f0c09e-a2e2-424e-86a5-352920c1f38d"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{Valor}.doubleValue() / $F{Valor_tot}.doubleValue())*100]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="249" y="0" width="59" height="15" forecolor="#000000" uuid="50f8e978-7987-4987-9170-00544b350d57"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Quantidade}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="374" y="0" width="70" height="15" forecolor="#000000" uuid="e5b1cc82-8318-456d-98fa-e3344ae382a3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{precoMedido}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="496" y="0" width="59" height="15" forecolor="#000000" uuid="6592f2b8-f665-4262-a8bf-f7f92e375acc"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{percMedio}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="23">
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="2" y="3" width="100" height="20" uuid="9e0ffb2e-ee8f-4ada-83f9-6cc796b18db6"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="179" y="3" width="212" height="20" forecolor="#0000FF" uuid="09a27efd-fef7-466d-bace-717b0534314d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OnSys ERP Cloud - www.onsys.com.br]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="1" width="555" height="1" uuid="05546bb6-bf6b-4f8f-ba48-dbeb4a02c365"/>
+			</line>
+			<textField>
+				<reportElement x="435" y="3" width="80" height="20" uuid="161a86db-f824-4a58-ad64-371b9c0059e0"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="3" width="40" height="20" uuid="977d748f-902b-488e-a480-eb4e12df6b84"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="24">
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="308" y="3" width="66" height="20" uuid="9241e57b-4657-42a4-87dc-6ce5659a6403"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Valor_tot}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="308" y="1" width="66" height="1" uuid="df175ef3-56f0-4b56-8a33-a53c2fa4abdf"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,79 @@
+<html xmlns:c="http://java.sun.com/jsp/jstl/core"    
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"                   
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+    
+    <h:head>
+        <title>Pesquisa de item</title>
+    </h:head>
+    <h:body>
+        <p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" widgetVar="statusDialog" />
+        <p:dialog modal="true" widgetVar="statusDialog" header="Processando..." draggable="false" closable="false" resizable="false">                               
+            <p:graphicImage value="#{pageContext.servletContext.contextPath}/resources/imagens/onsys/bar180.gif" /> 
+        </p:dialog>         
+        <script type="text/javascript">
+            function startMessage() {
+                 statusDialog.show();
+            }
+            function finishMessage() {
+                statusDialog.hide();
+            }
+        </script>
+        <h:form style="color:dodgerblue" id="frmPesquisaItem">
+            <div class="ui-fluid"> 
+                <p:dataTable var="item" id="tblPesquisaItem" 
+                            value="#{pesquisaItemFace.lazyNovo}" widgetVar="tabela"
+                            paginator="true" rows="10" reflow="true"
+                            emptyMessage="Não há registros a exibir"  paginatorPosition="top"
+                            rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}" 
+                            rowIndexVar="rowIx" lazy="true" filterDelay="1000"
+                            style="background-color: lightblue">
+
+                    <f:facet name="header">
+                        <h:outputText value="Itens" styleClass="Fs12" /> 
+                        <p:spacer width="40" height="5"/>
+                        <h:outputText value="  Filtrar  "/>
+                        <p:inputText id="globalFilter" onkeyup="PF('tabela').filter()" styleClass="Fs12"  
+                                     style="text-align: right; width: 120px"/>
+                        
+                    </f:facet>
+                    <p:column style="width:16px">
+                        <p:rowToggler />
+                    </p:column>                                                                                         
+                    <p:column headerText="Código" sortBy="#{item.item.codigo}" 
+                              style="color: #1578c9;" 
+                              filterStyle="width: 120px; overflow: hidden"
+                              styleClass="Fs11" filterBy="#{item.item.codigo}">
+                        <h:outputText value="#{item.item.codigo}" style="color: black"/>
+                    </p:column>  
+                    <p:column headerText="Descrição" 
+                              style="color: #1578c9;" 
+                              sortBy="#{item.item.descricao}" styleClass="Fs11" 
+                              filterStyle="width: 240px; overflow: hidden"
+                              filterBy="#{item.item.descricao}">
+                        <h:outputText value="#{item.item.descricao}" style="color: black"/>
+                    </p:column>             
+                    <p:column headerText="Preço" styleClass="Fs12" 
+                              style="color: #1578c9; height: 25px; width: 100px; text-align: right;">
+                        <h:outputText value="#{item.preco}" 
+                                      style="text-align: right; color: black" 
+                                      styleClass="Fs12">
+                            <f:convertNumber type="currency" locale="pt_BR" maxFractionDigits="2"  
+                                             maxIntegerDigits="14"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="text-align: center; color: #1578c9; width: 60px" headerText="Ação">
+                        <p:commandButton title="Selecionar"
+                                         process="@this"
+                                         style="height: 30px; width: 30px;"
+                                         styleClass="GreenButton"
+                                         icon="fa fa-check white"                                         
+                                         action="#{pesquisaItemFace.selecionar(item.item)}">
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </div>            
+        </h:form>
+    </h:body>
+</html>

@@ -1,0 +1,100 @@
+<html xmlns:c="http://java.sun.com/jsp/jstl/core"    
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"                   
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+    
+    <h:head>
+        <title>Pesquisa de cliente</title>
+    </h:head>
+    <h:body>
+        <p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" widgetVar="statusDialog" />
+        <p:dialog modal="true" widgetVar="statusDialog" header="Processando..." draggable="false" closable="false" resizable="false">                               
+            <p:graphicImage value="#{pageContext.servletContext.contextPath}/resources/imagens/onsys/bar180.gif" /> 
+        </p:dialog>         
+        <script type="text/javascript">
+            function startMessage() {
+                 statusDialog.show();
+            }
+            function finishMessage() {
+                statusDialog.hide();
+            }
+        </script>
+        <h:form style="color:dodgerblue" id="frmPesquisaCliente">
+            <div class="ui-fluid"> 
+                <p:dataTable id="tblPesquisaCliente" var="item" value="#{pesquisaClienteFace.list}" 
+                             paginator="true" rows="10" paginatorPosition="top"                                              
+                             emptyMessage="Não há registros a exibir" 
+                             rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}" 
+                             rowIndexVar="rowIx" reflow="true"
+                             style="font-size: 10px; background-color: lightblue">
+
+                    <f:facet name="header">
+                        <h:outputText value="Clientes"/> 
+                        <p:spacer width="40" height="5"/>
+                        <h:outputText value="  Filtrar  "/>
+                        <p:inputText id="globalFilter" onkeyup="PF('tabela').filter()" styleClass="Fs12"  
+                                     style="text-align: right; width: 120px"/>                        
+                    </f:facet>
+                    
+                    <p:column headerText="Código" sortBy="#{item.codigo}" 
+                              style="color: #1578c9; width: 80px; overflow: hidden"
+                              filterStyle="width: 65px; overflow: hidden"        
+                              styleClass="Fs11" filterBy="#{item.codigo}">
+                        <h:outputText value="#{item.codigo}" style="color: black"/>
+                    </p:column>  
+                    <p:column headerText="Razão social" 
+                              style="color: #1578c9;" 
+                              sortBy="#{item.razaosocial}" styleClass="Fs11" 
+                              filterStyle="width: 120px; overflow: hidden"
+                              filterBy="#{item.razaosocial}">
+                        <h:outputText value="#{item.razaosocial}" style="color: black"/>
+                    </p:column>
+                    <p:column headerText="CNPJ/CPF" sortBy="#{item.cnpjcpf}"
+                              style="color: #1578c9; width: 160px; overflow: hidden" 
+                              filterStyle="width: 120px; overflow: hidden"
+                              styleClass="Fs11" filterBy="#{item.cnpjcpf}">
+                        <h:outputText value="#{item.cnpjcpf}" style="color: black"/>
+                    </p:column>
+                    <p:column sortBy="#{pedidoVendasFace.codigoLogado}" 
+                              filterBy="#{pedidoVendasFace.codigoLogado}" 
+                              headerText="Cód.Rep" 
+                              style="color: #1578c9; width: 80px; overflow: hidden" styleClass="Fs11">
+                        <h:outputText value="#{pedidoVendasFace.codigoLogado}" style="color: black" 
+                                      styleClass="Fs12"/>
+                    </p:column>
+                    <p:column headerText="Situação" 
+                              style="color: #1578c9; width: 100px;" 
+                              sortBy="#{item.situacaocredito}" styleClass="Fs11" 
+                              filterStyle="width: 100px; overflow: hidden"
+                              filterBy="#{item.situacaocredito}">
+                        <h:outputText value="#{item.situacaocredito}" style="color: black"/>
+                    </p:column>
+                    <p:column headerText="Cidade" 
+                              style="color: #1578c9;" 
+                              sortBy="#{item.cidade}" styleClass="Fs11" 
+                              filterStyle="width: 120px; overflow: hidden"
+                              filterBy="#{item.cidade}">
+                        <h:outputText value="#{item.cidade}" style="color: black"/>
+                    </p:column>
+                    <p:column headerText="UF" 
+                              style="color: #1578c9; width: 50px;" 
+                              sortBy="#{item.uf}" styleClass="Fs11" 
+                              filterStyle="width: 50px; overflow: hidden"
+                              filterBy="#{item.uf}">
+                        <h:outputText value="#{item.uf}" style="color: black"/>
+                    </p:column>
+                    <p:column style="text-align: center; color: #1578c9; width: 60px; overflow: hidden" headerText="Ação">
+                        <p:commandButton title="Selecionar"
+                                         process="@this"
+                                         style="height: 30px; width: 30px;"
+                                         styleClass="GreenButton"
+                                         icon="fa fa-check white"                                         
+                                         action="#{pesquisaClienteFace.selecionarZydus(item)}">
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </div>            
+        </h:form>
+    </h:body>
+</html>

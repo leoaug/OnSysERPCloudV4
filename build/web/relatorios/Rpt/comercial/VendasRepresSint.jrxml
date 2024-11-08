@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.0.final using JasperReports Library version 6.5.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VendasRepresSint" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="86c60669-91ab-45e5-8af7-ef6cc0b8316e">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="zebra" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     SUM(itemdoctosai.`VLTOTLIQITEM`)AS itemdoctosai_VLTOTITEM,
+     SUM(itemdoctosai.`VLIPI`) AS itemdoctosai_VLIPI,
+     SUM(itemdoctosai.`VLICMSSUBSTITU`) AS itemdoctosai_VLICMSSUBSTITU,
+     SUM(itemdoctosai.`DESCONTO`) AS itemdoctosai_DESCONTO,
+     SUM(itemdoctosai.`VLICMS`) AS itemdoctosai_VLICMS,
+     regiao.`DESCRICAO` AS regiao_DESCRICAO,
+     empresa.`logoimg`  AS empresa_logo,
+     representante.`CODIGO` AS representante_CODIGO,
+     representante.`APELIDO` AS representante_APELIDO
+FROM
+`doctosai` doctosai INNER JOIN `participante` participante on participante.`id` = doctosai.`PARTICIPANTE_id`
+     INNER JOIN `itemdoctosai` itemdoctosai ON doctosai.`id` = itemdoctosai.`DOCTOSAI_id`
+     INNER JOIN `empresa`       empresa       ON doctosai.`empresa_id` = empresa.`id`
+     INNER JOIN `item` item ON itemdoctosai.`ITEM_id` = item.`id` and item.`EMPRESA_id` = doctosai.`EMPRESA_id`
+     INNER JOIN `enderecoparticipante` enderecoparticipante ON participante.`id` = enderecoparticipante.`PARTICIPANTE_id`
+     INNER JOIN `serienotafiscal` serienotafiscal ON doctosai.`SERIE_id` = serienotafiscal.`id` and serienotafiscal.`EMPRESA_id` = doctosai.`EMPRESA_id`
+     INNER JOIN `unidademedida` unidademedida ON item.`UNIDADEMEDIDA_id` = unidademedida.`id` and unidademedida.`EMPRESA_id` = doctosai.`EMPRESA_id`
+     LEFT OUTER JOIN `pedidovendas` pedidovendas ON doctosai.`NRPEDCLI` = pedidovendas.`NRPEDCLI` AND
+                      participante.id       = pedidovendas.`CLIENTE_id` AND
+                      doctosai.`EMPRESA_id` = pedidovendas.`EMPRESA_id`
+     LEFT OUTER JOIN `representante` representante ON representante.`id` = pedidovendas.`REPRESENTANTE_id`
+     LEFT OUTER JOIN `regiao` regiao ON regiao.`id` = representante.`REGIAO_id`
+$P!{cCondicao}
+GROUP BY
+     regiao_DESCRICAO,
+     representante_CODIGO,
+     representante_APELIDO
+ORDER BY
+     regiao_DESCRICAO, representante_APELIDO, itemdoctosai_VLTOTITEM DESC]]>
+	</queryString>
+	<field name="itemdoctosai_VLTOTITEM" class="java.math.BigDecimal"/>
+	<field name="itemdoctosai_VLIPI" class="java.math.BigDecimal"/>
+	<field name="itemdoctosai_VLICMSSUBSTITU" class="java.math.BigDecimal"/>
+	<field name="itemdoctosai_DESCONTO" class="java.math.BigDecimal"/>
+	<field name="itemdoctosai_VLICMS" class="java.math.BigDecimal"/>
+	<field name="regiao_DESCRICAO" class="java.lang.String"/>
+	<field name="empresa_logo" class="java.io.InputStream"/>
+	<field name="representante_CODIGO" class="java.lang.String"/>
+	<field name="representante_APELIDO" class="java.lang.String"/>
+	<variable name="nTotGeral" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{itemdoctosai_VLTOTITEM}]]></variableExpression>
+	</variable>
+	<variable name="counter" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA["1"]]></variableExpression>
+	</variable>
+	<variable name="itempedidovendas_VLTOTLIQITEM_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Regiao" calculation="Sum">
+		<variableExpression><![CDATA[$F{itemdoctosai_VLTOTITEM}]]></variableExpression>
+	</variable>
+	<variable name="vTotItem" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$F{itemdoctosai_VLTOTITEM}.add($F{itemdoctosai_VLIPI}).add($F{itemdoctosai_VLICMSSUBSTITU})]]></variableExpression>
+	</variable>
+	<variable name="totRegTotal" class="java.math.BigDecimal" resetType="Group" resetGroup="Regiao" calculation="Sum">
+		<variableExpression><![CDATA[$V{vTotItem}]]></variableExpression>
+	</variable>
+	<variable name="nTotGerTotal" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$V{vTotItem}]]></variableExpression>
+	</variable>
+	<group name="Regiao">
+		<groupExpression><![CDATA[$F{regiao_DESCRICAO}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<staticText>
+					<reportElement x="0" y="0" width="100" height="20" uuid="729c009d-20fc-43ed-968b-58e81f1e63c0"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Região :]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="102" y="0" width="453" height="20" uuid="37f55b7f-0784-4d72-99ef-0267ae111a73"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{regiao_DESCRICAO}.toUpperCase()]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="24">
+				<staticText>
+					<reportElement x="185" y="0" width="100" height="20" uuid="871b8ca5-6934-4f9f-abde-0d6ad55261ec"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total região :]]></text>
+				</staticText>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="285" y="0" width="100" height="20" uuid="2e4cc375-839c-40f9-80b6-efb1223cae7b"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{itempedidovendas_VLTOTLIQITEM_1}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="485" y="1" width="70" height="1" uuid="7ab47a96-af09-47b3-9c07-6bd93c9ccb38"/>
+				</line>
+				<line>
+					<reportElement x="285" y="1" width="100" height="1" uuid="717c8985-3455-441e-b447-742cb2d091d3"/>
+				</line>
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="485" y="2" width="70" height="20" uuid="aed450ec-d28f-4e4d-a381-4fbfc026c75c"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{totRegTotal}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="100" y="0" width="455" height="28" uuid="14fb07f8-e36c-458a-9b8f-49fd9352994d">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Faturamento - sintético]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="33" width="455" height="28" uuid="65949f35-7719-45e1-8e82-5e9345de78c4">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="0" y="0" width="100" height="59" uuid="01aaef54-2094-4bcc-9514-517c7b206224">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{empresa_logo}]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="55" y="0" width="230" height="20" backcolor="#CCCCCC" uuid="127a2c14-9482-4fe2-b92e-e94d46a2480c"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Representante]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="21" width="555" height="1" uuid="bee948cc-231a-498e-bee6-c44a50ca366d"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="285" y="0" width="100" height="20" backcolor="#CCCCCC" uuid="21c56908-45e0-4cbe-a93a-2585b19c2939"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor Merc.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="55" height="20" backcolor="#CCCCCC" uuid="18306a72-9e2c-45d5-afd2-2546e72b43a9"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="385" y="0" width="50" height="20" backcolor="#CCCCCC" uuid="a51027f3-6583-4247-9b53-169ca1ca1597"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[IPI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="435" y="0" width="50" height="20" backcolor="#CCCCCC" uuid="5a0fbf01-d494-4303-847f-ecdeb80be04b"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ST]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="485" y="0" width="70" height="20" backcolor="#CCCCCC" uuid="69592a8d-93cf-4ca0-95b3-c33f1d47aa83"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vl. Total]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="55" y="0" width="230" height="15" forecolor="#000000" uuid="c6878226-1042-47ab-92bf-7f012601d543"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{representante_APELIDO}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="285" y="0" width="100" height="15" forecolor="#000000" uuid="2558aee2-b661-44f7-87c3-dc0e2561ad1e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{itemdoctosai_VLTOTITEM}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="1" y="0" width="54" height="15" forecolor="#000000" uuid="05191a04-7200-4896-8513-7f3bfe5008ce"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{representante_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="385" y="0" width="50" height="15" forecolor="#000000" uuid="fea5a084-11a5-4591-b213-02ab797e10d5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{itemdoctosai_VLIPI}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="435" y="0" width="50" height="15" forecolor="#000000" uuid="f50fcb74-a924-47e1-9986-42908cbcbce6"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{itemdoctosai_VLICMSSUBSTITU}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="485" y="0" width="70" height="15" forecolor="#000000" uuid="14a7fd23-d30f-4b06-a502-c0534a8105d3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{vTotItem}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="23" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="1" width="555" height="1" uuid="cf1bb767-68a4-48c0-89a0-bff02132ad00"/>
+			</line>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="2" y="3" width="100" height="20" uuid="bbd7afbf-0960-41cc-b5c5-354a984a1ee3"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="435" y="3" width="80" height="20" uuid="53fa61e2-1e43-4fbc-b61e-b809506f9c39"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="3" width="40" height="20" uuid="2c5d332b-bd49-45f6-b860-7bed29b7cc04"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="221" y="0" width="120" height="16" forecolor="#3333FF" uuid="673c4c2f-921a-462c-b410-30002c3cc73f">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ERP OnSys - www.onsys.com.br]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="22" splitType="Stretch">
+			<staticText>
+				<reportElement x="185" y="2" width="100" height="19" uuid="769293a7-364f-474d-a89d-f7dd782352fd"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total geral :]]></text>
+			</staticText>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="285" y="2" width="100" height="19" uuid="6cff55ad-0948-471a-a0d5-d6521b8ac53e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{nTotGeral}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="485" y="1" width="70" height="1" uuid="5e1bcbf7-8677-4b96-9eb2-70cb6b3eaaa7"/>
+			</line>
+			<line>
+				<reportElement x="285" y="1" width="100" height="1" uuid="c6b26a9c-fb06-4509-b80a-ca86b5f20ba4"/>
+			</line>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="485" y="2" width="70" height="20" uuid="8cef211a-b831-4fb5-85e6-c0c55bbceff7"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{nTotGerTotal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

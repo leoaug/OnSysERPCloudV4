@@ -1,0 +1,78 @@
+<html   xmlns:c="http://java.sun.com/jsp/jstl/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"                   
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"> 
+
+    <p:panelGrid layout="grid" columns="3" 
+                 columnClasses="ui-grid-col-3, ui-grid-col-8, ui-grid-col-1"                                      
+                 id="pnlGrComercialConsultar" styleClass="semBorda" 
+                 rendered="#{usuarioFace.registroSelecionado != null}"
+                 style="border: none !important; background-color: #dddddd">
+        
+        <p:outputLabel value="Ver todos representantes" style="color: black" 
+                       title="Se marcado o usuário pode ver todos os pedidos de vendas e todos os representantes."/>
+        <p:selectBooleanCheckbox 
+            disabled="true" style="color: blue; font-weight: 700; opacity: 1!important"
+            value="#{usuarioFace.registroSelecionado.aprovaPDV}"/>
+        <p:spacer width="5"/>
+        
+        <p:outputLabel value="Ver todas tabelas de preço" style="color: black" 
+                       title="Se marcado o usuário pode ver todas as tabelas de preço."/>
+        <p:selectBooleanCheckbox 
+            disabled="true" style="color: blue; font-weight: 700; opacity: 1!important"
+            value="#{usuarioFace.registroSelecionado.verTodasTabelas}"/>
+        <p:spacer width="5"/>     
+        
+        <p:outputLabel value="Ver todas as condições de pagamento" style="color: black" 
+                       title="Se marcado o usuário pode ver todas as condições de pagamento."/>
+        <p:selectBooleanCheckbox disabled="true" style="color: blue; font-weight: 700; opacity: 1!important"
+                                 value="#{usuarioFace.registroSelecionado.verTodasCondicoes}"/>
+        <p:spacer width="5"/>
+
+        <p:outputLabel value="% comissão inicial" for="comis1Consultar" style="color: black"/>
+        <p:inputText  value="#{usuarioFace.registroSelecionado.comisini}" id="comis1Consultar"
+                      disabled="true"
+                      styleClass="decimal" style="text-align: right; color: blue; font-weight: 700; opacity: 1!important">
+            <f:convertNumber minFractionDigits="2" locale="pt_BR"/>
+        </p:inputText>
+        <p:spacer width="5"/>
+
+        <p:outputLabel value="% comissão final" for="comis2Consultar" style="color: black" />
+        <p:inputText  value="#{usuarioFace.registroSelecionado.comisfim}" id="comis2Consultar"
+                      disabled="true"
+                      styleClass="decimal" style="text-align: right; color: blue; font-weight: 700; opacity: 1!important">
+            <f:convertNumber minFractionDigits="2" locale="pt_BR"/>
+        </p:inputText>
+        <p:spacer width="5"/>
+        
+        <p:outputLabel value="Altera valor unitário" style="color: black" 
+                       title="Se marcado o usuário pode alterar valor unitário no pedido de vendas"/>
+        <p:selectBooleanCheckbox 
+            disabled="true"
+            value="#{usuarioFace.registroSelecionado.alteraVlUnitPedido}"/>
+        <p:spacer width="5"/>
+
+        <p:outputLabel value="Utiliza tabela de preço" style="color: black" 
+                       title="Se marcado o usuário não utiliza tabela de preço no pedido de vendas"/>
+        <p:selectBooleanCheckbox 
+            disabled="true"
+            value="#{usuarioFace.registroSelecionado.usatabelapreco}"/>
+        <p:spacer width="5"/>
+        
+        <p:outputLabel value="Marketplace" style="color: black" 
+                       title="Se marcado o usuário utiliza as funcionalidades de marketplace"/>
+        <p:selectBooleanCheckbox 
+            disabled="true"
+            value="#{usuarioFace.registroSelecionado.marketplace}"/>
+        <p:spacer width="5"/>
+
+        <p:outputLabel value="Não controla múltiplo de vendas" style="color: black" 
+                       title="Se marcado o usuário poderá informar uma quantidade que não seja múltipla da quantidade múltipla de vendas."/>
+        <p:selectBooleanCheckbox 
+            disabled="true"
+            value="#{usuarioFace.registroSelecionado.validaMultiploDeVendas}"/>
+        <p:spacer width="5"/>
+        
+    </p:panelGrid>
+</html>

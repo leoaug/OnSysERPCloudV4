@@ -1,0 +1,208 @@
+<html xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                    xmlns:p="http://primefaces.org/ui"
+                    template="/WEB-INF/template.xhtml"
+                    xmlns:f="http://java.sun.com/jsf/core"
+                    xmlns:h="http://java.sun.com/jsf/html">
+        <ui:define name="conteudo">    
+            <f:view contentType="text/html; charset=utf-8">
+                <h:head>  
+                    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>  
+                </h:head>
+                <p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" widgetVar="statusDialog" />
+                <p:dialog modal="true" widgetVar="statusDialog" header="Processando..." draggable="false" closable="false" resizable="false">                               
+                    <p:graphicImage value="#{pageContext.servletContext.contextPath}/resources/imagens/onsys/bar180.gif" /> 
+                </p:dialog>         
+                <script type="text/javascript">
+                    function startMessage() {
+                         statusDialog.show();
+                    }
+                    function finishMessage() {
+                        statusDialog.hide();
+                    }
+                </script>
+                <body onload="#{usuarioFace.limparFiltros()}">                
+                    <h:form id="fmListar">
+                        <p:panel>
+                            <p:toolbar style="height: 35px" id="toolbar">
+                                <f:facet name="left">
+                                    <c:if test="#{validaAcesso.validaAcesso('/views/seguranca/cadastros/usuario/list.faces', 'I')}">
+                                        <p:commandButton title="Incluir um novo registro"
+                                                         style="text-align: center; height: 30px; width: 120px;"
+                                                         value="Incluir"
+                                                         update="dialogo,fm,messages"
+                                                         styleClass="OrangeButton"
+                                                         action="#{usuarioFace.incluir()}"
+                                                         onclick="PF('PrimeFaces.monitorDownload(startMessage, finishMessage)')"
+                                                         process="@this" 
+                                                         icon="fa fa-plus Fs16 white">
+                                        </p:commandButton>
+                                        <p:spacer width="4" height="3"/>                                      
+                                    </c:if>
+                                    <c:if test="#{validaAcesso.validaAcesso('/views/seguranca/cadastros/usuario/list.faces', 'E')}">
+                                        <p:commandButton title="Selecione um registro na lista abaixo, para utilizar a função de alteração" 
+                                                         style="text-align: center; height: 30px; width: 120px;"
+                                                         value="Alterar"
+                                                         update="dialogo,fm,messages"
+                                                         styleClass="BrownButton"
+                                                         action="#{usuarioFace.alterar()}" 
+                                                         id="bt_editar" 
+                                                         icon="fa fa-pencil Fs16 white" 
+                                                         ajax="true" 
+                                                         onclick="PF('PrimeFaces.monitorDownload(startMessage, finishMessage)')">                                            
+                                        </p:commandButton>
+                                        <p:spacer width="3" height="3"/>  
+                                    </c:if>                          
+                                    <c:if test="#{validaAcesso.validaAcesso('/views/seguranca/cadastros/usuario/list.faces', 'C')}">
+                                        <p:commandButton title="Selecione um registro na lista abaixo, para utilizar a função de consulta" 
+                                                         style="text-align: center; height: 30px; width: 120px;"
+                                                         styleClass="CyanButton"
+                                                         value="Consultar"
+                                                         update="dialogoConsultar,fmConsultar,messages"
+                                                         action="#{usuarioFace.consultar()}" 
+                                                         icon="fa fa-eye Fs16 white"
+                                                         ajax="true" onclick="PF('PrimeFaces.monitorDownload(startMessage, finishMessage)')">                                            
+                                        </p:commandButton>
+                                        <span class="ui-separator">
+                                            <span class="fa fa-ellipsis-v leaden"/>
+                                        </span>                                 </c:if>                     
+                                    <p:menuButton style="text-align: center; height: 30px; width: 140px;" 
+                                                  value="Mais opções">  
+                                        <c:if test="#{validaAcesso.validaAcesso('/views/seguranca/cadastros/usuario/list.faces', 'R')}">
+                                            <p:menuitem value="Deletar" action="#{usuarioFace.remover()}" 
+                                                        update="dtb,messages"
+                                                        icon="fa fa-trash">
+                                                <p:confirm header="Confirmação"
+                                                    message="Confirma a eliminação ?"
+                                                    icon="ui-icon-alert" />
+                                            </p:menuitem>
+                                        </c:if>
+                                        <p:menuitem value="Copiar"
+                                                    action="#{usuarioFace.copiar()}" 
+                                                    update="dialogoCopiar,fm,messages"
+                                                    ajax="true" 
+                                                    icon="fa fa-copy"/>
+                                        <c:if test="#{!favoritosFace.validaExistente()}">
+                                            <p:menuitem value="Adicionar aos favoritos" icon="fa fa-star-o" update="toolbar" 
+                                                        actionListener="#{favoritosFace.criaFavorito(usuarioFace.loggedUser.empresa.codigo)}"/>
+                                        </c:if>
+                                        <c:if test="#{favoritosFace.validaExistente()}">
+                                            <p:menuitem value="Remover dos favoritos" icon="fa fa-star" update="toolbar" 
+                                                        actionListener="#{favoritosFace.deletaFavorito()}"/>
+                                        </c:if>                                    
+                                        <p:menuitem value="Ajuda" icon="fa fa-question"/>
+                                    </p:menuButton>                                                    
+                                    <p:spacer width="3" height="3"/>
+                                    <p:commandButton id="limparFiltro"
+                                                     title="Atualizar lista e limpar filtros" 
+                                                     style="height: 30px; width: 30px;"
+                                                     onclick="PF('tabela').clearFilters()" 
+                                                     actionListener="#{usuarioFace.limparFiltros}"
+                                                     icon="fa fa-flash Fs14 white"
+                                                     update="dtb,toolbar">
+                                        <p:resetInput target="dtb"/>
+                                    </p:commandButton>                                
+                                    <p:spacer width="3" height="3"/>
+                                    <p:growl id="messages" showDetail="true"/>  
+                                </f:facet>
+                                <f:facet name="right">
+
+                                    <p:outputLabel value=" Empresa " for="empresa" style="color: #000000; font-weight: 700" styleClass="Fs16"/> 
+                                    <p:spacer width="3" height="3"/>
+                                    <p:selectOneMenu id="empresa" value="#{usuarioEmpresaFace.empresaSessao}" immediate="true"
+                                                     style="width: 200px" var="p">
+                                        <p:column>#{p.nomeFantasia}</p:column>
+                                        <f:selectItems var="itemSel" itemLabel="#{itemSel.nomeFantasia}"  itemValue="#{itemSel}" 
+                                                       value="#{usuarioEmpresaFace.getListaDeEmpresasDoUsuario(usuarioFace.loggedUser)}"/>
+                                        <f:converter converterId="empresaNomeFantasiaConverter"/>
+                                        <p:ajax process="empresa"/>
+                                        <p:ajax event="change" update="@this"/>
+                                        <p:ajax event="change" onstart="PF('tabela').clearFilters()" update="@form,messages,dtb,empresa" listener="#{usuarioEmpresaFace.alterarEmpresa()}"/>
+                                    </p:selectOneMenu>
+
+                                </f:facet>                            
+                            </p:toolbar>
+                            <p:dataTable id="dtb" var="item" value="#{usuarioFace.lazy}" 
+                                         rowKey="#{item.id}"
+                                         lazy="true" widgetVar="tabela"
+                                         first="0" 
+                                         rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}"
+                                         selection="#{usuarioFace.registroSelecionado}" 
+                                         selectionMode="single" filterDelay="1000"
+                                         paginator="true" rows="10" paginatorPosition="top"                                              
+                                         emptyMessage="Não há registros a exibir"                                        
+                                         rowIndexVar="rowIx" reflow="true">
+
+                                <f:facet name="header">                                                     
+                                    <h:outputText value="SEG0128 - Usuários" styleClass="Fs14"/>
+                                    <p:spacer width="20" height="5"/>
+                                    <h:commandLink>
+                                        <p:graphicImage title="Gera planilha" value="#{pageContext.servletContext.contextPath}/resources/imagens/onsys/excel.png" width="20"/>
+                                        <p:dataExporter type="xls" target="dtb" 
+                                                        postProcessor="#{postProcessXLS.postProcessXLS}"
+                                                        fileName="SEG0128"/>                                    
+                                    </h:commandLink>
+                                    <p:spacer width="40" height="5"/>
+                                    <h:outputText value="  Filtrar  "/>
+                                    <p:inputText id="globalFilter" onkeyup="PF('tabela').filter()" styleClass="Fs12"  
+                                                 style="text-align: right; height: 10px"/>
+                                </f:facet>
+
+                                <p:ajax event="filter" update="dtb"/>
+
+                                <p:column style="width:16px; height: 25px; border-style: solid; border-color: #0000FF;" exportable="false">
+                                    <p:rowToggler/>
+                                </p:column>    
+                                <p:column id="id" visible="false" exportable="false">                                    
+                                    <h:outputText value="#{item.id}"/>
+                                </p:column>  
+                                <p:column sortBy="#{item.email}" headerText="E-mail" 
+                                          filterBy="#{item.email}"
+                                          filterFunction="#{usuarioFace.filterByEmail}" 
+                                          filterStyle="width: 240px; overflow: hidden"
+                                          filterValue="#{usuarioFace.emailFiltro}"
+                                          style="color: #0000FF; height: 25px; border-style: solid; border-color: #0000FF;">
+                                    <h:outputText value="#{item.email}" styleClass="Fs12" style="color: black"/>
+                                </p:column>
+                                <p:column sortBy="#{item.apelido}" filterBy="#{item.apelido}"
+                                          filterFunction="#{usuarioFace.filterByApelido}" 
+                                          filterStyle="width: 240px; overflow: hidden"
+                                          filterValue="#{usuarioFace.apelidoFiltro}"
+                                          style="color: #0000FF; height: 25px; border-style: solid; border-color: #0000FF;"
+                                          headerText="Apelido"> 
+                                    <h:outputText value="#{item.apelido}" styleClass="Fs12" style="color: black"/>
+                                </p:column>
+                                <p:rowExpansion>
+                                    <p:panelGrid  columns="2" 
+                                                  layout="grid"
+                                                  style="background-color: #F2E6E6"
+                                                  columnClasses="ui-grid-col-2, ui-grid-col-10">
+
+                                        <h:outputText value="Nome" styleClass="Fs12" style="color: black"/>
+                                        <h:outputText value="#{item.nome}" styleClass="Fs12" style="color: black"/>                                    
+
+                                        <h:outputText value="Registro inativado em - " styleClass="Fs12" style="color: black"/>
+                                        <h:outputText value="#{item.datainativo}" 
+                                                      styleClass="Fs12" style="color: black">
+                                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+                                        </h:outputText>
+
+                                     </p:panelGrid>
+                                </p:rowExpansion>                                
+                            </p:dataTable>
+                        </p:panel>                        
+                    </h:form>
+                </body>
+                <ui:include src="/views/seguranca/cadastros/usuario/incluirAlterar.xhtml"/>                
+                <ui:include src="/views/seguranca/cadastros/usuario/consultar.xhtml"/>                                
+                <ui:include src="/views/seguranca/cadastros/usuario/copia.xhtml"/>                
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Sim" type="button"
+                        styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="Não" type="button"
+                        styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>                 
+            </f:view>
+        </ui:define>
+    </ui:composition>        
+</html>

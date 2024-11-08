@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.0.final using JasperReports Library version 6.5.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Manifesto" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2f9d48ee-a66e-4a7b-af37-42b3f99aca00">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="479"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="521"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="onsys"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT NROMANIFESTO 
+FROM MANIFESTO 
+WHERE MANIFESTO.EMPRESA_ID = 12
+AND NROMANIFESTO  = 8166]]>
+	</queryString>
+	<field name="NROMANIFESTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NROMANIFESTO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="manifesto"/>
+	</field>
+	<group name="GroupManifesto">
+		<groupExpression><![CDATA[$F{NROMANIFESTO}]]></groupExpression>
+		<groupHeader>
+			<band height="252">
+				<line>
+					<reportElement x="0" y="0" width="800" height="1" uuid="2aca0de8-b418-4458-9426-682a9e9c7880"/>
+				</line>
+				<line>
+					<reportElement x="-1" y="54" width="800" height="1" uuid="4830a2d3-966f-42c9-b4b9-ccd4c6c1b323"/>
+				</line>
+				<staticText>
+					<reportElement x="280" y="0" width="260" height="54" uuid="fbc7443c-693e-45e5-8371-b745f63ee6f2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Verdana" size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[MANIFESTO DE CARGA]]></text>
+				</staticText>
+				<textField pattern="dd/MM/yyyy HH.mm.ss">
+					<reportElement x="700" y="0" width="100" height="20" uuid="b3c453ae-8136-4796-b8bb-60baf83ed45d"/>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="700" y="20" width="100" height="30" uuid="f514c167-b81f-4aba-a7aa-980ae86cd07b"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Verdana" size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{NROMANIFESTO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="55" width="110" height="20" uuid="d2c88d19-dc9a-48a1-ba3c-6bb1e089cae7"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[EMBARQUE :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="197" y="55" width="110" height="20" uuid="0a397bf9-17ae-4ec2-acea-bba7f8470c47">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ROTEIRIZAÇÃO :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="398" y="55" width="110" height="20" uuid="fa778980-e020-471e-ac9e-e958b3d3979d">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SIMULAÇÃO :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="597" y="55" width="110" height="20" uuid="2f367713-0a84-4512-8080-bcff29876f59">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[LACRES:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="75" width="110" height="20" uuid="49aa6646-6ae9-446e-86b5-5274e4b4ea6f"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ELABORADO POR :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="400" y="75" width="108" height="20" uuid="14d7a36f-28b0-41c0-90d5-05a7423c4a55"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CONFERIDO POR :]]></text>
+				</staticText>
+				<line>
+					<reportElement x="0" y="75" width="800" height="1" uuid="941b6c82-128d-43c3-b2f2-799cd3ebfefe"/>
+				</line>
+				<line>
+					<reportElement x="0" y="96" width="800" height="1" uuid="dfab9d9c-0352-48d7-afc7-f231babd506f"/>
+				</line>
+				<line>
+					<reportElement x="0" y="117" width="800" height="1" uuid="0bc5ac83-a5d7-4e13-a5fa-ad61658231fd"/>
+				</line>
+				<staticText>
+					<reportElement x="0" y="97" width="110" height="20" uuid="e8952c87-f0a9-464e-9dc9-33ca3b42df6c"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CONDUTOR :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="197" y="97" width="110" height="20" uuid="86438c99-d6a9-4952-a981-bff2a577e76c">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CPF :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="398" y="97" width="110" height="20" uuid="a805296c-627d-4cb7-a23a-314978c699dd">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[RESP.DO MOTORISTA :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="597" y="97" width="110" height="20" uuid="abf79dd1-91e0-4189-9cc5-4dcba99fddee">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CPF DO RESPONSÁVEL :]]></text>
+				</staticText>
+				<line>
+					<reportElement x="0" y="138" width="800" height="1" uuid="316c3db3-a427-4ba8-8b4b-0d157ae15886"/>
+				</line>
+				<staticText>
+					<reportElement x="0" y="118" width="130" height="20" uuid="f67df8d2-4f08-445c-917e-6dfee6cf7289"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ASSINATURA MOTORISTA :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="398" y="118" width="401" height="20" uuid="8e85dc1f-42cb-433f-a669-726d33deebef">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[MOTORISTA ACOMPANHOU O CARREGAMENTO ?   ( )SIM ( )NÃO]]></text>
+				</staticText>
+				<line>
+					<reportElement x="0" y="159" width="800" height="1" uuid="bfd69713-4ef6-4f50-8db1-574c75d4f695"/>
+				</line>
+				<staticText>
+					<reportElement x="0" y="139" width="110" height="20" uuid="e94b63ab-7e74-427a-9378-b9fecd99d69c">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[MODELO TRANSPORTE :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="197" y="139" width="110" height="20" uuid="7e468643-c4db-4994-a5e5-6d8c236cf7f9">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[PLACA :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="398" y="139" width="110" height="20" uuid="f0b9a4a3-9d02-49f6-b5a7-3f126eea41cf">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[PESO SAÍDA :]]></text>
+				</staticText>
+				<line>
+					<reportElement x="0" y="180" width="800" height="1" uuid="f741bdbf-b822-43c9-ac36-6e36ca7aabb0"/>
+				</line>
+				<staticText>
+					<reportElement x="0" y="160" width="110" height="20" uuid="33c0516c-f76b-4457-a6f5-1b8f29d2b7a9"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CAPACIDADE EM KG :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="197" y="160" width="110" height="20" uuid="d88caf78-da12-44b1-afe4-a003c94b8109">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CAPACIDADE EM M3 :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="398" y="160" width="110" height="20" uuid="5da2bb0b-451b-4dd7-ac7e-26be59d7a958">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TARA DO VEÍCULO KG :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="597" y="160" width="110" height="20" uuid="19920c9f-b4e8-47e3-81b0-f9efe567982c">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ANTT :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="597" y="139" width="110" height="20" uuid="b531b62d-b8bb-42de-9baa-b955e1e63631">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[PESO RETORNO :]]></text>
+				</staticText>
+				<line>
+					<reportElement x="0" y="180" width="800" height="1" uuid="021a9c70-b6af-4dd3-ac79-a740934cfa34"/>
+				</line>
+				<line>
+					<reportElement x="0" y="201" width="800" height="1" uuid="e595105d-11c5-4cf3-a5b8-a90f670e5466"/>
+				</line>
+				<staticText>
+					<reportElement x="0" y="181" width="398" height="20" uuid="4d06d09c-8eaf-44a3-a003-d040287e9505"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[VEÍCULO  :  (  ) TOCO (  ) 3/4 (  ) TRUCK (  ) CARRETA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="398" y="181" width="401" height="20" uuid="c3f894d5-688a-4305-bbf6-924b6970f271">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Verdana" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[FROTA :  (  ) PRÓPRIA (  ) TERCEIRO]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="50"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+</jasperReport>

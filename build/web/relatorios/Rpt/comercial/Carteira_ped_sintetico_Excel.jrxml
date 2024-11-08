@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Carteira_ped_sintetico_Excel" pageWidth="1010" pageHeight="1500000" columnWidth="1010" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="9247b422-8ea9-4b4a-96b1-b59b18928c50">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="263"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="OnSys"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<style name="zebra" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     participante.CODIGO AS participante_CODIGO,
+     participante.NOMEFANTASIA AS participante_NOMEFANTASIA,
+     pedidovendas.NRPEDCLI AS pedidovendas_NRPEDCLI,
+     pedidovendas.NRPEDIDO AS pedidovendas_NRPEDIDO,
+enderecoparticipante.`UF` AS enderecoparticipante_UF,
+     pedidovendas.DATAEMISSAO AS pedidovendas_DATAEMISSAO,
+     pedidovendas.DATAENTREGA AS pedidovendas_DATAENTREGA,
+     pedidovendas.VLTOTPEDIDO AS pedidovendas_VLTOTLIQPEDIDO,
+     pedidovendas.OBSLOGISTICA AS pedidovendas_OBSLOGISTICA,
+     pedidovendas.OBSCREDITO AS pedidovendas_OBSCREDITO,
+     pedidovendas.TIPOPEDIDO AS pedidovendas_TIPOPEDIDO,
+     pedidovendas.SITUACAO AS pedidovendas_SITUACAO,
+     empresa.logoimg  AS empresa_logo,
+     representante.CODIGO AS representante_CODIGO,
+     representante.APELIDO AS representante_APELIDO,
+     representante.NOME AS representante_NOME,
+     regiao.`DESCRICAO` AS regiao_DESCRICAO,
+     tabelaPreco.`CODIGO` AS tabelaPreco_CODIGO,
+     (SELECT distinct usuario.`APELIDO`
+       FROM
+      `representante` representanteS LEFT OUTER JOIN `usurepres` usurepres ON representanteS.`id` = usurepres.representante_id
+       LEFT OUTER JOIN `usuario` usuario ON usurepres.usuario_id = usuario.id
+       where usuario.`TIPO` = 'Supervisor' and representanteS.id = representante.id and (representanteS.inativo = '' or representanteS.inativo is null or representanteS.inativo = 'N') limit 0,1) AS Supervisor
+FROM
+     pedidovendas pedidovendas LEFT OUTER JOIN participante participante ON pedidovendas.CLIENTE_id = participante.id
+     LEFT OUTER JOIN empresa       empresa       ON participante.empresa_id = empresa.id
+     LEFT OUTER JOIN `enderecoparticipante` enderecoparticipante ON participante.`id` = enderecoparticipante.`PARTICIPANTE_id`
+     LEFT OUTER JOIN representante representante ON pedidovendas.REPRESENTANTE_id = representante.id
+     LEFT OUTER JOIN `regiao` regiao ON representante.`REGIAO_id` = regiao.`id`
+     LEFT OUTER JOIN `tabelaPreco` tabelaPreco ON participante.`TABELAPRECO_id` = tabelaPreco.`id`
+$P!{cCondicao}
+ORDER BY regiao_DESCRICAO, representante.NOME, pedidovendas.DATAEMISSAO, participante.NOMEFANTASIA, pedidovendas.NRPEDCLI]]>
+	</queryString>
+	<field name="participante_CODIGO" class="java.lang.String"/>
+	<field name="participante_NOMEFANTASIA" class="java.lang.String"/>
+	<field name="pedidovendas_NRPEDCLI" class="java.lang.String"/>
+	<field name="pedidovendas_NRPEDIDO" class="java.lang.Integer"/>
+	<field name="enderecoparticipante_UF" class="java.lang.String"/>
+	<field name="pedidovendas_DATAEMISSAO" class="java.sql.Date"/>
+	<field name="pedidovendas_DATAENTREGA" class="java.sql.Date"/>
+	<field name="pedidovendas_VLTOTLIQPEDIDO" class="java.math.BigDecimal"/>
+	<field name="pedidovendas_OBSLOGISTICA" class="java.lang.String"/>
+	<field name="pedidovendas_OBSCREDITO" class="java.lang.String"/>
+	<field name="pedidovendas_TIPOPEDIDO" class="java.lang.String"/>
+	<field name="pedidovendas_SITUACAO" class="java.lang.String"/>
+	<field name="empresa_logo" class="java.io.InputStream"/>
+	<field name="representante_CODIGO" class="java.lang.String"/>
+	<field name="representante_APELIDO" class="java.lang.String"/>
+	<field name="representante_NOME" class="java.lang.String"/>
+	<field name="regiao_DESCRICAO" class="java.lang.String"/>
+	<field name="tabelaPreco_CODIGO" class="java.lang.String"/>
+	<field name="Supervisor" class="java.lang.String"/>
+	<variable name="TotValor" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{pedidovendas_VLTOTLIQPEDIDO}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="55" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="1010" height="35" uuid="6aefff71-ee43-4be5-b860-2a75d31fcf0a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pedidos emitidos - sintético]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="35" width="1010" height="20" uuid="85d540b3-26d1-4443-aa7a-ae49ee132037"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="353" y="0" width="281" height="20" backcolor="#CCCCCC" uuid="de3e3b04-6c54-470b-acc5-79a5f01d73b4"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cliente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="693" y="0" width="60" height="20" backcolor="#CCCCCC" uuid="fc95946d-68b9-4a89-b7c0-49cf09bb96ef"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ped.Cli.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="753" y="0" width="62" height="20" backcolor="#CCCCCC" uuid="4eab945c-3e22-4235-979b-46bdf7771805"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dt. Emissão]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="815" y="0" width="63" height="20" backcolor="#CCCCCC" uuid="e0fc75b2-bd84-41e6-ad10-78571287ab8f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dt. Entrega]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="878" y="0" width="69" height="20" backcolor="#CCCCCC" uuid="026f3b80-ec47-42e2-8282-d60d1263594e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="947" y="0" width="63" height="20" backcolor="#CCCCCC" uuid="d687919a-8606-4292-adb0-2b179340ea82"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Situação]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="20" width="1010" height="1" uuid="6344cf98-669f-42ec-8e8a-9bbdce3688bf"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="149" y="0" width="44" height="20" backcolor="#CCCCCC" uuid="15d6fbc1-4c12-449a-a512-cc324de91fb8"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="193" y="0" width="160" height="20" backcolor="#CCCCCC" uuid="494b9ef2-e1e3-453c-b44c-ed132a50da69"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Representante]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="149" height="20" backcolor="#CCCCCC" uuid="54026809-5264-4e01-8ae3-d610b41b95ad"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Região]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="634" y="0" width="59" height="20" backcolor="#CCCCCC" uuid="66833f34-df78-406e-b0d6-b40dbe0d3c11"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tab.Preço]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="353" y="0" width="50" height="15" forecolor="#000000" uuid="d23ee46e-de05-4122-8e96-a1dd0cc14336"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{participante_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="403" y="0" width="231" height="15" forecolor="#000000" uuid="34223f4d-8a1b-42d0-87fb-3a4cd89c34fd"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{participante_NOMEFANTASIA}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="693" y="0" width="60" height="15" forecolor="#000000" uuid="9a416a0e-5c7c-472d-b833-dd260a05591c"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pedidovendas_NRPEDCLI}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="753" y="0" width="62" height="15" forecolor="#000000" uuid="eec75997-5e83-41e6-bda0-7084efe163a5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pedidovendas_DATAEMISSAO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="815" y="0" width="63" height="15" forecolor="#000000" uuid="c0d1a46d-f5dd-4fb5-800b-88c5dbb09fa3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pedidovendas_DATAENTREGA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="878" y="0" width="69" height="15" forecolor="#000000" uuid="5ea424d1-fdec-462c-a86d-b63ae652c99f"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pedidovendas_VLTOTLIQPEDIDO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="947" y="0" width="63" height="15" forecolor="#000000" uuid="edc3baa4-c58e-437b-a505-36bb01a6cdc5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pedidovendas_SITUACAO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="149" y="0" width="44" height="15" forecolor="#000000" uuid="d43cb801-093f-46e0-a7df-ffdf914cb8c6"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{participante_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="193" y="0" width="160" height="15" forecolor="#000000" uuid="5a114bf9-2b2b-4c00-a7ab-1c69c4c37ed5"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{representante_APELIDO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="149" height="15" forecolor="#000000" uuid="1142d6ca-6985-464e-945d-5ad0596a36e5"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{regiao_DESCRICAO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="634" y="0" width="59" height="15" forecolor="#000000" uuid="e6b9b033-99c3-46da-94dd-8fcc8e923810"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tabelaPreco_CODIGO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

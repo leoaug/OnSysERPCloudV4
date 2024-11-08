@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.0.final using JasperReports Library version 6.5.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="UnidadeMedidas" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e224899e-589e-40fe-9703-2ab5d5d6aadc">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="zebra" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCodIni" class="java.lang.String"/>
+	<parameter name="idEmpresa" class="java.lang.Integer"/>
+	<parameter name="cCodFin" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     unidademedida.`UN` AS unidademedida_UN,
+     unidademedida.`DESCRICAO` AS unidademedida_DESCRICAO
+FROM
+     `unidademedida` unidademedida
+WHERE
+unidademedida.`EMPRESA_id` = $P{idEmpresa} and
+unidademedida.`UN`  >= $P{cCodIni} and
+unidademedida.`UN`  <= $P{cCodFin}]]>
+	</queryString>
+	<field name="unidademedida_UN" class="java.lang.String"/>
+	<field name="unidademedida_DESCRICAO" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="61" splitType="Stretch">
+			<image>
+				<reportElement mode="Transparent" x="0" y="0" width="100" height="59" uuid="7eabd9e4-5828-4404-bb9d-e2f4e9d8f760"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="100" y="0" width="455" height="28" uuid="17f2e259-830b-4b67-9000-7d05c4ba4d3a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Unidades de medidas]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="34" width="455" height="20" uuid="9764f381-de8a-446c-bcd3-b6bf14321322">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="16" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="16" backcolor="#CCCCCC" uuid="c9362201-a46a-46e2-9580-3650bff464f1"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="227" y="0" width="327" height="15" uuid="43b44b9c-c952-4981-9b42-e96154eeabfe"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descrição]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="15" width="555" height="1" uuid="2b17edbb-1a51-4ecb-b0fb-310c23a17f5b"/>
+			</line>
+			<staticText>
+				<reportElement x="1" y="0" width="226" height="15" uuid="78cc4716-5913-4484-8c9b-cadf9c6f12c1"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Unidade]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="227" height="15" forecolor="#000000" uuid="4f297bd9-ed5e-454a-9ed6-dc89d8d51964"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{unidademedida_UN}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="227" y="0" width="328" height="15" forecolor="#000000" uuid="2b2ca43c-9834-497c-9958-85914d34cfb6"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{unidademedida_DESCRICAO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement x="434" y="4" width="80" height="20" uuid="d611a86a-9c03-474d-b27d-43b4ef82b96d"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="221" y="0" width="128" height="16" forecolor="#0000FF" uuid="50bebbf9-b99b-438f-ac3f-72bb4cdf4530">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ERP OnSys - www.onsys.com.br]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="1" y="4" width="100" height="20" uuid="fa6ad104-b482-4104-9988-f11a11f3e7bd"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="514" y="4" width="40" height="20" uuid="7886a5b8-91f4-4d0a-a994-045b78ae99b5"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="1" y="1" width="554" height="1" uuid="7e94344d-b699-425e-8a68-f3cfedb97813"/>
+			</line>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

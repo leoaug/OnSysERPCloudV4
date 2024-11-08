@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Media" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="zebra" isDefault="false" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style isDefault="false" style="zebra" mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="idEmpresa" class="java.lang.Integer"/>
+	<parameter name="cCodIni" class="java.lang.String"/>
+	<parameter name="cCodFin" class="java.lang.String"/>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cDtIniT" class="java.lang.String"/>
+	<parameter name="cDtIniS" class="java.lang.String"/>
+	<parameter name="cDtIniA" class="java.lang.String"/>
+	<parameter name="cDtFin" class="java.lang.String"/>
+	<parameter name="cCondicaoS" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cCondicaoA" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT catitem.CODIGO AS catitem_CODIGO,
+     subcatitem.CODIGO AS subcatitem_CODIGO,
+     item.CODIGO AS item_CODIGO,
+     item.DESCRICAO AS item_DESCRICAO,
+     unidademedida.UN AS unidademedida_UN,
+     catitem.DESCRICAO AS catitem_DESCRICAO,
+     subcatitem.DESCRICAO AS subcatitem_DESCRICAO,
+    (select sum(movtoestoque.QTDMOVTO) / 3
+                FROM  movtoestoque movtoestoque
+                where  movtoestoque.TIPOMOVTO = 'S'
+                and item.id = movtoestoque.item_id
+  $P!{cCondicao}) as MEDT,
+    (select sum(movtoestoque.QTDMOVTO) / 6
+                FROM  movtoestoque movtoestoque
+                where  movtoestoque.TIPOMOVTO = 'S'
+                and item.id = movtoestoque.item_id
+  $P!{cCondicaoS}) as MEDS,
+    (select sum(movtoestoque.QTDMOVTO) / 12
+                FROM  movtoestoque movtoestoque
+                where  movtoestoque.TIPOMOVTO = 'S'
+                and item.id = movtoestoque.item_id
+  $P!{cCondicaoA}) as MEDA
+FROM catitem catitem INNER JOIN item item ON catitem.id = item.CATITEM_id
+     INNER JOIN subcatitem subcatitem ON item.SUBCATITEM_id = subcatitem.id
+     INNER JOIN unidademedida unidademedida ON item.UNIDADEMEDIDA_id = unidademedida.id
+     INNER JOIN movtoestoque movtoestoque ON item.id = movtoestoque.item_id
+where item.empresa_id = $P{idEmpresa}
+  and movtoestoque.TIPOMOVTO = 'S'
+ AND ITEM.CODIGO >= $P!{cCodIni}
+ AND ITEM.CODIGO <= $P!{cCodFin}
+group by item.id ORDER BY catitem.CODIGO, item.DESCRICAO]]>
+	</queryString>
+	<field name="catitem_CODIGO" class="java.lang.String"/>
+	<field name="subcatitem_CODIGO" class="java.lang.String"/>
+	<field name="item_CODIGO" class="java.lang.String"/>
+	<field name="item_DESCRICAO" class="java.lang.String"/>
+	<field name="unidademedida_UN" class="java.lang.String"/>
+	<field name="catitem_DESCRICAO" class="java.lang.String"/>
+	<field name="subcatitem_DESCRICAO" class="java.lang.String"/>
+	<field name="MEDT" class="java.math.BigDecimal"/>
+	<field name="MEDS" class="java.math.BigDecimal"/>
+	<field name="MEDA" class="java.math.BigDecimal"/>
+	<group name="Categoria">
+		<groupExpression><![CDATA[$F{catitem_CODIGO}]]></groupExpression>
+		<groupHeader>
+			<band height="22">
+				<textField>
+					<reportElement x="111" y="0" width="120" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{catitem_CODIGO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="1" y="0" width="100" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Categoria :]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="252" y="0" width="303" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{catitem_DESCRICAO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="61">
+			<staticText>
+				<reportElement x="100" y="0" width="702" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Médias de vendas]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="34" width="702" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="0" y="0" width="100" height="59"/>
+				<imageExpression class="java.awt.Image"><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="111" height="20" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="20" width="802" height="1" forecolor="#999999"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="111" y="0" width="381" height="20" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descrição]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="492" y="0" width="40" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[UN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="532" y="0" width="90" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Média trimestral]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="622" y="0" width="90" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Média semestral]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="712" y="0" width="90" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Média anual]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="111" height="20" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{item_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="111" y="0" width="381" height="20" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{item_DESCRICAO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="492" y="0" width="29" height="20" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{unidademedida_UN}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement style="zebra" mode="Opaque" x="521" y="0" width="83" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{MEDT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement style="zebra" mode="Opaque" x="604" y="0" width="88" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{MEDS}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="692" y="0" width="110" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{MEDA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="24" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="0" width="555" height="1"/>
+			</line>
+			<textField>
+				<reportElement x="363" y="0" width="119" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="482" y="0" width="73" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="121" y="0" width="128" height="16" forecolor="#0000FF"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[OnSys - Sistemas Online - iDesk]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="1" y="0" width="100" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

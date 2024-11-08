@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TesteQuer2" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d03a7734-0cbd-4277-8348-6ec16448d62d">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="dw"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT 
+ id_Usuario,
+ etq_TipoEtiqueta,
+ etq_CodItem,
+ etq_Descricao,
+ etq_NrPedido,
+ etq_CodBarras,
+ etq_Volume
+ FROM Etiqueta
+ WHERE etq_TipoEtiqueta = 6]]>
+	</queryString>
+	<field name="id_Usuario" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="id_Usuario"/>
+	</field>
+	<field name="etq_TipoEtiqueta" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="etq_TipoEtiqueta"/>
+	</field>
+	<field name="etq_CodItem" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="etq_CodItem"/>
+	</field>
+	<field name="etq_Descricao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="etq_Descricao"/>
+	</field>
+	<field name="etq_NrPedido" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="etq_NrPedido"/>
+	</field>
+	<field name="etq_CodBarras" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="etq_CodBarras"/>
+	</field>
+	<field name="etq_Volume" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="etq_Volume"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="50" height="30" uuid="16f08e57-84f5-4a81-b2fe-96604668ba52">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e93a2c03-6c89-471c-9cc5-ad5b5b5bec87"/>
+				</reportElement>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[id_Usuario]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="51" y="0" width="59" height="30" uuid="a3bb0d94-6549-480c-895e-83f4776f5925">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="14f46203-4071-4293-b546-983333fcbffd"/>
+				</reportElement>
+				<text><![CDATA[etq_TipoEtiqueta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="110" y="0" width="60" height="30" uuid="e09512d5-495e-4f65-a23b-f663a65980a9">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b4172aee-91bb-402a-8f90-e7b6102f0b07"/>
+				</reportElement>
+				<text><![CDATA[etq_CodItem]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="170" y="0" width="160" height="30" uuid="ae1bf977-438e-4fb6-88c2-9e6cc6a12bd6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d6485170-be66-4b2a-b06d-98d8ab673acc"/>
+				</reportElement>
+				<text><![CDATA[etq_Descricao]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="0" width="100" height="30" uuid="b471cc4e-3fd0-4835-82c5-1b1e022dbe99">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="069c21d8-b043-4a7a-8bf1-048bed015d17"/>
+				</reportElement>
+				<text><![CDATA[etq_NrPedido]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="430" y="0" width="100" height="30" uuid="dd33adf0-f770-4239-aaeb-ec246fd50ac8">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="eec76c84-cbc1-428c-bcb8-47a421e19c05"/>
+				</reportElement>
+				<text><![CDATA[etq_CodBarras]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="530" y="0" width="100" height="30" uuid="9410e55f-4dfc-4fef-98d6-0655132ab06b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="759e67a4-3d8d-445c-be73-509218959bfe"/>
+				</reportElement>
+				<text><![CDATA[etq_Volume]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="40" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="50" height="30" uuid="43e0a58e-3853-48be-8b9a-5e9b87f43733">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e93a2c03-6c89-471c-9cc5-ad5b5b5bec87"/>
+				</reportElement>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{id_Usuario}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="51" y="0" width="59" height="30" uuid="e0465d62-6660-4f5c-9ce7-0efcae49befc">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="14f46203-4071-4293-b546-983333fcbffd"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{etq_TipoEtiqueta}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="110" y="0" width="60" height="30" uuid="1ce464bb-221f-4faf-a6d8-080e16d102ec">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b4172aee-91bb-402a-8f90-e7b6102f0b07"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{etq_CodItem}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="170" y="0" width="160" height="30" uuid="55280153-b53d-4773-847c-e951aef89a0b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d6485170-be66-4b2a-b06d-98d8ab673acc"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{etq_Descricao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="330" y="0" width="100" height="30" uuid="4e2fa78d-022b-472b-b63f-c8234c8f5f79">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="069c21d8-b043-4a7a-8bf1-048bed015d17"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{etq_NrPedido}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="430" y="0" width="100" height="30" uuid="c3d14660-832d-431a-b24e-b61fa7c4fa6e">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="eec76c84-cbc1-428c-bcb8-47a421e19c05"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{etq_CodBarras}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="530" y="0" width="100" height="30" uuid="97a80a25-a186-435b-a2c8-73b9a6a1287d">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="759e67a4-3d8d-445c-be73-509218959bfe"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{etq_Volume}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

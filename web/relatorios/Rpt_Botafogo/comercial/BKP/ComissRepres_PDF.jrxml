@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.0.final using JasperReports Library version 6.5.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComissRepres_PDF" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b3adb2c-9690-46d0-8731-48d78c7d719d">
+	<property name="ireport.zoom" value="0.75"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="zebra" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String"/>
+	<parameter name="cEmpresa" class="java.lang.String"/>
+	<parameter name="pDataIni" class="java.lang.String"/>
+	<parameter name="pDataFim" class="java.lang.String"/>
+	<parameter name="ano" class="java.lang.String"/>
+	<parameter name="mes" class="java.lang.String"/>
+	<parameter name="cCondicao2" class="java.lang.String"/>
+	<parameter name="cCondicao3" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Fernando\\Projetos\\NeoSIGE\\web\\relatorios\\Rpt_Botafogo\\comercial\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     CASE WHEN (usuario.`TIPO` = 'Vendedor') THEN
+        (CASE WHEN ((SELECT SUM(1)
+                       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+                               INNER JOIN `representante`    representanteX   ON representanteX.`id` = pedidovendasX.`REPRESENTANTE_id`
+                               INNER JOIN `metapremiorepres` metapremiorepres ON metapremiorepres.`representante_id` = representanteX.`id` and
+                                          metapremiorepres.ano = year($P{pDataIni}) and metapremiorepres.mes = month($P{pDataIni})
+                       WHERE (pedidovendasX.`EMPRESA_id` = $P{cEmpresa}) AND (pedidovendasX.`DATAEMISSAO` >= $P{pDataIni} AND pedidovendasX.`DATAEMISSAO` <= $P{pDataFim}) AND
+                               (representanteX.`id` = representante.`id` and pedidovendasX.VLTOTPEDIDO > 0
+         AND pedidovendasX.SITUACAO <> 'Cancelado'
+         AND pedidovendasX.SITUACAO <> 'Pendente'
+         AND pedidovendasX.SITUACAO <> 'Bloqueado'
+         and pedidovendasX.SITUACAO <> 'Obs')) >= metapremiorepres.`METAPEDIDO`) and metapremiorepres.`METAPEDIDO` <> 0 THEN (300.00 / (SELECT SUM(1)
+                       FROM `doctosai` doctosaik INNER JOIN `pedidovendas` pedidovendask ON doctosaik.`NRPEDCLI` = pedidovendask.`NRPEDCLI` and
+                                     pedidovendask.`CLIENTE_id` = doctosaik.`participante_id`
+     INNER JOIN `serienotafiscal` serienotafiscalk ON serienotafiscalk.`id` = doctosaik.`SERIE_id`
+     INNER JOIN `participante` participantek ON pedidovendask.`CLIENTE_id` = participantek.`id`
+     INNER JOIN `doctosairep` doctosairepk ON doctosaik.`id` = doctosairepk.`doctosai_id`
+     INNER JOIN `representante` representantek ON representantek.`id` = doctosairepk.`REPRESENTANTE_id`
+     LEFT JOIN `metapremiorepres` metapremiorepresk ON metapremiorepresk.`representante_id` = representantek.`id` and
+                                   metapremiorepresk.ano = year($P{pDataIni}) and metapremiorepresk.mes = month($P{pDataIni})
+     INNER JOIN `empresa` empresak ON empresak.`id` = doctosaik.`EMPRESA_id`
+     LEFT OUTER JOIN `usuario` usuariok ON representantek.`USUARIOREP_id` = usuariok.id
+where doctosaik.`EMPRESA_ID` = $P{cEmpresa} AND doctosaik.SITUACAO <> 'Cancelada' AND (pedidovendask.VLTOTPEDIDO > 0) AND (pedidovendask.SITUACAO <> 'Cancelado') AND (pedidovendask.SITUACAO <> 'Bloqueado') AND (pedidovendask.SITUACAO <> 'Obs') AND (doctosaik.`DTEMISSAO` BETWEEN $P{pDataIni} AND $P{pDataFim})  AND (doctosairepk.representante_id = doctosairep.representante_id)))
+            ELSE
+               0 END)
+    ELSE
+        (CASE WHEN ((SELECT SUM(1)
+                        FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+                                INNER JOIN `representante`    representanteX   ON representanteX.`id` = pedidovendasX.`REPRESENTANTE_id`
+                                INNER JOIN `metapremiorepres` metapremiorepres ON metapremiorepres.`representante_id` = representanteX.`id` and
+                                           metapremiorepres.ano = year($P{pDataIni}) and metapremiorepres.mes = month($P{pDataIni})
+                        WHERE (pedidovendasX.`EMPRESA_id` = $P{cEmpresa}) AND (pedidovendasX.`DATAEMISSAO` >= $P{pDataIni} AND pedidovendasX.`DATAEMISSAO` <= $P{pDataFim}) AND
+                                (representanteX.`id` = representante.`id` and pedidovendasX.VLTOTPEDIDO > 0
+          AND pedidovendasX.SITUACAO <> 'Cancelado'
+          AND pedidovendasX.SITUACAO <> 'Pendente'
+          AND pedidovendasX.SITUACAO <> 'Bloqueado'
+          and pedidovendasX.SITUACAO <> 'Obs')) >= metapremiorepres.`METAPEDIDO`) and metapremiorepres.`METAPEDIDO` <> 0 THEN (doctosai.`VLTOTDOCTOLIQ` * (pedidovendas.`PERCCOMISSAO` / 100)) * (4 / 100)
+             ELSE
+                0 END) END AS PremQtdPed,
+
+     CASE WHEN (usuario.`TIPO` = 'Vendedor') THEN
+          (CASE WHEN ((SELECT SUM(pedidovendasX.`VLTOTPEDIDO`)
+		FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+			INNER JOIN `representante` representanteX ON representanteX.`id` = pedidovendasX.`REPRESENTANTE_id`
+                        INNER JOIN `metapremiorepres` metapremiorepres ON metapremiorepres.`representante_id` = representanteX.`id` and
+                                   metapremiorepres.ano = year($P{pDataIni}) and metapremiorepres.mes = month($P{pDataIni})
+		WHERE (pedidovendasX.`EMPRESA_id` = $P{cEmpresa}) AND (pedidovendasX.`DATAEMISSAO` >= $P{pDataIni} AND pedidovendasX.`DATAEMISSAO` <= $P{pDataFim}) AND
+			(representanteX.`id` = representante.`id` and pedidovendasX.VLTOTPEDIDO > 0
+           AND pedidovendasX.SITUACAO <> 'Cancelado'
+           AND pedidovendasX.SITUACAO <> 'Bloqueado'
+           AND pedidovendasX.SITUACAO <> 'Pendente'
+           and pedidovendasX.SITUACAO <> 'Obs')) >= metapremiorepres.`METAVALOR`) and metapremiorepres.`METAVALOR` <> 0  THEN (300.00 / (SELECT SUM(1)
+                       FROM `doctosai` doctosaik INNER JOIN `pedidovendas` pedidovendask ON doctosaik.`NRPEDCLI` = pedidovendask.`NRPEDCLI` and
+                                     pedidovendask.`CLIENTE_id` = doctosaik.`participante_id`
+     INNER JOIN `serienotafiscal` serienotafiscalk ON serienotafiscalk.`id` = doctosaik.`SERIE_id`
+     INNER JOIN `participante` participantek ON pedidovendask.`CLIENTE_id` = participantek.`id`
+     INNER JOIN `doctosairep` doctosairepk ON doctosaik.`id` = doctosairepk.`doctosai_id`
+     INNER JOIN `representante` representantek ON representantek.`id` = doctosairepk.`REPRESENTANTE_id`
+     LEFT JOIN `metapremiorepres` metapremiorepresk ON metapremiorepresk.`representante_id` = representantek.`id` and
+                                   metapremiorepresk.ano = year($P{pDataIni}) and metapremiorepresk.mes = month($P{pDataIni})
+     INNER JOIN `empresa` empresak ON empresak.`id` = doctosaik.`EMPRESA_id`
+     LEFT OUTER JOIN `usuario` usuariok ON representantek.`USUARIOREP_id` = usuariok.id
+where doctosaik.`EMPRESA_ID` = $P{cEmpresa} AND doctosaik.SITUACAO <> 'Cancelada' AND (pedidovendask.VLTOTPEDIDO > 0) AND (pedidovendask.SITUACAO <> 'Cancelado') AND (pedidovendask.SITUACAO <> 'Bloqueado') AND (pedidovendask.SITUACAO <> 'Obs') AND (doctosaik.`DTEMISSAO` BETWEEN $P{pDataIni} AND $P{pDataFim})  AND (doctosairepk.representante_id = doctosairep.representante_id)))
+           ELSE
+	       0 END)
+      ELSE
+           (CASE WHEN ((SELECT SUM(pedidovendasX.`VLTOTPEDIDO`)
+		FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+			INNER JOIN `representante` representanteX ON representanteX.`id` = pedidovendasX.`REPRESENTANTE_id`
+                        INNER JOIN `metapremiorepres` metapremiorepres ON metapremiorepres.`representante_id` = representanteX.`id` and
+                                   metapremiorepres.ano = year($P{pDataIni}) and metapremiorepres.mes = month($P{pDataIni})
+		WHERE (pedidovendasX.`EMPRESA_id` = $P{cEmpresa}) AND (pedidovendasX.`DATAEMISSAO` >= $P{pDataIni} AND pedidovendasX.`DATAEMISSAO` <= $P{pDataFim}) AND
+			(representanteX.`id` = representante.`id` and pedidovendasX.VLTOTPEDIDO > 0
+             AND pedidovendasX.SITUACAO <> 'Cancelado'
+             AND pedidovendasX.SITUACAO <> 'Bloqueado'
+             AND pedidovendasX.SITUACAO <> 'Pendente'
+             and pedidovendasX.SITUACAO <> 'Obs')) >= metapremiorepres.`METAVALOR`) and metapremiorepres.`METAVALOR` <> 0  THEN (doctosai.`VLTOTDOCTOLIQ` * (pedidovendas.`PERCCOMISSAO` / 100)) * (6 / 100)
+             ELSE
+	        0 END) END AS  PremValorPed,
+
+CASE WHEN ((SELECT MIN(pedidovendasCN.`NRPEDCLI`) FROM `participante` as  participanteCN, `pedidovendas` as  pedidovendasCN
+                     where   participanteCN.`id`     = pedidovendasCN.`CLIENTE_id`
+                       and   participanteCN.`codigo` = participante.`CODIGO`
+		       and   pedidovendasCN.`EMPRESA_id` = $P{cEmpresa} AND pedidovendasCN.`DATAEMISSAO` <= $P{pDataFim}
+                       AND  (pedidovendasCN.VLTOTPEDIDO > 0
+  AND pedidovendasCN.SITUACAO <> 'Cancelado'
+  AND pedidovendasCN.SITUACAO <> 'Pendente'
+  AND pedidovendasCN.SITUACAO <> 'Bloqueado'
+  and pedidovendasCN.SITUACAO <> 'Obs') AND (participante.`DATACADASTRO` >= '2017-03-01')) = pedidovendas.`NRPEDCLI`) THEN doctosai.`VLTOTDOCTOLIQ` * (pedidovendas.`PERCCOMISSAO` / 100)
+  ELSE 0 END AS PremNovoCli,
+     doctosai.`NRODOCTO` AS doctosai_NRODOCTO,
+     serienotafiscal.`SERIE` AS serienotafiscal_SERIE,
+     metapremiorepres.`METAPEDIDO`,
+     metapremiorepres.`METAVALOR`,
+     representante.`CODIGO` AS representante_CODIGO,
+     representante.`NOME` AS representante_NOME,
+     participante.`CODIGO` AS participante_CODIGO,
+     doctosai.`DTEMISSAO` AS doctosai_DTEMISSAO,
+     empresa.`logoimg` AS empresa_logo,
+     participante.`RAZAOSOCIAL` AS participante_RAZAOSOCIAL,
+     doctosai.`VLTOTDOCTOLIQ`  AS pedidovendas_VLTOTLIQPEDIDO,
+     pedidovendas.`PERCCOMISSAO` AS pedidovendas_PERCCOMISSAO,
+     doctosai.`VLTOTDOCTOLIQ` * (pedidovendas.`PERCCOMISSAO` / 100) AS pedidovendas_VLCOMISSAO,
+     pedidovendas.`NRPEDCLI` AS pedidovendas_NRPEDCLI,
+          pedidovendas.`TIPOPEDIDO` AS pedidovendas_TIPOPEDIDO,
+     pedidovendas.`PERCDESCTOTAL` AS pedidovendas_PERCDESCTOTAL,
+     0 AS IR
+FROM
+     `doctosai` doctosai INNER JOIN `pedidovendas` pedidovendas ON doctosai.`NRPEDCLI` = pedidovendas.`NRPEDCLI` and
+                                     pedidovendas.`CLIENTE_id` = doctosai.`participante_id`
+     INNER JOIN `serienotafiscal` serienotafiscal ON serienotafiscal.`id` = doctosai.`SERIE_id`
+     INNER JOIN `participante` participante ON pedidovendas.`CLIENTE_id` = participante.`id`
+     INNER JOIN `doctosairep` doctosairep ON doctosai.`id` = doctosairep.`doctosai_id`
+     INNER JOIN `representante` representante ON representante.`id` = doctosairep.`REPRESENTANTE_id`
+     LEFT JOIN `metapremiorepres` metapremiorepres ON metapremiorepres.`representante_id` = representante.`id` and
+                                   metapremiorepres.ano = year($P{pDataIni}) and metapremiorepres.mes = month($P{pDataIni})
+     INNER JOIN `empresa` empresa ON empresa.`id` = doctosai.`EMPRESA_id`
+     LEFT OUTER JOIN `usuario` usuario ON representante.`USUARIOREP_id` = usuario.id
+$P!{cCondicao}
+ ORDER BY representante.`CODIGO`, doctosai.`DTEMISSAO`, doctosai.`NRODOCTO`]]>
+	</queryString>
+	<field name="PremQtdPed" class="java.math.BigDecimal"/>
+	<field name="PremValorPed" class="java.math.BigDecimal"/>
+	<field name="PremNovoCli" class="java.math.BigDecimal"/>
+	<field name="doctosai_NRODOCTO" class="java.lang.String"/>
+	<field name="serienotafiscal_SERIE" class="java.lang.String"/>
+	<field name="METAPEDIDO" class="java.lang.Integer"/>
+	<field name="METAVALOR" class="java.math.BigDecimal"/>
+	<field name="representante_CODIGO" class="java.lang.String"/>
+	<field name="representante_NOME" class="java.lang.String"/>
+	<field name="participante_CODIGO" class="java.lang.String"/>
+	<field name="doctosai_DTEMISSAO" class="java.sql.Date"/>
+	<field name="empresa_logo" class="java.io.InputStream"/>
+	<field name="participante_RAZAOSOCIAL" class="java.lang.String"/>
+	<field name="pedidovendas_VLTOTLIQPEDIDO" class="java.math.BigDecimal"/>
+	<field name="pedidovendas_PERCCOMISSAO" class="java.math.BigDecimal"/>
+	<field name="pedidovendas_VLCOMISSAO" class="java.math.BigDecimal"/>
+	<field name="pedidovendas_NRPEDCLI" class="java.lang.String"/>
+	<field name="pedidovendas_PERCDESCTOTAL" class="java.math.BigDecimal"/>
+	<field name="IR" class="java.lang.Long"/>
+	<field name="TIPOPEDIDO" class="java.lang.String"/>
+	<variable name="vTotRepValor" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{pedidovendas_VLTOTLIQPEDIDO}]]></variableExpression>
+	</variable>
+	<variable name="vTotRepComissao" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{pedidovendas_VLCOMISSAO}]]></variableExpression>
+	</variable>
+	<variable name="vTotGerValor" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{pedidovendas_VLTOTLIQPEDIDO}]]></variableExpression>
+	</variable>
+	<variable name="vTotGerComissao" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{pedidovendas_VLCOMISSAO}]]></variableExpression>
+	</variable>
+	<variable name="vTotRepPQP" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremQtdPed}]]></variableExpression>
+	</variable>
+	<variable name="vTotGerPQP" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremQtdPed}]]></variableExpression>
+	</variable>
+	<variable name="vTotRepPVP" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremValorPed}]]></variableExpression>
+	</variable>
+	<variable name="vTotGerPVP" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremValorPed}]]></variableExpression>
+	</variable>
+	<variable name="vTotRepNC" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremNovoCli}]]></variableExpression>
+	</variable>
+	<variable name="vTotGerNC" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremNovoCli}]]></variableExpression>
+	</variable>
+	<variable name="vTotRepCFim" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$F{pedidovendas_VLCOMISSAO}.add($F{PremQtdPed}).add($F{PremValorPed}).add($F{PremNovoCli})]]></variableExpression>
+	</variable>
+	<variable name="vTotRepresCFim" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$V{vTotRepCFim}]]></variableExpression>
+	</variable>
+	<variable name="vTotGerCFim" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$V{vTotRepCFim}]]></variableExpression>
+	</variable>
+	<variable name="PremValorPed_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremValorPed}]]></variableExpression>
+	</variable>
+	<variable name="PremQtdPed_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremQtdPed}]]></variableExpression>
+	</variable>
+	<variable name="vTotalGerComis" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremQtdPed}.add($F{PremValorPed}).add($F{pedidovendas_VLCOMISSAO})]]></variableExpression>
+	</variable>
+	<variable name="totGeral" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{PremQtdPed}.add($F{PremValorPed}).add($F{PremNovoCli}).add($F{pedidovendas_VLCOMISSAO})]]></variableExpression>
+	</variable>
+	<group name="Representante">
+		<groupExpression><![CDATA[$F{representante_NOME}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<staticText>
+					<reportElement x="0" y="0" width="77" height="20" uuid="704dec24-6d07-449c-a4b9-e00c43f51c83"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Representante]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="77" y="0" width="37" height="20" uuid="847ab594-b499-443f-8715-eb2dd5cb27b1"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{representante_CODIGO}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="114" y="0" width="391" height="20" uuid="e5205700-2dbf-47f6-bb0d-7121b77412b4"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{representante_NOME}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="204">
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="356" y="4" width="50" height="20" uuid="f083498f-8fb6-450c-a5f1-7f4e5da12ba9">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{vTotRepValor}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="332" y="1" width="223" height="1" uuid="08c468ae-89a2-4e41-b62e-bce16f59e2a8"/>
+				</line>
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="480" y="4" width="75" height="20" uuid="e56400c9-8994-45f5-9702-18a9ce33de06">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{vTotRepComissao}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="210" y="4" width="122" height="20" uuid="fea049d6-1204-42d6-971b-0639a6d06596"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total da comissão  ==>]]></text>
+				</staticText>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="480" y="44" width="75" height="20" uuid="59163828-10e6-4df9-b281-2147958b8397">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{PremValorPed_1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="210" y="44" width="122" height="20" uuid="f6c78181-9acc-4e76-a26b-a132651f9002"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Premiação meta valor  ==>]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="210" y="24" width="122" height="20" uuid="edae1ddd-9838-4fe6-8507-fd0dd0e8116c"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Premiação meta quantidade  ==>]]></text>
+				</staticText>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="480" y="24" width="75" height="20" uuid="bb25389e-1b46-4bb4-9536-f188c3a35e21">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{PremQtdPed_1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="210" y="64" width="122" height="20" uuid="bff3beb3-9124-45c1-80f4-d45f22ee838a"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total geral do representante  ==>]]></text>
+				</staticText>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="480" y="64" width="75" height="20" uuid="f601b241-5bb6-4271-a788-9bb9f0d9978d">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{vTotalGerComis}]]></textFieldExpression>
+				</textField>
+				<subreport>
+					<reportElement x="0" y="94" width="200" height="100" uuid="7f268155-4e50-4e81-a7d1-54d81ba5f8e6"/>
+					<subreportParameter name="pDataIni">
+						<subreportParameterExpression><![CDATA[$P{pDataIni}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="represSub">
+						<subreportParameterExpression><![CDATA[$F{representante_CODIGO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="cCondicao3">
+						<subreportParameterExpression><![CDATA[$P{cCondicao3}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="cCondicao2">
+						<subreportParameterExpression><![CDATA[$P{cCondicao2}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="comissao2">
+						<subreportParameterExpression><![CDATA[$V{vTotalGerComis}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA["C:\\Projetos\\OnSys\\NeoSIGE\\web\\relatorios\\Rpt_Botafogo\\comercial\\ComissRepresSub_PDF.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="61" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement x="100" y="34" width="455" height="20" uuid="52f9c12d-87aa-426f-ab1a-84aaddc0616d">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="100" y="0" width="455" height="28" uuid="653e0015-ee1e-4d0d-bf5a-a4c975ef7f3b">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Extrato de comissão - analítico]]></text>
+			</staticText>
+			<image>
+				<reportElement x="0" y="0" width="100" height="59" uuid="beefa80e-aee1-45f6-8b16-7ad6b26a9da3">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{empresa_logo}]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="25" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="46" height="20" backcolor="#CCCCCC" uuid="40f3116d-5d52-47b5-bc42-d484644a8757"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Emissão]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="117" y="0" width="30" height="20" backcolor="#CCCCCC" uuid="26a87ed5-62b8-4854-8252-057307cc3d43"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="147" y="0" width="21" height="20" backcolor="#CCCCCC" uuid="d0cbe985-aabc-4e24-898b-a5e6922c592a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Série]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="168" y="0" width="188" height="20" backcolor="#CCCCCC" uuid="630349e0-f436-48ea-be9b-ec3a9e70c127"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[     Cliente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="356" y="0" width="50" height="20" backcolor="#CCCCCC" uuid="7fd0205f-d65c-43e0-a13b-acbd486abfce"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Base da comissão]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="441" y="0" width="39" height="20" backcolor="#CCCCCC" uuid="b277452d-ce6e-473e-8e3a-b01a259d7d67"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[% Comiss.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="480" y="0" width="75" height="20" isPrintWhenDetailOverflows="true" backcolor="#CCCCCC" uuid="8aae0d9e-3ba3-4175-abe4-e9076cb03950"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor da comissão]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="20" width="556" height="1" uuid="19032da5-22c0-4bcd-a746-a18d2478b8ec"/>
+				<graphicElement>
+					<pen lineWidth="1.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="70" y="0" width="47" height="19" backcolor="#CCCCCC" uuid="300e97ca-a9f4-400a-967e-89546ad322ee"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pedido]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="406" y="0" width="35" height="20" backcolor="#CCCCCC" uuid="388934f9-e6c0-4555-b63f-d7e739d22e5a"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[% Desc.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="46" y="0" width="24" height="20" backcolor="#CCCCCC" uuid="3c559231-efcd-4cb3-83d4-d67953374a36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TP]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="46" height="15" forecolor="#000000" uuid="fff1534a-33e5-4085-b14d-460871845c04"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{doctosai_DTEMISSAO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="117" y="0" width="30" height="15" forecolor="#000000" uuid="bd7cf6d3-24f1-4129-afd1-4db4b6bc9db9"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{doctosai_NRODOCTO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="147" y="0" width="21" height="15" forecolor="#000000" uuid="ac6279d6-2688-4f95-bec8-dfd9cd5b9a89">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{serienotafiscal_SERIE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="168" y="0" width="32" height="15" forecolor="#000000" uuid="1a6f1b04-2d8a-4af4-9cfa-cdfe66cc7d80"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{participante_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="356" y="0" width="50" height="15" forecolor="#000000" uuid="e0f7cc47-19e9-47d4-a2ff-e6867fbd14b6"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pedidovendas_VLTOTLIQPEDIDO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="441" y="0" width="39" height="15" forecolor="#000000" uuid="d5d0e667-06f5-4cb7-ba09-cd6409f5e89a"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pedidovendas_PERCCOMISSAO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="480" y="0" width="75" height="15" forecolor="#000000" uuid="dc35e626-caac-415f-b9b0-9b5744825d6b"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pedidovendas_VLCOMISSAO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="200" y="0" width="156" height="15" forecolor="#000000" uuid="4c10d4dd-dc56-454a-ae53-8f7c3d8c85bf"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{participante_RAZAOSOCIAL}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" x="70" y="0" width="47" height="15" forecolor="#000000" uuid="b190b175-3398-4edc-b16f-cbf600a853ba"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pedidovendas_NRPEDCLI}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="406" y="0" width="35" height="15" forecolor="#000000" uuid="8b258858-87cb-4bc0-8be4-e54582bca89e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pedidovendas_PERCDESCTOTAL}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" x="46" y="0" width="24" height="15" forecolor="#000000" uuid="f874d3e4-d29c-4c1f-94de-c3ac34653af9">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TIPOPEDIDO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="23" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="1" width="555" height="1" uuid="290e90db-d2e4-48f9-b71b-218b9e2db4ef"/>
+			</line>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="0" y="3" width="100" height="20" uuid="c8db3234-2356-409e-b724-6eae0f6524c2"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="435" y="3" width="80" height="20" uuid="b8dc165f-f141-4497-9c94-fb0c43b14e86"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="3" width="40" height="20" uuid="76b40a8f-4e1f-4797-bcb6-162cb4808787"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="221" y="0" width="120" height="16" forecolor="#0000FF" uuid="ae3fcaa3-3985-44c4-a355-14e05764d693">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ERP OnSys - www.onsys.com.br]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="32" splitType="Stretch"/>
+	</summary>
+</jasperReport>

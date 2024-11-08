@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Pedido_compras_Excel" pageWidth="650" pageHeight="15000" columnWidth="650" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="zebra" isDefault="false" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style isDefault="false" style="zebra" mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     participante.`CODIGO` AS participante_CODIGO,
+     participante.`NOMEFANTASIA` AS participante_NOMEFANTASIA,
+     pedidocompras.`NRPEDIDO` AS pedidocompras_NRPEDIDO,
+     pedidocompras.`DATAEMISSAO` AS pedidocompras_DATAEMISSAO,
+ empresa.`logoimg`  AS empresa_logo,
+     pedidocompras.`DATAENTREGA` AS pedidocompras_DATAENTREGA,
+     pedidocompras.`VLTOTPEDIDO` AS pedidocompras_VLTOTLIQPEDIDO,
+     pedidocompras.`SITUACAO` AS pedidocompras_SITUACAO,
+     catitem.`DESCRICAO` AS catitem_DESCRICAO
+FROM
+     `pedidocompras` pedidocompras INNER JOIN `participante` participante ON pedidocompras.`FORNECEDOR_id` = participante.`id`
+     INNER JOIN `pedidocomprasparcela` pedidocomprasparcela ON pedidocompras.`id` = pedidocomprasparcela.`PEDIDOCOMPRAS_id`
+     INNER JOIN `item` item ON pedidocomprasparcela.`ITEM_id` = item.`id`
+     INNER JOIN `empresa`       empresa       ON pedidocompras.`empresa_id` = empresa.`id`
+     INNER JOIN `catitem` catitem ON item.`CATITEM_id` = catitem.`id`
+$P!{cCondicao}
+group by catitem.DESCRICAO, pedidocompras.NRPEDIDO
+ORDER BY
+     catitem.DESCRICAO asc,
+     pedidocompras.DATAEMISSAO ASC,
+     participante.NOMEFANTASIA ASC,
+     pedidocompras.NRPEDIDO ASC]]>
+	</queryString>
+	<field name="participante_CODIGO" class="java.lang.String"/>
+	<field name="participante_NOMEFANTASIA" class="java.lang.String"/>
+	<field name="pedidocompras_NRPEDIDO" class="java.lang.String"/>
+	<field name="pedidocompras_DATAEMISSAO" class="java.sql.Date"/>
+	<field name="empresa_logo" class="java.io.InputStream"/>
+	<field name="pedidocompras_DATAENTREGA" class="java.sql.Date"/>
+	<field name="pedidocompras_VLTOTLIQPEDIDO" class="java.math.BigDecimal"/>
+	<field name="pedidocompras_SITUACAO" class="java.lang.String"/>
+	<field name="catitem_DESCRICAO" class="java.lang.String"/>
+	<variable name="totGeral" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{pedidocompras_VLTOTLIQPEDIDO}]]></variableExpression>
+	</variable>
+	<variable name="pedidocompras_VLTOTLIQPEDIDO_1" class="java.math.BigDecimal" resetType="Group" resetGroup="catitemDescricao" calculation="Sum">
+		<variableExpression><![CDATA[$F{pedidocompras_VLTOTLIQPEDIDO}]]></variableExpression>
+	</variable>
+	<group name="catitemDescricao">
+		<groupExpression><![CDATA[$F{catitem_DESCRICAO}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="55" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="650" height="35"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relatório de pedido de compras]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="35" width="650" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="94" y="0" width="262" height="20" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fornecedor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="356" y="0" width="50" height="20" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pedido]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="406" y="0" width="54" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dt. Emissão]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="460" y="0" width="50" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dt. Entrega]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="510" y="0" width="69" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="579" y="0" width="71" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Situação]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="20" width="650" height="1"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="94" height="20" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Categoria do item]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="143" y="0" width="213" height="20" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{participante_NOMEFANTASIA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="94" y="0" width="49" height="20" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{participante_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="579" y="0" width="71" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{pedidocompras_SITUACAO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="510" y="0" width="69" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{pedidocompras_VLTOTLIQPEDIDO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement style="zebra" mode="Opaque" x="460" y="0" width="50" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{pedidocompras_DATAENTREGA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement style="zebra" mode="Opaque" x="406" y="0" width="54" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{pedidocompras_DATAEMISSAO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="356" y="0" width="50" height="20" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{pedidocompras_NRPEDIDO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="94" height="20" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{catitem_DESCRICAO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,20 @@
+<html   xmlns:c="http://java.sun.com/jsp/jstl/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"                   
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"> 
+
+    <p:panelGrid layout="grid" columns="3" 
+                 columnClasses="ui-grid-col-4, ui-grid-col-7, ui-grid-col-1"                                      
+                 id="pnlGrLogisticaConsultar" styleClass="semBorda" 
+                 rendered="#{usuarioFace.registroSelecionado != null}"
+                 style="border: none !important; background-color: #dddddd">
+
+        <p:outputLabel value="Recebe nota sem pedido de compras" style="color: black" 
+                       title="Se marcado o usuário pode receber nota fiscal de compras sem informar um pedido de compras."/>
+        <p:selectBooleanCheckbox disabled="true" 
+                                 value="#{usuarioFace.registroSelecionado.recebeNFSemPedido}"/>
+        <p:spacer width="5"/>
+        
+    </p:panelGrid>
+</html>

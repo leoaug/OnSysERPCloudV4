@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RazaoEstoqueSinteticoExcel" pageWidth="595" pageHeight="15000" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cCondicaoS" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cCondicaoE" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cCondEntradas" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cCondSaidas" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cCondicaoE2" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cCondicaoS2" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select distinct I.`CODIGO`, I.`DESCRICAO`, deposito.`DESCRICAO` AS Deposito, loc.`DESCRICAO` AS Localizacao,
+    (CASE
+        WHEN (select sum(D.`QTDMOVTO`)
+            FROM movtoestoque D
+            $P!{cCondicaoS}) IS NULL THEN (select sum(B.`QTDMOVTO`)
+            FROM movtoestoque B
+            $P!{cCondicaoE})
+         WHEN (select sum(B.`QTDMOVTO`)
+            FROM movtoestoque B
+            $P!{cCondicaoE}) IS NULL THEN (0 -
+            (select sum(D.`QTDMOVTO`)
+            FROM movtoestoque D
+            $P!{cCondicaoS}))
+         ELSE ((select sum(B.`QTDMOVTO`)
+            FROM movtoestoque B
+            $P!{cCondicaoE}) -
+            (select sum(D.`QTDMOVTO`)
+            FROM movtoestoque D
+            $P!{cCondicaoS}))
+     END) AS SaldoAnterior,
+    (select sum(B.`QTDMOVTO`)
+    FROM movtoestoque B
+    $P!{cCondEntradas}) as Entrada,
+    (select sum(D.`QTDMOVTO`)
+    FROM movtoestoque D
+    $P!{cCondSaidas}) as Saida,
+    (CASE
+        WHEN (select sum(D.`QTDMOVTO`)
+            FROM movtoestoque D
+            $P!{cCondicaoS2}) IS NULL THEN
+                (select sum(B.`QTDMOVTO`)
+            FROM movtoestoque B
+            $P!{cCondicaoE2})
+        ELSE
+            ((select sum(B.`QTDMOVTO`)
+            FROM movtoestoque B
+            $P!{cCondicaoE2}) -
+            (select sum(D.`QTDMOVTO`)
+            FROM movtoestoque D
+            $P!{cCondicaoS2}))
+     END) AS SaldoAtual
+from item I INNER JOIN saldoestoque C ON I.`id` = C.`ITEM_ID`
+INNER JOIN deposito deposito ON C.`DEPOSITO_id` = deposito.`id`
+     INNER JOIN localizacao loc ON C.`LOCALIZACAO_id` = loc.`id`
+$P!{cCondicao}
+ORDER BY I.`DESCRICAO`;]]>
+	</queryString>
+	<field name="CODIGO" class="java.lang.String"/>
+	<field name="DESCRICAO" class="java.lang.String"/>
+	<field name="Deposito" class="java.lang.String"/>
+	<field name="Localizacao" class="java.lang.String"/>
+	<field name="SaldoAnterior" class="java.math.BigDecimal"/>
+	<field name="Entrada" class="java.math.BigDecimal"/>
+	<field name="Saida" class="java.math.BigDecimal"/>
+	<field name="SaldoAtual" class="java.math.BigDecimal"/>
+	<variable name="cont" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA["1"]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="64">
+			<rectangle>
+				<reportElement x="0" y="48" width="595" height="16" backcolor="#CCCCCC"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="0" y="28" width="595" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="29" y="48" width="240" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descrição]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="548" y="48" width="47" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Saldo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="416" y="48" width="44" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Saldo Ant.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="367" y="48" width="49" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Localização]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="460" y="48" width="44" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Entradas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="504" y="48" width="44" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Saidas]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="63" width="595" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="0" width="595" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Razão de estoque - Sintético]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="269" y="48" width="98" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Depósito]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="48" width="29" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="595" height="15" backcolor="#CCFFFF">
+					<printWhenExpression><![CDATA[new Boolean(new Integer(($V{cont}.intValue())%2).equals(new Integer("1")))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement x="416" y="0" width="44" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{SaldoAnterior}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement x="460" y="0" width="44" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{Entrada}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement x="504" y="0" width="44" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{Saida}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement x="548" y="0" width="47" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{SaldoAtual}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="269" y="0" width="98" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Deposito}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="367" y="0" width="49" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Localizacao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="29" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="29" y="0" width="240" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DESCRICAO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="1" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

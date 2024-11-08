@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Despesas" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d6617d53-1ccf-4437-bf03-c1e35dca9bdb">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="zebra" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="idEmpresa" class="java.lang.Integer"/>
+	<parameter name="cCodIni" class="java.lang.String"/>
+	<parameter name="cCodFin" class="java.lang.String"/>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT despesasfa.`DATAMOVTO` AS despesasfa_DATAMOVTO,
+  despesasfa.`TIPO`  AS despesasfa_TIPO,
+  empresa.`logoimg`  AS empresa_logo,
+  despesasfa.`VALOR` AS despesasfa_VALOR,
+  usuario.`APELIDO`  AS usuario_APELIDO,
+  componenteeap.`DESCRICAO` AS componenteeap_DESCRICAO
+  FROM `fichaaprop` fichaaprop
+  INNER JOIN `despesasfa`    despesasfa    ON fichaaprop.`id`         = despesasfa.`FICHAAPROP_id`
+  INNER JOIN `usuario`       usuario       ON fichaaprop.`USUARIO_id` = usuario.`id`
+  INNER JOIN `empresa`       empresa       ON fichaaprop.`empresa_id` = empresa.`id`
+  INNER JOIN `componenteeap` componenteeap ON despesasfa.`PACOTE_id`  = componenteeap.`id`
+ $P!{cCondicao}]]>
+	</queryString>
+	<field name="despesasfa_DATAMOVTO" class="java.sql.Date"/>
+	<field name="despesasfa_TIPO" class="java.lang.String"/>
+	<field name="empresa_logo" class="java.io.InputStream"/>
+	<field name="despesasfa_VALOR" class="java.math.BigDecimal"/>
+	<field name="usuario_APELIDO" class="java.lang.String"/>
+	<field name="componenteeap_DESCRICAO" class="java.lang.String"/>
+	<variable name="despesasfa_VALOR_3" class="java.math.BigDecimal" resetType="Group" resetGroup="Consultor" calculation="Sum">
+		<variableExpression><![CDATA[$F{despesasfa_VALOR}]]></variableExpression>
+	</variable>
+	<variable name="despesasfa_VALOR_4" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{despesasfa_VALOR}]]></variableExpression>
+	</variable>
+	<variable name="despesasfa_VALOR_5" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{despesasfa_VALOR}]]></variableExpression>
+	</variable>
+	<group name="Consultor">
+		<groupExpression><![CDATA[$F{usuario_APELIDO}]]></groupExpression>
+		<groupHeader>
+			<band height="20" splitType="Stretch">
+				<staticText>
+					<reportElement x="0" y="0" width="100" height="20" uuid="0b32fe54-8220-4f5e-af6c-828a1f174744"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Consultor :]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="100" y="0" width="456" height="20" uuid="d4e46eb7-150d-42e0-8539-4c615bd7a07c"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{usuario_APELIDO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<staticText>
+					<reportElement x="238" y="0" width="125" height="20" uuid="84f92065-7b64-4a1e-b2b4-d75a36f70b7a"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total do consultor     ===>]]></text>
+				</staticText>
+				<textField pattern="¤ #,##0.00">
+					<reportElement x="463" y="0" width="92" height="20" uuid="b9fa59b5-f0bb-425e-86e6-74838d0daf87"/>
+					<textElement textAlignment="Right">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{despesasfa_VALOR_3}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="PACOTE">
+		<groupExpression><![CDATA[$F{componenteeap_DESCRICAO}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement x="100" y="0" width="456" height="20" uuid="28559075-2466-4226-840b-528b372c8a4d"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{componenteeap_DESCRICAO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="0" width="100" height="20" uuid="fd91b769-31f8-4bfc-9652-f133ce05ac19"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Pacote :]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<staticText>
+					<reportElement x="238" y="0" width="125" height="20" uuid="41fc9667-ef78-42f5-9bb0-380ec7c6b242"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total do pacote         ===>]]></text>
+				</staticText>
+				<textField pattern="¤ #,##0.00">
+					<reportElement x="463" y="0" width="92" height="20" uuid="3177833e-e545-4950-bfea-0bee96cbe38b"/>
+					<textElement textAlignment="Right">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{despesasfa_VALOR_3}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="101" y="0" width="454" height="39" uuid="e0e62878-f296-49d3-bf27-032d7383086a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relatório de despesa]]></text>
+			</staticText>
+			<image>
+				<reportElement x="1" y="2" width="100" height="59" uuid="b9fda95a-1bb0-4ca4-9060-ba659553e99d"/>
+				<imageExpression><![CDATA[$F{empresa_logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="179" y="41" width="228" height="20" uuid="bce43cfa-2cb7-47a0-ab1a-d10fd109a5a5"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="101" height="20" backcolor="#CCCCCC" uuid="fd9e6c32-8c11-43d5-8ff1-7664658298cc"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="101" y="0" width="455" height="20" backcolor="#CCCCCC" uuid="8dc0c255-92c3-4911-91c9-d678fd9500bb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Apontamento]]></text>
+			</staticText>
+			<line>
+				<reportElement x="1" y="19" width="554" height="1" uuid="296b6e3c-99b2-40a7-ae76-f51d41c3ddea"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="81" height="20" forecolor="#000000" uuid="486266b4-19df-4387-8339-31cdad594492"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{despesasfa_DATAMOVTO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="80" y="0" width="384" height="20" forecolor="#000000" uuid="7243e68c-fea8-47f2-b5b9-e3eef7ca2b3d"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{despesasfa_TIPO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="463" y="0" width="92" height="20" forecolor="#000000" uuid="9df587bd-ef46-4c56-9a91-0156063b8969"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{despesasfa_VALOR}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="24" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="0" y="0" width="100" height="20" uuid="84415884-2732-4bc6-91c7-033b79f81c11"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1" uuid="ac9d9111-60c5-49d3-9a19-0b2db69d5fe1"/>
+			</line>
+			<textField>
+				<reportElement x="435" y="0" width="80" height="20" uuid="27fc1761-e74f-4984-87d5-091aa277bffc"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="0" width="40" height="20" uuid="b295015d-4da6-4a97-ac16-31704387ff5c"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="121" y="0" width="260" height="16" forecolor="#0000FF" uuid="9a35200b-8ac6-43f5-bf24-43ab42f65293"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OnSys ERP Cloud - www.onsys.com.br ]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="20">
+			<staticText>
+				<reportElement x="238" y="0" width="125" height="20" uuid="6ef4ca45-1e3c-4c73-9012-71e463816801"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total geral                 ===>]]></text>
+			</staticText>
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="463" y="0" width="92" height="20" uuid="e6beffae-773b-42aa-9be5-f72918ff59ca"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{despesasfa_VALOR_5}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

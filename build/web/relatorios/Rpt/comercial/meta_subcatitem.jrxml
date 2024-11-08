@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="meta_subcatitem" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9d363056-d992-4737-95cd-0a5802664a84">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="onsys"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT distinct
+     subcatitem.`CODIGO` as Subcatitem,
+     ITEMPEDIDOVENDAS.`QUANTIDADE` as QtdVendida,
+     metapremiosubcatitem.`UNIDADEVENDIDA` as QtdMeta,
+     metapremiosubcatitem.`BONUSACIMA105` as P105,
+     metapremiosubcatitem.`METAABAIXO80` as P80,
+     metapremiosubcatitem.`METADE80ATE90` as P90,
+     metapremiosubcatitem.`METADE90ATE100` as P100,     
+     representante.`CODIGO` AS representante_CODIGO,
+     TRIM(representante.`NOME`) AS representante_NOME,
+     empresa.`logoimg`  AS empresa_logo,
+     regiao.`CODIGO` AS regiao_CODIGO,
+     regiao.`DESCRICAO` AS regiao_DESCRICAO,
+     (SELECT distinct usuario.`APELIDO`
+       FROM    `representante` representanteS INNER JOIN `usurepres` usurepres ON representanteS.`id` = usurepres.representante_id
+       INNER JOIN `usuario` usuario ON usurepres.usuario_id = usuario.id
+       where usuario.`TIPO` = 'Supervisor' 
+         and representanteS.id = representante.id 
+         and (representanteS.inativo = '' or representanteS.inativo is null or representanteS.inativo = 'N') limit 0,1) AS Supervisor
+FROM   `representante` representante inner join pedidovendas on pedidovendas.`REPRESENTANTE_ID` = representante.id 
+     INNER JOIN itempedidovendas ON itempedidovendas.`PEDIDOVENDAS_id` = pedidovendas.id
+     INNER JOIN item             ON item.id = itempedidovendas.`ITEM_id`
+     INNER JOIN subcatitem       ON subcatitem.id = item.`SUBCATITEM_id`
+     INNER JOIN metapremiosubcatitem       ON metapremiosubcatitem.SUBCATITEM_id = item.`SUBCATITEM_id` AND  metapremiosubcatitem.`REPRESENTANTE_id` = REPRESENTANTE.GERENTE_id     
+     INNER JOIN `empresa` empresa ON representante.empresa_id = empresa.id
+     LEFT OUTER JOIN `regiao` regiao ON representante.`REGIAO_id` = regiao.id
+ where  (representante.inativo = ' ' or representante.inativo is null) and representante.`EMPRESA_id` = 12 AND (pedidovendas.`VLTOTPEDIDO` > 0) AND  (pedidovendas.SITUACAO <> 'Cancelado') AND (pedidovendas.SITUACAO <> 'Bloqueado') AND (pedidovendas.SITUACAO <> 'Obs') AND pedidovendas.`DATAEMISSAO` BETWEEN '2021-08-01' AND '2021-08-19'  AND (representante.`id` in (1259210,1259217,1259222,1259233,1259240,1259262,1259267,1259274,1259275,1259281,1259301,1259303,1259307,1259314,1259319,1259329,1259346,1259350,1259364,1259385,1616081,1638000,1729301,1918067,2142946,2142950,2142982,2142987,2143002,2143067,2143073,2143082,2143148,2143164,2143172,2143186,2143225,2143232,2143240,2143246,2143251,2143252,2143256,2143265,2143269,5083610,5083611,5083621,5549540,5865800,5968927,5968932,6194544,6194547,6194552,6194554,6572142,6653283,6653291,7036253,7036254,7036256,7599659,7599660,7599661,7758449,7940984,8364771,8395625,8395626))	 
+ORDER BY Supervisor, subcatitem.`CODIGO`, regiao_DESCRICAO, representante_NOME]]>
+	</queryString>
+	<field name="Subcatitem" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Subcatitem"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="subcatitem"/>
+	</field>
+	<field name="QtdVendida" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="QtdVendida"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="QtdMeta" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="QtdMeta"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="metapremiosubcatitem"/>
+	</field>
+	<field name="P105" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="P105"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="metapremiosubcatitem"/>
+	</field>
+	<field name="P80" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="P80"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="metapremiosubcatitem"/>
+	</field>
+	<field name="P90" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="P90"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="metapremiosubcatitem"/>
+	</field>
+	<field name="P100" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="P100"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="metapremiosubcatitem"/>
+	</field>
+	<field name="representante_CODIGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="representante_CODIGO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="representante"/>
+	</field>
+	<field name="representante_NOME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="representante_NOME"/>
+	</field>
+	<field name="empresa_logo" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.label" value="empresa_logo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="regiao_CODIGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="regiao_CODIGO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="regiao"/>
+	</field>
+	<field name="regiao_DESCRICAO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="regiao_DESCRICAO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="regiao"/>
+	</field>
+	<field name="Supervisor" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Supervisor"/>
+	</field>
+	<variable name="Subcatitem1" class="java.lang.Integer" resetType="Group" resetGroup="Group_Subcatitem" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{Subcatitem}]]></variableExpression>
+	</variable>
+	<variable name="QtdVendida1" class="java.math.BigDecimal" resetType="Group" resetGroup="Group_Subcatitem" calculation="Sum">
+		<variableExpression><![CDATA[$F{QtdVendida}]]></variableExpression>
+	</variable>
+	<variable name="QtdVendida2" class="java.lang.Integer" resetType="Group" resetGroup="Group_Subcatitem" calculation="Sum">
+		<variableExpression><![CDATA[$F{QtdVendida}]]></variableExpression>
+	</variable>
+	<variable name="QtdVendida3" class="java.lang.Integer" resetType="Group" resetGroup="Group_Supervisor" calculation="Sum">
+		<variableExpression><![CDATA[$F{QtdVendida}]]></variableExpression>
+	</variable>
+	<variable name="Atingimento" class="java.lang.Integer" resetType="Group" resetGroup="Group_Subcatitem" calculation="Sum">
+		<variableExpression><![CDATA[$F{QtdVendida}]]></variableExpression>
+	</variable>
+	<variable name="percAtingimento" class="java.lang.Double" resetType="Group" resetGroup="Group_Subcatitem">
+		<variableExpression><![CDATA[($V{Atingimento}.doubleValue() / $F{QtdMeta} )]]></variableExpression>
+	</variable>
+	<variable name="premiacao" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$V{percAtingimento} <= 80 ? $F{P80} : $V{percAtingimento} >= 81 && $V{percAtingimento} >= 90 ? $F{P90} :  $V{percAtingimento} >= 91 && $V{percAtingimento} >= 100 ? $F{P100} : 0]]></variableExpression>
+	</variable>
+	<group name="Group_Supervisor">
+		<groupExpression><![CDATA[$F{Supervisor}]]></groupExpression>
+		<groupHeader>
+			<band height="41">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="58" y="0" width="222" height="20" uuid="0acc0c41-f39c-478d-96e9-27eeba9d212c"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{Supervisor}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="0" width="58" height="20" uuid="0075bbaf-0803-4bf4-89b1-3814cb280d5d"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Supervisor:]]></text>
+				</staticText>
+				<line>
+					<reportElement x="0" y="19" width="555" height="1" uuid="c08733da-f9ff-4da8-9bb5-956bc074f46f"/>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="101" y="0" width="179" height="20" uuid="2273f9a3-3349-40d1-8787-ae17efec17cb"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{Supervisor}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="0" width="100" height="20" uuid="83b8450a-f938-452f-b8a7-96b52e8c54e5"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total do supervisor :]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="Group_Subcatitem">
+		<groupExpression><![CDATA[$F{Subcatitem}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField pattern="#,##0.###;(#,##0.###-)">
+					<reportElement x="100" y="0" width="100" height="15" printWhenGroupChanges="Group_Subcatitem" uuid="709d66ea-5f7e-4cf8-9468-85fc941e057e"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{QtdVendida2}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="0" width="100" height="15" uuid="3859766c-f97e-4411-aa30-3e933273b3cf"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{Subcatitem}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.###;(#,##0.###-)" isBlankWhenNull="true">
+					<reportElement x="200" y="0" width="100" height="15" uuid="0d66ab06-12b0-4b4e-b04f-a3cf377e0478"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{QtdMeta}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.##%;(#,##0.##" isBlankWhenNull="true">
+					<reportElement x="300" y="0" width="85" height="15" uuid="d23d466a-054b-402c-bcba-730b69f091d7"/>
+					<textElement textAlignment="Center"/>
+					<textFieldExpression><![CDATA[$V{percAtingimento}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00#;(#,##0.00#-)">
+					<reportElement x="385" y="0" width="100" height="15" uuid="d70e49dd-6588-432f-b3e4-3dee39c9fba8"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$V{premiacao}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="63" splitType="Stretch">
+			<staticText>
+				<reportElement x="80" y="1" width="475" height="39" uuid="19cf89a9-6c0b-451f-a81f-02183863cfbf"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relatório de metas x premiação - subcategorias]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="25">
+			<staticText>
+				<reportElement mode="Opaque" x="100" y="0" width="100" height="20" backcolor="#CCCCCC" uuid="67f31a88-3c30-477a-95c6-0ec4f9dd5289"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qtd.Vendida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="100" height="20" backcolor="#CCCCCC" uuid="a96b7487-15d7-46a2-94d9-06a68a7e16a7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Subcategoria]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="20" width="555" height="1" uuid="c3b0927f-2349-4f6b-834a-43ad3c89e83a"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="200" y="0" width="100" height="20" backcolor="#CCCCCC" uuid="f548a02b-c96a-440a-adf0-af88400d5e76"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qtd.Meta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="300" y="0" width="85" height="20" backcolor="#CCCCCC" uuid="cf6ac8a7-2725-4b83-9e38-40896f557864"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[% Realizado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="385" y="0" width="100" height="20" backcolor="#CCCCCC" uuid="faf2d757-77cd-4cb0-81b1-8a62dedd7e7e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Premiação]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<pageFooter>
+		<band height="24">
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="0" y="0" width="100" height="20" uuid="a3a87139-6b13-4885-91a1-06bfac148265"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="210" y="0" width="141" height="16" forecolor="#0000FF" uuid="01736ea4-67da-44b4-9888-53e79f1d6971"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OnSys ERP Cloud - www.onsys.com.br]]></text>
+			</staticText>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="0" width="40" height="20" uuid="257f024c-1f96-4491-b505-0c31823656c4"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="435" y="0" width="80" height="20" uuid="5661ddff-9bcf-4579-a714-9b4cc8a4c046"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1" uuid="05a35950-519b-4c7e-aafd-d480fedb6900"/>
+			</line>
+		</band>
+	</pageFooter>
+</jasperReport>

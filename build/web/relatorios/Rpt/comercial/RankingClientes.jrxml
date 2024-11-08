@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RankingClientes" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="45f41e8b-f94f-4dfa-942c-5d146b9671b7">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="zebra" mode="Opaque" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT participante.`CODIGO` AS Codigo,
+       participante.`nomefantasia` AS NomeFantasia,
+       sum(itemdoctosai.`VLTOTITEM`) AS Valor,
+
+(SELECT sum(itemdoctosai.`VLTOTITEM`)
+FROM
+     `doctosai` doctosai INNER JOIN `itemdoctosai` itemdoctosai ON doctosai.`id` = itemdoctosai.`DOCTOSAI_id`
+     INNER JOIN `item` item ON itemdoctosai.`ITEM_id` = item.`id`
+   $P!{cCondicao}
+     order by sum(itemdoctosai.`VLTOTITEM`) desc limit 12 ) AS Valor_tot
+
+
+FROM `doctosai` doctosai INNER JOIN `itemdoctosai` itemdoctosai ON doctosai.`id` = itemdoctosai.`DOCTOSAI_id`
+     INNER JOIN `item` item ON itemdoctosai.`ITEM_id` = item.`id`
+     INNER JOIN `PARTICIPANTE` PARTICIPANTE ON PARTICIPANTE.`id` = doctosai.`participante_id`
+$P!{cCondicao}
+     group by participante.`CODIGO`
+     order by sum(itemdoctosai.`VLTOTITEM`)   desc limit 12]]>
+	</queryString>
+	<field name="Codigo" class="java.lang.String"/>
+	<field name="NomeFantasia" class="java.lang.String"/>
+	<field name="Valor" class="java.math.BigDecimal"/>
+	<field name="Valor_tot" class="java.math.BigDecimal"/>
+	<variable name="perc_valor_item" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="59" splitType="Stretch">
+			<staticText>
+				<reportElement x="136" y="0" width="302" height="39" uuid="9adebe5c-8ca5-4370-b574-17dc358ebc73"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ranking de clientes]]></text>
+			</staticText>
+			<image>
+				<reportElement mode="Transparent" x="2" y="5" width="100" height="52" uuid="38b74ec3-1079-428f-bfb9-f03df94a92e9"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="102" y="37" width="453" height="20" uuid="f1afe435-b68e-4ef6-912f-78e2c36cce1e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="63" height="20" backcolor="#CCCCCC" uuid="f7afbd7e-2c6a-4abc-8fc2-8f90131458f1"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="63" y="0" width="314" height="20" backcolor="#CCCCCC" uuid="7849da49-b409-4318-a4d5-8507923f8d4b"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nome]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="377" y="0" width="75" height="20" backcolor="#CCCCCC" uuid="08032312-53b4-4599-bd8f-6f078d4327d2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor da venda]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="452" y="0" width="103" height="20" backcolor="#CCCCCC" uuid="8ff61754-ac59-41d2-88ad-10a2815ee22d"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Percentual]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="2" y="0" width="61" height="20" forecolor="#000000" uuid="6c451a0a-820b-4e51-8c12-75110d969dfe"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Codigo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="63" y="0" width="314" height="20" forecolor="#000000" uuid="fbd9ac80-d1b7-448b-b849-1f668fabdb33"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NomeFantasia}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="377" y="0" width="75" height="20" forecolor="#000000" uuid="d5ba4149-cb39-4f5c-b39e-31af73d20e30"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Valor}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0 %">
+				<reportElement style="zebra" mode="Opaque" x="452" y="0" width="103" height="20" forecolor="#000000" uuid="039ec935-8108-4fb4-bf7d-a287855a66e6"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Valor}.doubleValue() / $F{Valor_tot}.doubleValue()]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="23">
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="2" y="3" width="100" height="20" uuid="55b28206-ee2e-490e-832e-250b40c935b5"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="180" y="3" width="197" height="20" forecolor="#0000FF" uuid="e88505d3-4279-42e3-b847-8ef8059f1c97"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OnSys ERP Cloud - www.onsys.com.br]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="1" width="555" height="1" uuid="07b8543f-52b7-4a53-b325-4c7867dc5619"/>
+			</line>
+			<textField>
+				<reportElement x="435" y="3" width="80" height="20" uuid="7c1a6fa3-4848-4552-af41-8f42b5de0054"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="3" width="40" height="20" uuid="0502f308-67ac-4dad-b93f-e18cf465fdb0"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="610">
+			<pie3DChart>
+				<chart>
+					<reportElement x="0" y="0" width="555" height="610" uuid="2038bb9d-18d7-47de-a13e-8536d4266562"/>
+					<chartTitle position="Top">
+						<titleExpression><![CDATA[]]></titleExpression>
+					</chartTitle>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<pieDataset>
+					<keyExpression><![CDATA[$F{NomeFantasia}]]></keyExpression>
+					<valueExpression><![CDATA[$F{Valor_tot}]]></valueExpression>
+				</pieDataset>
+				<pie3DPlot>
+					<plot/>
+					<itemLabel color="#000000" backgroundColor="#FFFFFF"/>
+				</pie3DPlot>
+			</pie3DChart>
+		</band>
+	</summary>
+</jasperReport>

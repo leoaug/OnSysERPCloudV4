@@ -1,0 +1,19 @@
+<html   xmlns:c="http://java.sun.com/jsp/jstl/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"                   
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"> 
+    <p:panel style="border: none !important; background-color: #dddddd;">
+        <p style="font-weight: bold">___________________________________________________________________________________________________________</p>
+        <h:outputText value="Usuário para recebimento de e-mail" style="color: blue; font-weight: 700; align-content: center"/>   
+        <p style="font-weight: bold">___________________________________________________________________________________________________________</p>                                
+        <p:pickList id="pickList" value="#{programaFace.programaUsuarioDualList}" var="usuarios"
+                    converter="usuarioConverter2" styleClass="semBorda FontBold Fs12"
+                    filterMatchMode="contains" responsive="true" 
+                    itemLabel="#{usuarios.apelido} - #{usuarios.email}" itemValue="#{usuarios}" 
+                    showSourceFilter="true" showTargetFilter="true">
+            <f:facet name="sourceCaption">Usuários disponíveis</f:facet>
+            <f:facet name="targetCaption">Usuários do centro de custo</f:facet>
+        </p:pickList>                        
+    </p:panel>                            
+</html>

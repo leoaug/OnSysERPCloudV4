@@ -1,0 +1,70 @@
+<html   xmlns:c="http://java.sun.com/jsp/jstl/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"                   
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"> 
+    
+    <p:panelGrid layout="grid" columns="3" 
+                 columnClasses="ui-grid-col-3, ui-grid-col-8, ui-grid-col-1"                                        
+                 id="pnlGrConsultar" styleClass="semBorda" 
+                 rendered="#{usuarioFace.registroSelecionado != null}"
+                 style="border: none !important; background-color: #dddddd">
+
+        <p:outputLabel value="Email" for="emailConsultar" style="color: black"/>
+        <p:inputText id="emailConsultar" disabled="true" 
+                     value="#{usuarioFace.registroSelecionado.email}" 
+                     style="color: blue; font-weight: 700; opacity: 1!important"/>
+        <p:spacer width="5"/>
+
+        <p:outputLabel value="Nome" for="nomeConsultar" style="color: black"/>
+        <p:inputText id="nomeConsultar" disabled="true" 
+            style="color: blue; font-weight: 700; opacity: 1!important"
+            value="#{usuarioFace.registroSelecionado.nome}"/>
+        <p:spacer width="5"/>
+
+        <p:outputLabel value="Apelido" for="apelidoConsultar" style="color: black"/>
+        <p:inputText id="apelidoConsultar" disabled="true"
+                     style="color: blue; font-weight: 700; opacity: 1!important"
+                     value="#{usuarioFace.registroSelecionado.apelido}"/>
+        <p:spacer width="5"/>
+
+        <p:outputLabel value="Tipo de usuário" for="tpusrConsultar" style="color: black"/>
+        <p:inputText id="tpusrConsultar" disabled="true" 
+                         style="color: blue; font-weight: 700; opacity: 1!important"
+                         value="#{usuarioFace.registroSelecionado.tipo}"/>
+        <p:spacer width="5"/>
+
+        <p:outputLabel for="recebeEmailConsultar" value="Recebe e-mail" style="color: black"/>
+        <h:selectBooleanCheckbox id="recebeEmailConsultar" 
+                                 disabled="true"
+                             title="Informe se o usuário recebe e-mail." 
+                             style="background:white"
+                             value="#{usuarioFace.registroSelecionado.recebeEmail}"/>
+        <p:spacer width="5"/>        
+        
+        <p:outputLabel value="Dashboard" for="dashboardConsultar" style="color: black"/>
+        <p:inputText id="dashboardConsultar" disabled="true" 
+                     style="color: blue; font-weight: 700; opacity: 1!important"
+                     value="#{usuarioFace.registroSelecionado.dashboard}"/>
+        <p:spacer width="5"/>
+
+        <p:outputLabel value="Fornecedor" for="participConsultar" style="color: black"/>
+        <p:inputText id="participConsultar" disabled="true"  
+                        style="color: blue; font-weight: 700; opacity: 1!important"
+                        value="#{usuarioFace.registroSelecionado.participante.nomefantasia}"/>
+        <p:spacer width="5"/>
+
+        <p:outputLabel value="Estabel. padrão" for="estabelConsultar" style="color: black"/>                                
+        <p:inputText id="estabelConsultar" disabled="true" 
+                         style="color: blue; font-weight: 700; opacity: 1!important"
+                         value="#{usuarioFace.registroSelecionado.estabelecimento.codigo}"/>
+        <p:spacer width="5"/>
+
+        <p:outputLabel for="obsConsultar" value="Observação" style="color: black"/>
+        <p:inputTextarea id="obsConsultar" disabled="true" rows="5" 
+                         style="color: blue; font-weight: 700; opacity: 1!important"
+                         value="#{usuarioFace.registroSelecionado.obs}"/>
+        <p:spacer width="5"/>
+
+    </p:panelGrid>
+</html>

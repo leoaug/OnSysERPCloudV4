@@ -1,0 +1,107 @@
+<html xmlns:c="http://java.sun.com/jsp/jstl/core"    
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"                   
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+    
+    <h:head>
+        <title>Pesquisa de item</title>
+    </h:head>
+    <h:body>
+        <p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" widgetVar="statusDialog" />
+        <p:dialog modal="true" widgetVar="statusDialog" header="Processando..." draggable="false" closable="false" resizable="false">                               
+            <p:graphicImage value="#{pageContext.servletContext.contextPath}/resources/imagens/onsys/bar180.gif" /> 
+        </p:dialog>         
+        <script type="text/javascript">
+            function startMessage() {
+                 statusDialog.show();
+            }
+            function finishMessage() {
+                statusDialog.hide();
+            }
+        </script>
+        <style> 
+            .ui-datatable .ui-datatable-data .even-row td{
+                background-color:#EEDD82;                          
+                font-size: 12px; 
+                height: 10px;  
+            }
+            .ui-datatable .ui-datatable-data .odd-row td{
+                background-color:#FFFACD;
+                font-size: 12px; 
+                height: 10px;                         
+            }                    
+        </style>
+        <h:form style="color:dodgerblue" id="frmPesquisaItem">
+            <div class="ui-fluid"> 
+                <p:dataTable var="item" id="tblPesquisaItem" 
+                            value="#{pesquisaItemFace.lazy}" widgetVar="tabela"
+                            paginator="true" rows="10" reflow="true"
+                            emptyMessage="Não há registros a exibir"  paginatorPosition="top"
+                            rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}"
+                            rowIndexVar="rowIx" lazy="true" filterDelay="1000"
+                            style="background-color: lightblue">
+
+                    <f:facet name="header">
+                        <h:outputText value="Itens" styleClass="Fs12" /> 
+                        <p:spacer width="40" height="5"/>
+                        <h:outputText value="  Filtrar  "/>
+                        <p:inputText id="globalFilter" onkeyup="PF('tabela').filter()" styleClass="Fs12"  
+                                     style="text-align: right; width: 120px"/>
+                        
+                    </f:facet>
+                    <p:column style="width:16px; height: 25px; border-style: solid; border-color: #0000FF;">
+                        <p:rowToggler />
+                    </p:column>                                                                                         
+                    <p:column headerText="Código" sortBy="#{item.codigo}" 
+                              style="color: #0000FF; height: 25px; width: 160px; border-style: solid; border-color: #0000FF;"
+                              filterStyle="width: 120px; overflow: hidden"
+                              filterBy="#{item.codigo}">
+                        <h:outputText value="#{item.codigo}" style="color: black"/>
+                    </p:column>  
+                    <p:column headerText="Descrição" 
+                              style="color: #0000FF; height: 25px; border-style: solid; border-color: #0000FF;"
+                              sortBy="#{item.descricao}"
+                              filterStyle="width: 240px; overflow: hidden"
+                              filterBy="#{item.descricao}">
+                        <h:outputText value="#{item.descricao}" style="color: black"/>
+                    </p:column>                    
+                    <p:column style="text-align: center; color: #0000FF; width: 60px; border-style: solid; border-color: #0000FF;" headerText="Ação">
+                        <p:commandButton title="Selecionar"
+                                         process="@this"
+                                         style="height: 30px; width: 30px;"
+                                         styleClass="GreenButton"
+                                         icon="fa fa-check white"                                         
+                                         action="#{pesquisaItemFace.selecionar(item)}">
+                        </p:commandButton>
+                    </p:column>
+                    <p:rowExpansion>
+                        <p:panelGrid columns="2" 
+                                     layout="grid" 
+                                     style="background-color: #F2E6E6"
+                                     columnClasses="ui-grid-col-2, ui-grid-col-10">
+
+                            <h:outputText value="Categoria" style="height: 25px ;color: black" styleClass="Fs12"/>
+                            <h:outputText value="#{item.catitem.codigo} - #{item.catitem.descricao}" 
+                                          style="height: 25px ;color: black" styleClass="Fs12">
+                            </h:outputText>
+                            
+                            <h:outputText value="Subcategoria" style="height: 25px ;color: black" styleClass="Fs12"/>
+                            <h:outputText value="#{item.subcatitem.codigo} - #{item.subcatitem.descricao}" 
+                                          style="height: 25px ;color: black" styleClass="Fs12">
+                            </h:outputText>
+                            
+                            
+                            <h:outputText value="Registro inativado em - " style="height: 25px ;color: black" styleClass="Fs12"/>
+                            <h:outputText value="#{item.datainativo}" 
+                                          style="height: 25px ;color: black" styleClass="Fs12">
+                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+                            </h:outputText>
+
+                         </p:panelGrid>
+                    </p:rowExpansion>                    
+                </p:dataTable>
+            </div>            
+        </h:form>
+    </h:body>
+</html>

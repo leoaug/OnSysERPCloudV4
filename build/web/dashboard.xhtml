@@ -1,0 +1,142 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui" xmlns:po="http://primefaces.org/freya" template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Dashboard</ui:define>
+
+    <ui:define name="head">
+        <h:outputScript name="chartjs/chart.js" library="demo" />
+        <script>
+        //<![CDATA[
+            $(function(){
+                var myChart1 = null;
+
+                window.redrawChart = function() {
+                    var style = getComputedStyle(document.body);
+                    var primCol = style.getPropertyValue('--primary-color') || '#2c84d8';
+                    var primLighterCol = style.getPropertyValue('--primary-lighter-color') || '#2c84d8';
+
+                    myChart1 = new Chart(document.getElementById("chart1").getContext('2d'), {
+                        type: 'line',
+                        data: {
+                            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                            datasets: [{
+                                label: 'Revenue',
+                                data: [12, 19, 3, 5, 2, 3, 9],
+                                borderColor: [
+                                    primCol,
+                                ],
+                                borderWidth: 4,
+                                fill: true,
+                                backgroundColor: [
+                                    primLighterCol
+                                ],
+                                
+                            }
+                            ]
+                        },
+                        options: {
+                            legend: {
+                                display: false,
+                            },
+                            maintainAspectRatio: false,
+                            hover: {
+                                mode: 'index'
+                            },
+                            scales: {
+                                xAxes: [{
+                                    display: true,
+                                    gridLines: {
+                                        color:    'transparent',
+                                    },
+                                    ticks: {
+                                        fontColor: '#BFC2C6'
+                                    }
+                                }],
+                                yAxes: [{
+                                    display: true,
+                                    gridLines: {
+                                        color:  'rgba(191, 194, 198, .45)',
+                                        borderDash:[5, 10],
+                                    },
+                                    ticks: {
+                                        fontColor:  '#BFC2C6',
+                                        min: 0,
+                                        stepSize: 5,
+                                    }
+                                }]
+                            }
+                        }
+                    });
+                }
+                      
+                window.redrawChart();
+                   
+                var ctx2 = document.getElementById("chart2").getContext('2d');
+
+                var myChart2 = new Chart(ctx2, {
+                    type: 'line',
+                    data: {
+                        labels: ['8Sun', '9Mon', '10Thu', '11Wed', '12Fri', '13Sat', '14Sun'],
+                        datasets: [{
+                            label: 'Revenue',
+                            data: [12, 19, 3, 5, 2, 3, 9],
+                            borderColor: [
+                                '#FFA928',
+                            ],
+                            borderWidth: 4,
+                            fill: true,
+                            backgroundColor: [
+                               'rgba(255, 169, 40, .2)' 
+                            ],
+                        }
+                        ]
+                    },
+                    options: {
+                        legend: {
+                            display: false,
+                        },
+                        maintainAspectRatio: false,
+                        hover: {
+                            mode: 'index'
+                        },
+                        scales: {
+                            xAxes: [{
+                                display: false,
+                            }],
+                            yAxes: [{
+                                display: false,
+                            }]
+                        }
+                    }
+                });
+            });
+        //]]>  
+        </script>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="layout-dashboard">
+            <div class="grid">
+                <div class="col-12">
+                    <div class="notification">
+                        <h6>👋 Bem-vindo #{loginFace.usuarioLogado.apelido}! <a href="#">Profile settings <i class="pi pi-arrow-up"></i></a></h6>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="grid" style="margin: -1rem;">
+                        <div class="col">
+                            <div class="card overview-box white">
+                                <div class="overview-info">
+                                    <h6>Chamados abertos</h6>
+                                    <h1>18%</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

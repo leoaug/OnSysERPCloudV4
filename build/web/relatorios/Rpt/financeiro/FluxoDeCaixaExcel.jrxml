@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="FluxoDeCaixaExcel" language="groovy" pageWidth="595" pageHeight="15000" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="zebra" isDefault="false" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style isDefault="false" style="zebra" mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="idEmpresa" class="java.lang.Integer"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cCondicao2" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select "CONTAS A RECEBER" AS Conta,
+vencimentogerencial AS PERIODO,
+portador.`DESCRICAO`,
+SUBSTRING(VENCIMENTOGERENCIAL, 7, 4) as ano,
+SUBSTRING(VENCIMENTOGERENCIAL, 4, 2) as mes,
+SUBSTRING(VENCIMENTOGERENCIAL, 1, 2) as dia,
+SUM(tituloarparcela.`VALORPARCELA`) AS PREVISTO,
+SUM(tituloarparcela.`VALORPARCELA` - tituloarparcela.`VLSALDO`) AS REALIZADO,
+SUM(tituloarparcela.`VLSALDO`) AS SALDO,
+SUM(tituloarparcela.`VALORPARCELA` - (tituloarparcela.`VALORPARCELA` - tituloarparcela.`VLSALDO`)) AS DIFERENCA
+from tituloar INNER JOIN `empresa` empresa ON tituloar.`EMPRESA_id` = empresa.id INNER JOIN
+`portador` portador ON tituloar.`PORTADOR_id` = portador.id INNER JOIN
+`tituloarparcela` tituloarparcela ON tituloar.id = tituloarparcela.`TITULOAR_id`
+WHERE tituloarparcela.`DATAVENCIMENTO`
+$P!{cCondicao}
+GROUP BY Conta, portador.`DESCRICAO`, SUBSTRING(VENCIMENTOGERENCIAL, 7, 4), SUBSTRING(VENCIMENTOGERENCIAL, 4, 2), SUBSTRING(VENCIMENTOGERENCIAL, 1, 2), vencimentogerencial
+UNION
+select "CONTAS A PAGAR" AS Conta,
+vencimentogerencial AS PERIODO,
+portador.`DESCRICAO`,
+SUBSTRING(VENCIMENTOGERENCIAL, 7, 4) as ano,
+SUBSTRING(VENCIMENTOGERENCIAL, 4, 2) as mes,
+SUBSTRING(VENCIMENTOGERENCIAL, 1, 2) as dia,
+SUM(tituloapparcela.`VALORPARCELA`) AS PREVISTO,
+SUM(tituloapparcela.`VALORPARCELA` - tituloapparcela.`VLSALDO`) AS REALIZADO,
+SUM(tituloapparcela.`VLSALDO`) AS SALDO,
+SUM(tituloapparcela.`VALORPARCELA` - (tituloapparcela.`VALORPARCELA` - tituloapparcela.`VLSALDO`)) AS DIFERENCA
+from tituloap INNER JOIN `empresa` empresa ON tituloap.`EMPRESA_id` = empresa.id INNER JOIN
+`portador` portador ON tituloap.`PORTADOR_id` = portador.id INNER JOIN
+`tituloapparcela` tituloapparcela ON tituloap.id = tituloapparcela.`TITULOAP_id`
+WHERE tituloapparcela.`DATAVENCIMENTO`
+$P!{cCondicao2}
+GROUP BY Conta, portador.`DESCRICAO`, SUBSTRING(VENCIMENTOGERENCIAL, 7, 4), SUBSTRING(VENCIMENTOGERENCIAL, 4, 2), SUBSTRING(VENCIMENTOGERENCIAL, 1, 2), vencimentogerencial
+ORDER BY Conta, ano, mes, dia]]>
+	</queryString>
+	<field name="Conta" class="java.lang.String"/>
+	<field name="PERIODO" class="java.lang.String"/>
+	<field name="DESCRICAO" class="java.lang.String"/>
+	<field name="ano" class="java.lang.String"/>
+	<field name="mes" class="java.lang.String"/>
+	<field name="dia" class="java.lang.String"/>
+	<field name="PREVISTO" class="java.math.BigDecimal"/>
+	<field name="REALIZADO" class="java.math.BigDecimal"/>
+	<field name="SALDO" class="java.math.BigDecimal"/>
+	<field name="DIFERENCA" class="java.math.BigDecimal"/>
+	<variable name="totPrevisao" class="java.math.BigDecimal" resetType="Group" resetGroup="Conta" calculation="Sum">
+		<variableExpression><![CDATA[$F{PREVISTO}]]></variableExpression>
+	</variable>
+	<variable name="totRealizado" class="java.math.BigDecimal" resetType="Group" resetGroup="Conta" calculation="Sum">
+		<variableExpression><![CDATA[$F{REALIZADO}]]></variableExpression>
+	</variable>
+	<variable name="totSaldo" class="java.math.BigDecimal" resetType="Group" resetGroup="Conta" calculation="Sum">
+		<variableExpression><![CDATA[$F{SALDO}]]></variableExpression>
+	</variable>
+	<variable name="totDiferenca" class="java.math.BigDecimal" resetType="Group" resetGroup="Conta" calculation="Sum">
+		<variableExpression><![CDATA[$F{DIFERENCA}]]></variableExpression>
+	</variable>
+	<group name="Conta">
+		<groupExpression><![CDATA[$F{Conta}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement style="zebra" mode="Opaque" x="354" y="0" width="60" height="20" forecolor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{totPrevisao}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement style="zebra" mode="Opaque" x="414" y="0" width="60" height="20" forecolor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{totRealizado}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement style="zebra" mode="Opaque" x="474" y="0" width="60" height="20" forecolor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{totDiferenca}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement style="zebra" mode="Opaque" x="0" y="0" width="354" height="20" forecolor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TOTAL:]]></text>
+				</staticText>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement style="zebra" mode="Opaque" x="534" y="0" width="60" height="20" forecolor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{totSaldo}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="65" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="48" width="595" height="16" backcolor="#CCCCCC"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="0" y="28" width="595" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="251" y="49" width="103" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Período]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="354" y="49" width="60" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Previsto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="414" y="49" width="60" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Realizado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="474" y="49" width="60" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Diferença]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="595" height="29"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fluxo de Caixa Gerencial - Sintético]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="534" y="49" width="60" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Saldo em aberto]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="64" width="595" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="127" y="49" width="124" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo Conta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="49" width="127" height="15"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Portador]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="414" y="0" width="60" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{REALIZADO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="354" y="0" width="60" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{PREVISTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="251" y="0" width="103" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{PERIODO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="474" y="0" width="60" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{DIFERENCA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="534" y="0" width="60" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{SALDO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="127" y="0" width="124" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Conta}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="127" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DESCRICAO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+            <link rel="icon" href="#{request.contextPath}/resources/freya-layout/images/favicon.ico" type="image/x-icon"></link>
+        </f:facet>
+        <title>OnSys ERP Cloud - Login</title>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    </h:head>
+    <p:focus for=":login:email"/>                    
+    <h:form id="login">
+        <h:body styleClass="login-body">
+            <div class="login-wrapper">
+                <div class="login-panel">
+                    <p:growl id="messages" showDetail="true"/>
+                    <h:link outcome="/dashboard">
+                        <p:graphicImage value="#{pageContext.servletContext.contextPath}/resources/imagens/OnSys.png" cache="false"/>
+                    </h:link>
+                    <p:inputText id="email" value="#{loginFace.login}"  placeholder="Email" />
+                    <p:password id="password"  value="#{loginFace.senha}"  placeholder="Senha" />
+                    <p:commandButton value="LOGIN" 
+                                     update="messages"
+                                     action="#{loginFace.executarLogin(loginFace.login,loginFace.senha)}" 
+                                     ajax="true"/>
+                    <a href="#">Esqueceu a senha ?</a>
+                    <p>Você não tem uma conta,  <a href="#">cadastre-se.</a></p>
+                </div>
+                <div class="login-footer">
+                    <h4>OnSys ERP Cloud</h4>
+                    <h6>Copyright Ⓒ OnSys Sistemas</h6>
+                </div>
+            </div>
+            <h:outputStylesheet name="css/#{guestPreferences.layout}.css" library="freya-layout" />
+        </h:body>
+     </h:form>
+
+</html>

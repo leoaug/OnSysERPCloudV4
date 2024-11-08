@@ -1,0 +1,181 @@
+<html xmlns:c="http://java.sun.com/jsp/jstl/core"    
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"                   
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <h:head>
+        <title>Incluir cliente</title>
+    </h:head>
+    <h:body>
+        <p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" widgetVar="statusDialog" />
+        <p:dialog modal="true" widgetVar="statusDialog" header="Processando..." draggable="false" closable="false" resizable="false">                               
+            <p:graphicImage value="#{pageContext.servletContext.contextPath}/resources/imagens/onsys/bar180.gif" /> 
+        </p:dialog>         
+        <script type="text/javascript">
+            function startMessage() {
+                 statusDialog.show();
+            }
+            function finishMessage() {
+                statusDialog.hide();
+            }
+        </script>
+        <h:form id="fmPesquisaClienteIncluir">
+            <script type="text/javascript" src="../../../../resources/js/jquery.price_format.js"></script> 
+            <script type="text/javascript" src="../../../../resources/js/locale-primefaces.js" ></script>
+            <p:toolbar style="height: 35px">
+                <f:facet name="left">
+                    <p:commandButton title="Salvar dados do registro corrente" 
+                                     action="#{pesquisaClienteIncluirFace.fecharDialogo()}" 
+                                     style="height: 30px; width: 120px;"
+                                     styleClass="GreenButton"
+                                     value="Salvar"
+                                     update="fmPesquisaClienteIncluir,messagesPesquisaIncluir"
+                                     icon="fa fa-check white"
+                                     alt="Salvar dados do registro corrente"
+                                     process="@form"
+                                     onclick="PF('PrimeFaces.monitorDownload(startMessage,finishMessage)')"/>                                
+                    <p:spacer width="5" height="5"/>                        
+                    <p:commandButton style="height: 30px; width: 120px;"
+                                     styleClass="RedButton" 
+                                     update="@none"                   
+                                     value="Voltar"
+                                     process="@this" 
+                                     immediate="true"  
+                                     icon="fa fa-reply Fs12 white" 
+                                     action="#{pesquisaClienteIncluirFace.fecharDialogoCancelar(clienteFace.registroSelecionado)}"                                      
+                                     title="Fechar." 
+                                     onclick="PF('PrimeFaces.monitorDownload(startMessage, finishMessage)')"
+                                     alt="Fechar."/>
+                </f:facet>
+            </p:toolbar>
+            <p:growl id="messagesPesquisaIncluir" showDetail="true"/>
+            <div class="ui-fluid">
+                <c:if test="${clienteFace.naturezaPJPF eq '1'}">  
+                    <p:focus for="cnpj"/>
+                </c:if>                                         
+                <c:if test="${clienteFace.naturezaPJPF eq '2'}">
+                    <p:focus for="cpf"/>                    
+                </c:if>                                                             
+                <p:panelGrid layout="grid" columns="4" 
+                             columnClasses="ui-grid-col-2, ui-grid-col-4, ui-grid-col-2, ui-grid-col-4"
+                             id="pnlGrDadosGerais" styleClass="semBorda"
+
+                             style="border: none !important; background-color: #dddddd">
+
+                    <p:outputLabel for="natureza" value="Natureza" style="color: black"/>
+                    <p:selectOneRadio styleClass="semBorda" id="natureza" value="#{clienteFace.naturezaPJPF}" 
+                                      style="border: none !important;"
+                                      layout="responsive" columns="2"
+                                      onchange="javascript:submit()">  
+                        <f:selectItem itemLabel="Pessoa jurídica" itemValue="1" />  
+                        <f:selectItem itemLabel="Pessoa física"   itemValue="2" />                                                 
+                    </p:selectOneRadio>   
+
+                    <c:if test="${clienteFace.naturezaPJPF eq '1'}">  
+                        <p:outputLabel value="CNPJ" style="color: black" for="cnpj"/>
+                        <p:inputMask id="cnpj" value="#{clienteFace.registroSelecionado.cnpjcpf}"  
+                                     placeholder="Qual é o CNPJ ?"
+                                     mask="99.999.999/9999-99">
+                            <p:ajax process="cnpj" event="blur" listener="#{clienteFace.preencherCNPJ()}" 
+                                    update="razaoSocial,nomeFantasia,telefone,messagesPesquisaIncluir"/>
+                        </p:inputMask>                     
+                    </c:if>                                         
+                    <c:if test="${clienteFace.naturezaPJPF eq '2'}">  
+                        <p:outputLabel value="CPF" style="color: black" for="cpf"/>
+                        <p:inputMask id="cpf" value="#{clienteFace.registroSelecionado.cnpjcpf}"  
+                                         mask="999.999.999-99"/>
+                    </c:if>                                         
+                    
+                    <c:if test="${clienteFace.naturezaPJPF eq '1'}">  
+                        
+                        <p:outputLabel value="Razão social" style="color: black" for="razaoSocial"/>
+                        <p:inputText id="razaoSocial" value="#{clienteFace.registroSelecionado.razaosocial}"/>
+                        
+                        <p:outputLabel for="nomeFantasia" value="Nome fantasia" style="color: black"/>
+                        <p:inputText value="#{clienteFace.registroSelecionado.nomefantasia}" id="nomeFantasia"/>
+                        
+                    </c:if>                                         
+                    <c:if test="${clienteFace.naturezaPJPF eq '2'}">
+                        
+                        <p:outputLabel value="Nome completo" style="color: black" for="razaoSocial"/>
+                        <p:inputText id="razaoSocial" value="#{clienteFace.registroSelecionado.razaosocial}"/>
+                        
+                        <p:outputLabel for="nomeFantasia" value="Apelido" style="color: black"/>
+                        <p:inputText value="#{clienteFace.registroSelecionado.nomefantasia}" id="nomeFantasia"/>
+                        
+                    </c:if>                                                             
+
+                    <p:outputLabel value="Data do cadastro" style="color: black" for="dtCadastro"/>
+                    <p:calendar id="dtCadastro" value="#{clienteFace.registroSelecionado.datacadastro}" 
+                                pattern="dd/MM/yyyy" locale="pt_BR" navigator="true" 
+                                style="font-size: 11px"/>
+                    
+                    <p:outputLabel for="emailPartcipante" value="E-mail" style="color: black"/> 
+                    <p:inputText id="emailPartcipante" value="#{clienteFace.registroSelecionado.email}"/> 
+
+                    <p:outputLabel for="telefone" value="Telefone" style="color: black"/>
+                    <p:inputText id="telefone" value="#{clienteFace.registroSelecionado.fone}"/>
+                    
+                    <p:outputLabel value="Representante" for="representante" style="color: black"/>
+                    <p:selectOneMenu id="representante" value="#{clienteFace.registroSelecionado.representante}" var="p">
+                        <f:selectItems var="itemSel" itemLabel="#{itemSel.apelido}"  itemValue="#{itemSel}" value="#{prospectFace.listRepresentante}"/>
+                        <p:column>#{p.codigo} - #{p.apelido}</p:column> 
+                        <f:converter converterId="representanteConverter"/>
+                    </p:selectOneMenu>
+                    
+                </p:panelGrid>
+                <p:panelGrid id="pnlGrEndereco"
+                        columns="4" columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-8" 
+                        rendered="#{clienteFace.registroSelecionado != null}"  
+                        style="border: none !important; background-color: #dddddd"
+                        layout="grid" styleClass="ui-panelgrid-lightgrey">
+
+                    <p:outputLabel value="CEP" for="cep" style="color: black;"/>
+                    <p:inputMask id="cep" value="#{clienteFace.registroSelecionado.cep}" mask="99.999-999" style="width: 90px">
+                        <p:ajax process="cep" event="blur" listener="#{clienteFace.preencheEndereco()}"
+                                update="logradouro,bairro,uf,cidade"/>
+                    </p:inputMask>                
+
+                    <p:outputLabel value="Logradouro" for="logradouro" style="color: black;"/>
+                    <p:inputText id="logradouro" value="#{clienteFace.registroSelecionado.logradouro}"
+                                 style="text-transform:uppercase;"/>
+
+                </p:panelGrid>            
+                <p:panelGrid id="pnlGrEndereco2"
+                        columns="4" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" 
+                        rendered="#{clienteFace.registroSelecionado != null}"  
+                        style="border: none !important; background-color: #dddddd"
+                        layout="grid" styleClass="ui-panelgrid-lightgrey">
+
+                    <p:outputLabel value="Número" for="numero"  style="color: black"/>
+                    <p:inputText id="numero" value="#{clienteFace.registroSelecionado.numero}"
+                                  maxlength="10" size="10"
+                                 style="text-transform:uppercase;"/>
+
+                    <p:outputLabel value="Cidade" for="cidade"  style="color: black"/>
+                    <p:inputText id="cidade" value="#{clienteFace.registroSelecionado.cidade}"
+                                 style="text-transform:uppercase;"/>
+
+                    <p:outputLabel value="Bairro" for="bairro"  style="color: black"/>
+                    <p:inputText id="bairro" value="#{clienteFace.registroSelecionado.bairro}"
+                                 style="text-transform:uppercase;"/>
+
+                    <p:outputLabel value="UF" for="uf" style="color: black"/>
+                    <p:inputText id="uf" value="#{clienteFace.registroSelecionado.uf}"
+                                 maxlength="2"
+                                 style="text-transform:uppercase;"/>
+
+                    <p:outputLabel value="Complemento" for="complemento" style="color: black"/>
+                    <p:inputText id="complemento" value="#{clienteFace.registroSelecionado.complemento}"
+                                 maxlength="30" 
+                                 style="text-transform:uppercase;"/>
+
+                    <p:spacer width="5"/>                
+                    <p:spacer width="5"/>                
+
+                </p:panelGrid>
+            </div>
+        </h:form>
+    </h:body>            
+</html>

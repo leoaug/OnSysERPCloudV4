@@ -1,0 +1,43 @@
+<html xmlns:c="http://java.sun.com/jsp/jstl/core"    
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"                   
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+    
+    <h:head>
+        <title>Pesquisa referência</title>
+    </h:head>
+    <h:body>
+        <p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" widgetVar="statusDialog" />
+        <p:dialog modal="true" widgetVar="statusDialog" header="Processando..." draggable="false" closable="false" resizable="false">                               
+            <p:graphicImage value="#{pageContext.servletContext.contextPath}/resources/imagens/onsys/bar180.gif" /> 
+        </p:dialog>         
+        <script type="text/javascript">
+            function startMessage() {
+                 statusDialog.show();
+            }
+            function finishMessage() {
+                statusDialog.hide();
+            }
+        </script>
+        <h:form style="color:dodgerblue" id="frmReferencia">
+            <div class="ui-fluid"> 
+                <p:treeTable id="dtbReferencia" var="item" value="#{componenteConfiguradoFace.treeNodeGrupos}"
+                             selectionMode="checkbox" selection="#{componenteConfiguradoFace.selectedNode}"
+                             emptyMessage="Não há registros a exibir" widgetVar="tabela" 
+                             resizableColumns="true" liveResize="true"
+                             rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}" 
+                             style="font-size: 10px"> 
+
+                    <f:facet name="header">                                             
+                        <h:outputText value="Referências" styleClass="Fs14"/>
+                    </f:facet>
+                    <p:column  style="color: #1578c9;" styleClass="Fs12" 
+                               headerText="Referência" sortBy="#{item.componente}">
+                        <h:outputText value="#{item.componente}" styleClass="Fs12" style="color: black"/>
+                    </p:column>                                    
+                </p:treeTable>
+            </div>
+        </h:form>
+    </h:body>
+</html>

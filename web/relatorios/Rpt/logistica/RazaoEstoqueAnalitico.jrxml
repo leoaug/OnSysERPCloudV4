@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.0.final using JasperReports Library version 6.5.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RazaoEstoqueAnalitico" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoPages" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8a655d08-536d-4a9e-a2bf-1f46d2cffbdc">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="onsys"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="282"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="710"/>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     item.`CODIGO` AS item_CODIGO,
+     item.`DESCRICAO` AS item_DESCRICAO,
+     movtoestoque.`DTMOVTO` AS movtoestoque_DTMOVTO,
+     movtoestoque.`NRODOCTO` AS movtoestoque_NRODOCTO,
+     movtoestoque.`ORIGEM` AS movtoestoque_ORIGEM,
+     CASE movtoestoque.`TIPOMOVTO` WHEN 'E' THEN movtoestoque.`QTDMOVTO` ELSE movtoestoque.`QTDMOVTO` * -1 END movtoestoque_QTDMOVTO,
+     movtoestoque.`SERIE` AS movtoestoque_SERIE,
+     CASE movtoestoque.`TIPOMOVTO` WHEN 'E' THEN 'Entrada' ELSE 'Saida' END Tipo,
+     movtoestoque.`TIPOMOVTO` AS movtoestoque_TIPOMOVTO,
+     deposito.`DESCRICAO` AS deposito_DESCRICAO,
+     unidademedida.`UN` AS unidademedida_UN,
+     localizacao.`DESCRICAO` AS localizacao_DESCRICAO,
+     empresa.logoimg  AS empresa_logo,
+     tipodoctologistica.`CODIGO` AS tipodoctologistica_CODIGO,
+     deposito.`CODIGO` AS deposito_CODIGO,
+     localizacao.`CODIGO` AS localizacao_CODIGO,
+     saldoestoqueperiodo.quantidadeinicial as QtdInicial,
+     CASE movtoestoque.`TIPOMOVTO` WHEN 'E' THEN movtoestoque.`VLMOVTO` ELSE movtoestoque.`VLMOVTO` * -1 END movtoestoque_VLMOVTO,
+     movtoestoque.`LOTE` AS movtoestoque_LOTE
+FROM
+     `item` item INNER JOIN `movtoestoque` movtoestoque ON item.`id` = movtoestoque.`ITEM_id`
+     INNER JOIN `deposito` deposito ON movtoestoque.`DEPOSITO_id` = deposito.`id`
+     INNER JOIN empresa       empresa       ON movtoestoque.empresa_id = empresa.id
+     INNER JOIN `unidademedida` unidademedida ON item.`UNIDADEMEDIDA_id` = unidademedida.`id`
+     INNER JOIN `tipodoctologistica` tipodoctologistica ON movtoestoque.`TIPODOCTOLOGISTICA_id` = tipodoctologistica.`id`
+     INNER JOIN `localizacao` localizacao ON movtoestoque.`localizacao_id` = localizacao.`id`
+     INNER JOIN saldoestoqueperiodo on movtoestoque.item_id             = saldoestoqueperiodo.item_id 
+                                                                 and movtoestoque.deposito_id     = saldoestoqueperiodo.deposito_id 
+                                                                 and movtoestoque.localizacao_id = saldoestoqueperiodo.localizacao_id
+where movtoestoque.empresa_id = 900
+ORDER BY item_DESCRICAO, movtoestoque.item_id, movtoestoque_TIPOMOVTO, movtoestoque_DTMOVTO, tipodoctologistica_CODIGO]]>
+	</queryString>
+	<field name="item_CODIGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="item_CODIGO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="item"/>
+	</field>
+	<field name="item_DESCRICAO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="item_DESCRICAO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="item"/>
+	</field>
+	<field name="movtoestoque_DTMOVTO" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="movtoestoque_DTMOVTO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movtoestoque"/>
+	</field>
+	<field name="movtoestoque_NRODOCTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="movtoestoque_NRODOCTO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movtoestoque"/>
+	</field>
+	<field name="movtoestoque_ORIGEM" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="movtoestoque_ORIGEM"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movtoestoque"/>
+	</field>
+	<field name="movtoestoque_QTDMOVTO" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="movtoestoque_QTDMOVTO"/>
+	</field>
+	<field name="movtoestoque_SERIE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="movtoestoque_SERIE"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movtoestoque"/>
+	</field>
+	<field name="Tipo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Tipo"/>
+	</field>
+	<field name="movtoestoque_TIPOMOVTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="movtoestoque_TIPOMOVTO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movtoestoque"/>
+	</field>
+	<field name="deposito_DESCRICAO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="deposito_DESCRICAO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="deposito"/>
+	</field>
+	<field name="unidademedida_UN" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="unidademedida_UN"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="unidademedida"/>
+	</field>
+	<field name="localizacao_DESCRICAO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="localizacao_DESCRICAO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="localizacao"/>
+	</field>
+	<field name="empresa_logo" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.label" value="empresa_logo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="tipodoctologistica_CODIGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="tipodoctologistica_CODIGO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tipodoctologistica"/>
+	</field>
+	<field name="deposito_CODIGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="deposito_CODIGO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="deposito"/>
+	</field>
+	<field name="localizacao_CODIGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="localizacao_CODIGO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="localizacao"/>
+	</field>
+	<field name="QtdInicial" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="QtdInicial"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="saldoestoqueperiodo"/>
+	</field>
+	<field name="movtoestoque_VLMOVTO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="movtoestoque_VLMOVTO"/>
+	</field>
+	<field name="movtoestoque_LOTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="movtoestoque_LOTE"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movtoestoque"/>
+	</field>
+	<variable name="cont" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA["1"]]></variableExpression>
+	</variable>
+	<variable name="movtoestoque_QTDMOVTO1" class="java.lang.Double" resetType="Group" resetGroup="Deposito" calculation="Sum">
+		<variableExpression><![CDATA[$F{movtoestoque_QTDMOVTO}]]></variableExpression>
+	</variable>
+	<group name="Descricao">
+		<groupExpression><![CDATA[$F{item_DESCRICAO}]]></groupExpression>
+	</group>
+	<group name="Item">
+		<groupExpression><![CDATA[$F{item_CODIGO}]]></groupExpression>
+		<groupHeader>
+			<band height="15">
+				<staticText>
+					<reportElement x="0" y="0" width="36" height="15" uuid="ae100fcb-3e9a-4d76-9813-e695b7162f7c"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Comic Sans MS" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Item :]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="36" y="0" width="114" height="15" uuid="b6819854-8452-4eff-9b2c-cd43b2d29059"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Comic Sans MS" size="8" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{item_CODIGO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="150" y="0" width="246" height="15" uuid="4df75f1d-d65d-4d7c-8c77-3e6a6632441d"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Comic Sans MS" size="8" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{item_DESCRICAO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="396" y="0" width="19" height="15" forecolor="#000000" uuid="e4bd5606-d6f9-49da-b77f-b194cc33b1ad"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Comic Sans MS" size="8" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{unidademedida_UN}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="17"/>
+		</groupFooter>
+	</group>
+	<group name="Deposito">
+		<groupExpression><![CDATA[$F{deposito_CODIGO}]]></groupExpression>
+		<groupHeader>
+			<band height="15">
+				<staticText>
+					<reportElement x="150" y="0" width="70" height="15" uuid="38ef1bd6-dfe2-4918-99ba-837cc90c892a"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Comic Sans MS" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Saldo inicial :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="0" width="36" height="15" uuid="5dc5cd66-7199-4571-8934-a1fd6e22e9ee"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Comic Sans MS" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Deposito :]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="36" y="0" width="114" height="15" uuid="a56cb12c-2028-485f-86cb-12bb0457d961"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Comic Sans MS" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{deposito_CODIGO}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.0000;(#,##0.0000-)">
+					<reportElement x="220" y="0" width="100" height="15" uuid="4b7fab80-8bc5-4bf7-bbb3-8505a7cd4ff7">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Comic Sans MS" size="8" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{QtdInicial}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="15">
+				<textField pattern="#,##0.0000">
+					<reportElement x="220" y="0" width="100" height="15" uuid="e4055126-b209-40b7-a9a4-894e1fde9e51">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Comic Sans MS" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{movtoestoque_QTDMOVTO1}+$F{QtdInicial}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="150" y="0" width="70" height="15" uuid="c777ec6e-3127-468e-a96c-5dbdf98768f8"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Comic Sans MS" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Saldo final :]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="61" splitType="Stretch">
+			<textField>
+				<reportElement x="241" y="32" width="379" height="20" uuid="5ca3732f-cd01-4460-8005-cfc6edccaf31"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="2" y="3" width="119" height="50" uuid="6ec8ed97-3fec-4dab-9e8c-ff069193d0cb"/>
+				<imageExpression><![CDATA[$F{empresa_logo}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="241" y="1" width="379" height="28" uuid="4ddecb10-f685-4372-bfe2-f160ba1206f9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Razão do estoque - analítico]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="17" splitType="Stretch">
+			<rectangle>
+				<reportElement x="-18" y="0" width="820" height="15" backcolor="#CCCCCC" uuid="7996f217-a1a4-4779-9c78-6b4519ddc663">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="0" width="50" height="15" uuid="49a706da-b6f1-4116-8a11-e14c4d8540a8"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="50" y="0" width="48" height="15" uuid="b641f879-7451-442a-88be-0d1a1e0b6a00"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nro. Docto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="99" y="0" width="24" height="15" uuid="a77f7f1f-d7b7-4995-acec-375635bbfdc1"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Serie]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="127" y="0" width="48" height="15" uuid="b4a1fee5-4744-4e89-afdd-c33a8b60e99e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Local.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="239" y="0" width="52" height="15" uuid="7b511452-747f-46e7-9c65-9bb00fea3a85"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo Docto.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="291" y="0" width="52" height="15" uuid="8be68de8-a6e1-4568-aadb-c34760736b89"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qtd.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="343" y="0" width="80" height="15" uuid="88cad60a-fe8f-4a4d-8b96-a3760f9a97d6"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="176" y="0" width="63" height="15" uuid="2839617f-5d0c-419e-b199-1d417b1ebdc4">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lote]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<rectangle>
+				<reportElement x="0" y="0" width="802" height="15" backcolor="#CCFFFF" uuid="2fea9d59-c873-4eef-91da-925eb654b351">
+					<printWhenExpression><![CDATA[new Boolean(new Integer(($V{cont}.intValue())%2).equals(new Integer("1")))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="50" height="15" uuid="7c676213-5893-4df4-b6ef-9e45c9af55e3"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{movtoestoque_DTMOVTO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="50" y="0" width="48" height="15" uuid="97716f94-a027-434f-90fd-6a2f011028e0"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{movtoestoque_NRODOCTO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="99" y="0" width="24" height="15" uuid="4dc0802f-2da4-4a34-9d61-a7e8891dddf8">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{movtoestoque_SERIE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="127" y="0" width="48" height="15" uuid="af860296-cded-40ff-9845-a9cc020200ce"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{localizacao_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="239" y="0" width="52" height="15" uuid="4a487b15-f4c9-497b-87ec-f5c1ecfce66c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipodoctologistica_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.0000;-#,##0.0000">
+				<reportElement x="291" y="0" width="52" height="15" uuid="38f710fe-b8a8-481d-ae9e-e736bc96445f"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{movtoestoque_QTDMOVTO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.0000;-#,##0.0000">
+				<reportElement x="343" y="0" width="80" height="15" uuid="28322247-442f-48a1-9496-e52fb9d8f023"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{movtoestoque_VLMOVTO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="176" y="0" width="63" height="15" uuid="c5bf6f84-eb06-4f8d-8bb9-e262f2ebf026"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{movtoestoque_LOTE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="22" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="2" width="802" height="1" uuid="db13fa79-2fc9-4f45-bf4c-d86488079eda"/>
+			</line>
+			<textField>
+				<reportElement x="675" y="2" width="80" height="20" uuid="45daa5ee-08af-419c-aeb6-dfd3e228f61d"/>
+				<textElement textAlignment="Right">
+					<font fontName="Comic Sans MS" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="755" y="2" width="40" height="20" uuid="660f183a-7381-4e0f-a2f8-8f9e3ce960bb"/>
+				<textElement>
+					<font fontName="Comic Sans MS" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="0" y="2" width="100" height="20" uuid="fce99aa0-f854-4d4d-bb2e-85ab445e1b17"/>
+				<textElement>
+					<font fontName="Comic Sans MS" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="247" y="0" width="333" height="16" forecolor="#0000FF" uuid="6232b534-d470-494b-a9f6-0aa12cac87cd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ERP OnSys - www.onsys.com.br]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

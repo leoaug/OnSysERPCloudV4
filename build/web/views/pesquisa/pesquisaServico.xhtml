@@ -1,0 +1,82 @@
+<html xmlns:c="http://java.sun.com/jsp/jstl/core"    
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"                   
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+    
+    <h:head>
+        <title>Pesquisa de serviço</title>
+    </h:head>
+    <h:body>
+        <p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" widgetVar="statusDialog" />
+        <p:dialog modal="true" widgetVar="statusDialog" header="Processando..." draggable="false" closable="false" resizable="false">                               
+            <p:graphicImage value="#{pageContext.servletContext.contextPath}/resources/imagens/onsys/bar180.gif" /> 
+        </p:dialog>         
+        <script type="text/javascript">
+            function startMessage() {
+                 statusDialog.show();
+            }
+            function finishMessage() {
+                statusDialog.hide();
+            }
+        </script>
+        <style> 
+            .ui-datatable .ui-datatable-data .even-row td{
+                background-color:#EEDD82;                          
+                font-size: 12px; 
+                height: 10px;  
+            }
+            .ui-datatable .ui-datatable-data .odd-row td{
+                background-color:#FFFACD;
+                font-size: 12px; 
+                height: 10px;                         
+            }                    
+        </style>
+        <h:form style="color:dodgerblue" id="frmPesquisaServico">
+            <div class="ui-fluid"> 
+                <p:dataTable var="item" id="tblPesquisaServico" 
+                            value="#{pesquisaServicoFace.lazy}" widgetVar="tabela"
+                            paginator="true" rows="10" reflow="true"
+                            emptyMessage="Não há registros a exibir"  paginatorPosition="top"
+                            rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}" 
+                            rowIndexVar="rowIx" lazy="true" filterDelay="1000"
+                            style="background-color: lightblue">
+
+                    <f:facet name="header">
+                        <h:outputText value="Serviços" styleClass="Fs12" /> 
+                        <p:spacer width="40" height="5"/>
+                        <h:outputText value="  Filtrar  "/>
+                        <p:inputText id="globalFilter" onkeyup="PF('tabela').filter()" styleClass="Fs12"  
+                                     style="text-align: right; width: 120px"/>
+                        
+                    </f:facet>
+                    <p:column style="width:16px; height: 25px; border-style: solid; border-color: #0000FF;">
+                        <p:rowToggler />
+                    </p:column>                                                                                         
+                    <p:column headerText="Código" sortBy="#{item.codigo}" 
+                              style="color: #0000FF; height: 25px; width: 160px; border-style: solid; border-color: #0000FF;"
+                              filterStyle="width: 120px; overflow: hidden"
+                              styleClass="Fs11" filterBy="#{item.codigo}">
+                        <h:outputText value="#{item.codigo}" style="color: black"/>
+                    </p:column>  
+                    <p:column headerText="Descrição" 
+                              style="color: #0000FF; height: 25px; border-style: solid; border-color: #0000FF;"
+                              sortBy="#{item.descricao}" styleClass="Fs11" 
+                              filterStyle="width: 120px; overflow: hidden"
+                              filterBy="#{item.descricao}">
+                        <h:outputText value="#{item.descricao}" style="color: black"/>
+                    </p:column>                    
+                    <p:column style="text-align: center; color: #0000FF; width: 60px; border-style: solid; border-color: #0000FF;" headerText="Ação">
+                        <p:commandButton title="Selecionar"
+                                         process="@this"
+                                         style="height: 30px; width: 30px;"
+                                         styleClass="GreenButton"
+                                         icon="fa fa-check white"                                         
+                                         action="#{pesquisaServicoFace.selecionar(item)}">
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </div>            
+        </h:form>
+    </h:body>
+</html>

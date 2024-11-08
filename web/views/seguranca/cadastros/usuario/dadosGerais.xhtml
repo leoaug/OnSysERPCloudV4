@@ -1,0 +1,128 @@
+<html   xmlns:c="http://java.sun.com/jsp/jstl/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"                   
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"> 
+    
+    <c:if test="#{usuarioFace.operacao eq 'I'}">
+        <p:focus for="email"/>
+    </c:if>
+    <c:if test="#{usuarioFace.operacao eq 'A'}">                  
+        <p:focus for="nome"/>
+    </c:if>    
+    <p:panelGrid layout="grid" columns="3" 
+                 columnClasses="ui-grid-col-3, ui-grid-col-8, ui-grid-col-1"                                        
+                 id="pnlGr" styleClass="semBorda" 
+                 rendered="#{usuarioFace.registroSelecionado != null}"
+                 style="border: none !important; background-color: #dddddd">
+        
+        <c:if test="#{usuarioFace.operacao eq 'I'}">
+            <p:outputLabel value="Email" for="email" style="color: red"/>
+            <p:inputText id="email" value="#{usuarioFace.registroSelecionado.email}"/>
+            <p:spacer width="5"/>
+        </c:if>        
+        <c:if test="#{usuarioFace.operacao eq 'A'}">
+            <p:outputLabel value="Email" for="email" style="color: black"/>
+            <p:inputText id="email" disabled="true" 
+                         style="color: blue; font-weight: 700; opacity: 1!important"
+                         value="#{usuarioFace.registroSelecionado.email}"/>
+            <p:spacer width="5"/>
+        </c:if>        
+
+        <p:outputLabel value="Nome" for="nome" style="color: red"/>
+        <p:inputText id="nome" value="#{usuarioFace.registroSelecionado.nome}"/>
+        <p:spacer width="5"/>
+
+        <p:outputLabel value="Apelido" for="apelido" style="color: red"/>
+        <p:inputText id="apelido" value="#{usuarioFace.registroSelecionado.apelido}"/>
+        <p:spacer width="5"/>
+
+        <p:outputLabel value="Senha" for="senha" style="color: red"/>
+        <p:password id="senha" redisplay="true"
+                        feedback="true" promptLabel="Digite sua senha." 
+                        weakLabel="Fraco"
+                        goodLabel="Intermediario" strongLabel="Forte"
+                       value="#{usuarioFace.registroSelecionado.senha}"/>
+        <p:spacer width="5"/>
+
+        <p:outputLabel value="Tipo de usuário" for="tpusr" style="color: red"/>
+        <p:selectOneMenu id="tpusr" value="#{usuarioFace.registroSelecionado.tipo}" required="true" >
+            <f:selectItems value="#{usuarioFace.tipoUsuario}" var="item"  
+                           itemLabel="#{item.toString()}" itemValue="#{item}"/>
+        </p:selectOneMenu>
+        <p:spacer width="5"/>
+        
+        <p:outputLabel for="recebeEmail" value="Recebe e-mail" style="color: black"/>
+        <h:selectBooleanCheckbox id="recebeEmail" 
+                             title="Informe se o usuário recebe e-mail." 
+                             style="background:white"
+                             value="#{usuarioFace.registroSelecionado.recebeEmail}"/>
+        <p:spacer width="5"/>        
+
+        <p:outputLabel value="Dashboard" for="dashboard" style="color: red"/>
+        <p:inputText id="dashboard" value="#{usuarioFace.usuarioEmpresaSelecionado.dashboard}"/>
+        <p:spacer width="5"/>
+
+        <p:outputLabel value="Fornecedor" for="particip" style="color: black"/>
+        <p:autoComplete id="particip" minQueryLength="3" converter="participanteConverter" 
+                        value="#{usuarioFace.usuarioEmpresaSelecionado.participante}" maxResults="10"    
+                        completeMethod="#{fornecedorFace.completeFornecedor}" var="fornec"  
+                        itemLabel="#{fornec.nomefantasia}" itemValue="#{fornec}"
+                        queryDelay="3">                                             
+            <p:column>#{fornec.codigo} - #{fornec.nomefantasia}</p:column>
+            <p:ajax update="particip"/>
+        </p:autoComplete>  
+        <p:spacer width="5"/>
+
+        <p:outputLabel value="Estabel. padrão" for="estabel" style="color: black"/>                                
+        <p:selectOneMenu id="estabel" value="#{usuarioFace.usuarioEmpresaSelecionado.estabelecimento}" var="p">
+            <f:selectItem itemValue=" " itemLabel=" " /> 
+            <f:selectItems var="itemSel" itemLabel="#{itemSel.codigo} - #{itemSel.nomefantasia}"  itemValue="#{itemSel}" 
+                           value="#{estabelFace.listAtivos}"/>
+            <f:converter converterId="estabelConverter"/>
+            <p:ajax update="estabel"/>
+            <p:column>#{p.codigo} - #{p.nomefantasia}</p:column>                                    
+        </p:selectOneMenu>                                
+        <p:spacer width="5"/>
+
+        <p:outputLabel value="Empresa padrão" for="empresa" style="color: black"/>                                
+        <p:selectOneMenu id="empresa" value="#{usuarioFace.registroSelecionado.empresa}" var="p">
+            <f:selectItem itemValue=" " itemLabel=" " /> 
+            <f:selectItems var="itemSel" itemLabel="#{itemSel.codigo} - #{itemSel.descricao}"  itemValue="#{itemSel}" 
+                           value="#{usuarioEmpresaFace.getListaDeEmpresasDoUsuario(usuarioFace.loggedUser)}"/>
+            <f:converter converterId="empresaConverter"/>
+            <p:ajax update="empresa"/>
+            <p:column>#{p.codigo} - #{p.descricao}</p:column>                                    
+        </p:selectOneMenu>                                
+        <p:spacer width="5"/>
+
+        <p:outputLabel value="Idioma padrão" for="idiomaPadrao" style="color: black"/>                                
+        <p:selectOneMenu id="idiomaPadrao" value="#{usuarioFace.registroSelecionado.idiomaPadrao}">
+            <f:selectItem itemLabel="#{msg.label_portugues}"    itemValue="pt"/>
+            <f:selectItem itemLabel="#{msg.label_ingles}"       itemValue="en"/>
+            <f:selectItem itemLabel="#{msg.label_espanhol}"     itemValue="es"/>            
+        </p:selectOneMenu>                                
+        <p:spacer width="5"/>
+        
+        <p:outputLabel value="Mensagem no login" for="mensagemLogin" style="color: black"/>
+        <p:inputTextarea id="mensagemLogin" value="#{usuarioFace.usuarioEmpresaSelecionado.mensagemLogin}"
+                         counter="displayMsgLogin" maxlength="200"
+                         counterTemplate="{0} caracteres restantes." autoResize="false"/>
+        <p:spacer width="5"/>
+         
+        <p:spacer width="5"/>  
+        <h:outputText id="displayMsgLogin" style="color: blue; font-weight: 700"/>
+        <p:spacer width="5"/>      
+        
+        <p:outputLabel value="Observação" for="obs" style="color: black"/>
+        <p:inputTextarea id="obs" value="#{usuarioFace.registroSelecionado.obs}"
+                         counter="display" maxlength="200"
+                         counterTemplate="{0} caracteres restantes." autoResize="false"/>
+        <p:spacer width="5"/>
+        
+        <p:spacer width="5"/>
+        <h:outputText id="display" style="color: blue; font-weight: 700"/>
+        <p:spacer width="5"/>        
+        
+    </p:panelGrid>
+</html>

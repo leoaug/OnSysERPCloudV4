@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.0.final using JasperReports Library version 6.5.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RazFin" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="489c5891-125c-458d-8714-9dafafbc79cd">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="onsys"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<style name="zebra" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="idEmpresa" class="java.lang.Integer"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="deSaldoIni" class="java.math.BigDecimal">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="deSaldoFin" class="java.math.BigDecimal">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cTitulo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     movtofin.`DTMOVTO` AS movtofin_DTMOVTO,
+     movtofin.`NRODOCTO` AS movtofin_NRODOCTO,
+     tipodoctofinanceiro.`CODIGO` AS tipodoctofinanceiro_CODIGO,
+     movtofin.`TPMOVTO` AS movtofin_TPMOVTO,
+     participante.`NOMEFANTASIA` AS participante_NOMEFANTASIA,
+     portador.`DESCRICAO` AS portador_DESCRICAO,
+     movtofin.`SERIE` AS movtofin_SERIE,
+     empresa.`logoimg` AS empresa_logo,
+     tipodoctofinanceiro.`TIPODOCTO` AS tipodoctofinanceiro_TIPODOCTO,
+case tipodoctofinanceiro.`TIPODOCTO`
+WHEN 'Saida' THEN movtofin.`VLMOVTO` * -1
+WHEN 'Entrada' THEN movtofin.`VLMOVTO`
+END as movtofin_VLMOVTO
+FROM
+     `participante` participante RIGHT OUTER JOIN `movtofin` movtofin ON participante.`id` = movtofin.`PARTICIPANTE_id`
+     INNER JOIN `tipodoctofinanceiro` tipodoctofinanceiro ON movtofin.`TIPODOCTO_id` = tipodoctofinanceiro.`id`
+     INNER JOIN `portador` portador ON movtofin.`PORTADOR_id` = portador.`id`
+     INNER JOIN `empresa` empresa ON movtofin.`EMPRESA_id` = empresa.`id`
+$P!{cCondicao}]]>
+	</queryString>
+	<field name="movtofin_DTMOVTO" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="movtofin_DTMOVTO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movtofin"/>
+	</field>
+	<field name="movtofin_NRODOCTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="movtofin_NRODOCTO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movtofin"/>
+	</field>
+	<field name="tipodoctofinanceiro_CODIGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="tipodoctofinanceiro_CODIGO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tipodoctofinanceiro"/>
+	</field>
+	<field name="movtofin_TPMOVTO" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="movtofin_TPMOVTO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movtofin"/>
+	</field>
+	<field name="participante_NOMEFANTASIA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="participante_NOMEFANTASIA"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="participante"/>
+	</field>
+	<field name="portador_DESCRICAO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="portador_DESCRICAO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="portador"/>
+	</field>
+	<field name="movtofin_SERIE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="movtofin_SERIE"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movtofin"/>
+	</field>
+	<field name="empresa_logo" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.label" value="empresa_logo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="tipodoctofinanceiro_TIPODOCTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="tipodoctofinanceiro_TIPODOCTO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tipodoctofinanceiro"/>
+	</field>
+	<field name="movtofin_VLMOVTO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="movtofin_VLMOVTO"/>
+	</field>
+	<group name="Empresa">
+		<groupExpression><![CDATA[$P{idEmpresa}]]></groupExpression>
+		<groupFooter>
+			<band height="20">
+				<textField pattern="¤ #,##0.00">
+					<reportElement x="455" y="1" width="100" height="15" uuid="3a664e26-add8-4fa6-aa06-7bb19cf6b41a"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Comic Sans MS" size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{deSaldoFin}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="386" y="1" width="68" height="15" uuid="13084f95-79b2-47ea-979a-01d7e82831d5"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Comic Sans MS" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Saldo final :]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="61" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="100" height="59" uuid="775be1eb-c90e-489f-9350-244ac33687d6"/>
+				<imageExpression><![CDATA[$F{empresa_logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="100" y="40" width="285" height="20" uuid="9d6791a6-15e4-4220-b303-f4fe93d31964"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="386" y="41" width="68" height="15" uuid="47dd710d-7162-4c22-8040-4fa5bc5884ce">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Saldo inicial :]]></text>
+			</staticText>
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="455" y="41" width="100" height="20" uuid="37349d26-6f5c-4fbc-8bb1-841f7c9e4522"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{deSaldoIni}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="100" y="0" width="455" height="28" uuid="759b5da4-6279-4389-8266-4dde54b560fc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Comic Sans MS" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Razão financeiro]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="16" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="57" height="15" backcolor="#CCCCCC" uuid="0e6534d6-2ab4-44ff-858e-b289547c4181"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dt.Movto.]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="15" width="555" height="1" uuid="5eb94998-292a-4348-b889-736972ecd8f1"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="57" y="0" width="141" height="15" backcolor="#CCCCCC" uuid="5a6cd688-96fd-4da1-a044-454538e8c71e"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Participante(Cliente/Fornec)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="198" y="0" width="70" height="15" backcolor="#CCCCCC" uuid="11a87d1e-0f49-44f7-be8d-d311f776b3d0"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nro.Docto.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="346" y="0" width="116" height="15" backcolor="#CCCCCC" uuid="bdc217f9-8600-4169-890e-591bb4e230e6"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Portador]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="268" y="0" width="27" height="15" backcolor="#CCCCCC" uuid="d8d78618-7091-4797-8fa7-4d8c3b2d4de1"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Serie]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="462" y="0" width="93" height="15" backcolor="#CCCCCC" uuid="76d61b41-2368-40ed-ba72-059a45689453"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="295" y="0" width="51" height="15" backcolor="#CCCCCC" uuid="c42b07c9-e555-49f9-97d8-f9d90d5c5fa4"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tp.Docto.]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="false">
+				<reportElement style="zebra" mode="Opaque" x="464" y="0" width="90" height="15" forecolor="#000000" uuid="0fe8c6f6-a13e-4463-a637-5fe9add2a5b4"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{movtofin_VLMOVTO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="199" y="0" width="69" height="15" forecolor="#000000" uuid="300a31e2-eb07-46e2-b757-fafd7c19c245"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{movtofin_NRODOCTO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="58" y="0" width="141" height="15" forecolor="#000000" uuid="62b33da7-65ca-455f-a675-574c056ae043"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{participante_NOMEFANTASIA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="346" y="0" width="118" height="15" forecolor="#000000" uuid="dc67e684-9cc1-40c4-be8b-bbec1320e2a3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{portador_DESCRICAO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="268" y="0" width="27" height="15" forecolor="#000000" uuid="71eea496-c7eb-4926-ab7c-1d5375cf95f9"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{movtofin_SERIE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="295" y="0" width="51" height="15" forecolor="#000000" uuid="491d7cb7-286d-46f2-8347-bf1474f81e99"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipodoctofinanceiro_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="58" height="15" forecolor="#000000" uuid="e77fc066-9652-439a-b3db-7fcc2947232c"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{movtofin_DTMOVTO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="21" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="0" y="0" width="100" height="20" uuid="db8bf188-fb8a-44c5-8af5-1f360d2bb39e"/>
+				<textElement>
+					<font fontName="Comic Sans MS" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1" uuid="da30d229-75e5-4f6d-91e4-3678074304c2"/>
+			</line>
+			<textField>
+				<reportElement x="435" y="0" width="80" height="20" uuid="1d092919-85b4-443a-b535-1dcda39454f6"/>
+				<textElement textAlignment="Right">
+					<font fontName="Comic Sans MS" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="0" width="40" height="20" uuid="d43abe5b-fb19-45d5-9b8e-7db3aa5ee9df"/>
+				<textElement>
+					<font fontName="Comic Sans MS" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="221" y="0" width="120" height="16" forecolor="#0000FF" uuid="21a082d6-c7e0-488a-8bfe-96101cb8714c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ERP OnSys - www.onsys.com.br]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>

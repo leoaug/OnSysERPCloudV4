@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VendasRepresSintExcel" pageWidth="874" pageHeight="150000" columnWidth="874" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="zebra" isDefault="false" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style isDefault="false" style="zebra" mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     SUM(itemdoctosai.`VLTOTLIQITEM`)AS itemdoctosai_VLTOTITEM,
+     SUM(itemdoctosai.`VLIPI`) AS itemdoctosai_VLIPI,
+     SUM(itemdoctosai.`VLICMSSUBSTITU`) AS itemdoctosai_VLICMSSUBSTITU,
+     SUM(itemdoctosai.`DESCONTO`) AS itemdoctosai_DESCONTO,
+     SUM(itemdoctosai.`VLICMS`) AS itemdoctosai_VLICMS,
+     regiao.`DESCRICAO` AS regiao_DESCRICAO,
+     representante.`CODIGO`AS representante_CODIGO,
+     representante.`APELIDO` AS representante_APELIDO
+FROM
+`doctosai` doctosai INNER JOIN `participante` participante on participante.`id` = doctosai.`PARTICIPANTE_id`
+     INNER JOIN `itemdoctosai` itemdoctosai ON doctosai.`id` = itemdoctosai.`DOCTOSAI_id`
+     INNER JOIN `empresa`       empresa       ON doctosai.`empresa_id` = empresa.`id`
+     INNER JOIN `item` item ON itemdoctosai.`ITEM_id` = item.`id` and item.`EMPRESA_id` = doctosai.`EMPRESA_id`
+     INNER JOIN `enderecoparticipante` enderecoparticipante ON participante.`id` = enderecoparticipante.`PARTICIPANTE_id`
+     INNER JOIN `serienotafiscal` serienotafiscal ON doctosai.`SERIE_id` = serienotafiscal.`id` and serienotafiscal.`EMPRESA_id` = doctosai.`EMPRESA_id`
+     INNER JOIN `unidademedida` unidademedida ON item.`UNIDADEMEDIDA_id` = unidademedida.`id` and unidademedida.`EMPRESA_id` = doctosai.`EMPRESA_id`
+     LEFT OUTER JOIN `pedidovendas` pedidovendas ON doctosai.`NRPEDCLI` = pedidovendas.`NRPEDCLI` AND
+                      participante.id       = pedidovendas.`CLIENTE_id` AND
+                      doctosai.`EMPRESA_id` = pedidovendas.`EMPRESA_id`
+     LEFT OUTER JOIN `representante` representante ON representante.`id` = pedidovendas.`REPRESENTANTE_id`
+     LEFT OUTER JOIN `regiao` regiao ON regiao.`id` = representante.`REGIAO_id`
+$P!{cCondicao}
+GROUP BY
+     regiao_DESCRICAO,
+     representante_CODIGO,
+     representante_APELIDO
+ORDER BY
+     regiao_DESCRICAO, representante_APELIDO, itemdoctosai_VLTOTITEM DESC]]>
+	</queryString>
+	<field name="itemdoctosai_VLTOTITEM" class="java.math.BigDecimal"/>
+	<field name="itemdoctosai_VLIPI" class="java.math.BigDecimal"/>
+	<field name="itemdoctosai_VLICMSSUBSTITU" class="java.math.BigDecimal"/>
+	<field name="itemdoctosai_DESCONTO" class="java.math.BigDecimal"/>
+	<field name="itemdoctosai_VLICMS" class="java.math.BigDecimal"/>
+	<field name="regiao_DESCRICAO" class="java.lang.String"/>
+	<field name="representante_CODIGO" class="java.lang.String"/>
+	<field name="representante_APELIDO" class="java.lang.String"/>
+	<variable name="counter" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA["1"]]></variableExpression>
+	</variable>
+	<variable name="vTotItem" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$F{itemdoctosai_VLTOTITEM}.add($F{itemdoctosai_VLIPI}).add($F{itemdoctosai_VLICMSSUBSTITU})]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="45" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="874" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Faturamento - sintético]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="25" width="874" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="16" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="15" width="874" height="1"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="213" height="15" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Região]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="599" y="0" width="101" height="15" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vl. Merc.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="213" y="0" width="82" height="15" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="295" y="0" width="304" height="15" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Representante]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="700" y="0" width="49" height="15" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[IPI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="749" y="0" width="49" height="15" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ST]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="798" y="0" width="76" height="15" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vl. Total]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="213" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{regiao_DESCRICAO}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="295" y="0" width="304" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{representante_APELIDO}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="599" y="0" width="101" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{itemdoctosai_VLTOTITEM}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="213" y="0" width="82" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{representante_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="700" y="0" width="49" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{itemdoctosai_VLIPI}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="749" y="0" width="49" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{itemdoctosai_VLICMSSUBSTITU}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="798" y="0" width="76" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{vTotItem}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

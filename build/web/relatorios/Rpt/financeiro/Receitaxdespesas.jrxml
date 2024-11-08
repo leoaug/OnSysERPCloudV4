@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Receitaxdespesas" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="zebra" isDefault="false" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style isDefault="false" style="zebra" mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cEmpresa" class="java.lang.String"/>
+	<parameter name="cAno" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT  distinct 'Jan' as Mes,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 1 and onsys.movtofin.`TPMOVTO` = 1 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Receita,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 1 and onsys.movtofin.`TPMOVTO` = 2 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Despesas
+FROM onsys.movtofin
+WHERE onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa} AND YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} and month(onsys.movtofin.`DTMOVTO`) = 1
+UNION
+SELECT  distinct 'Fev' as Mes,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 2 and onsys.movtofin.`TPMOVTO` = 1 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Receita,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 2 and onsys.movtofin.`TPMOVTO` = 2 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Despesas
+FROM onsys.movtofin
+WHERE onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa} AND YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} and month(onsys.movtofin.`DTMOVTO`) = 2
+UNION
+SELECT  distinct 'Mar' as Mes,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 3 and onsys.movtofin.`TPMOVTO` = 1 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Receita,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 3 and onsys.movtofin.`TPMOVTO` = 2 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Despesas
+FROM onsys.movtofin
+WHERE onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa} AND YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} and month(onsys.movtofin.`DTMOVTO`) = 3
+UNION
+SELECT  distinct 'Abr' as Mes,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 4 and onsys.movtofin.`TPMOVTO` = 1 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Receita,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 4 and onsys.movtofin.`TPMOVTO` = 2 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Despesas
+FROM onsys.movtofin
+WHERE onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa} AND YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} and month(onsys.movtofin.`DTMOVTO`) = 4
+UNION
+SELECT  distinct 'Mai' as Mes,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 5 and onsys.movtofin.`TPMOVTO` = 1 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Receita,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 5 and onsys.movtofin.`TPMOVTO` = 2 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Despesas
+FROM onsys.movtofin
+WHERE onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa} AND YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} and month(onsys.movtofin.`DTMOVTO`) = 5
+UNION
+SELECT  distinct 'Jun' as Mes,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 6 and onsys.movtofin.`TPMOVTO` = 1 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Receita,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 6 and onsys.movtofin.`TPMOVTO` = 2 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Despesas
+FROM onsys.movtofin
+WHERE onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa} AND YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} and month(onsys.movtofin.`DTMOVTO`) = 6
+UNION
+SELECT  distinct 'Jul' as Mes,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 7 and onsys.movtofin.`TPMOVTO` = 1 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Receita,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 7 and onsys.movtofin.`TPMOVTO` = 2 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Despesas
+FROM onsys.movtofin
+WHERE onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa} AND YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} and month(onsys.movtofin.`DTMOVTO`) = 7
+UNION
+SELECT  distinct 'Ago' as Mes,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 8 and onsys.movtofin.`TPMOVTO` = 1 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Receita,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 8 and onsys.movtofin.`TPMOVTO` = 2 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Despesas
+FROM onsys.movtofin
+WHERE onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa} AND YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} and month(onsys.movtofin.`DTMOVTO`) = 8
+UNION
+SELECT  distinct 'Set' as Mes,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 9 and onsys.movtofin.`TPMOVTO` = 1 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Receita,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 9 and onsys.movtofin.`TPMOVTO` = 2 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Despesas
+FROM onsys.movtofin
+WHERE onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa} AND YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} and month(onsys.movtofin.`DTMOVTO`) = 9
+UNION
+SELECT  distinct 'Out' as Mes,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 10 and onsys.movtofin.`TPMOVTO` = 1 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Receita,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 10 and onsys.movtofin.`TPMOVTO` = 2 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Despesas
+FROM onsys.movtofin
+WHERE onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa} AND YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} and month(onsys.movtofin.`DTMOVTO`) = 10
+UNION
+SELECT  distinct 'Nov' as Mes,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 11 and onsys.movtofin.`TPMOVTO` = 1 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Receita,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 11 and onsys.movtofin.`TPMOVTO` = 2 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Despesas
+FROM onsys.movtofin
+WHERE onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa} AND YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} and month(onsys.movtofin.`DTMOVTO`) = 11
+UNION
+SELECT  distinct 'Dez' as Mes,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 12 and onsys.movtofin.`TPMOVTO` = 1 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Receita,
+     (SELECT  SUM(onsys.movtofin.`VLMOVTO`)
+            FROM onsys.movtofin
+            where YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} AND month(onsys.movtofin.`DTMOVTO`) = 12 and onsys.movtofin.`TPMOVTO` = 2 AND onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa}) AS Despesas
+FROM onsys.movtofin
+WHERE onsys.movtofin.`EMPRESA_id` = $P!{cEmpresa} AND YEAR(onsys.movtofin.`DTMOVTO`) = $P!{cAno} and month(onsys.movtofin.`DTMOVTO`) = 12]]>
+	</queryString>
+	<field name="Mes" class="java.lang.String"/>
+	<field name="Receita" class="java.math.BigDecimal"/>
+	<field name="Despesas" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="52" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="100" height="52"/>
+				<imageExpression class="java.awt.Image"><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="100" y="34" width="360" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="100" y="1" width="360" height="33"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Receitas x Despesas]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="16">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="15" backcolor="#CCCCCC"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="129" y="0" width="181" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Receita]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="310" y="0" width="163" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Despesas]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="15" width="555" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="0" width="129" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mês]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="129" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Mes}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="129" y="0" width="181" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{Receita}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="310" y="0" width="163" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{Despesas}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="zebra" mode="Opaque" x="473" y="0" width="82" height="15"/>
+				<textElement/>
+				<text><![CDATA[]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<summary>
+		<band height="449">
+			<bar3DChart>
+				<chart evaluationTime="Report">
+					<reportElement x="0" y="0" width="555" height="449"/>
+					<chartTitle>
+						<font size="14"/>
+					</chartTitle>
+					<chartSubtitle/>
+					<chartLegend position="Bottom"/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Receita"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{Mes}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{Receita}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Despesas"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{Mes}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{Despesas}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<bar3DPlot>
+					<plot/>
+					<itemLabel color="#000000" backgroundColor="#FFFFFF"/>
+					<categoryAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat tickLabelMask="#,##0.00">
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</valueAxisFormat>
+				</bar3DPlot>
+			</bar3DChart>
+		</band>
+	</summary>
+</jasperReport>

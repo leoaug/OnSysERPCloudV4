@@ -1,0 +1,85 @@
+<html xmlns:c="http://java.sun.com/jsp/jstl/core">    
+    <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                    xmlns:p="http://primefaces.org/ui"
+                    template="/WEB-INF/template.xhtml"
+                    xmlns:f="http://java.sun.com/jsf/core"
+                    xmlns:h="http://java.sun.com/jsf/html">
+        <ui:define name="conteudo">  
+            <f:view contentType="text/html; charset=utf-8">            
+                <h:head>  
+                    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>  
+                </h:head>                
+                <p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" widgetVar="statusDialog" />
+                <p:dialog modal="true" widgetVar="statusDialog" header="Processando..." draggable="false" closable="false" resizable="false">                               
+                    <p:graphicImage value="#{pageContext.servletContext.contextPath}/resources/imagens/onsys/bar180.gif" /> 
+                </p:dialog>         
+                <script type="text/javascript">
+                    function startMessage() {
+                         statusDialog.show();
+                    }
+                    function finishMessage() {
+                        statusDialog.hide();
+                    }
+                </script> 
+                <h:form id="fmEditar">
+                    <p:focus for="programa"/>                    
+                    <p:panel header="Consultar relação programa X submódulo">
+                        <p:toolbar style="height: 35px">
+                            <p:toolbarGroup>
+                                <p:commandButton immediate="true" action="#{submoduloProgramaFace.listar()}" 
+                                                 style="height: 30px; width: 100px;"
+                                                 title="Voltar para lista" 
+                                                 value="Voltar"
+                                                 styleClass="RedButton"
+                                                 onclick="PF('PrimeFaces.monitorDownload(startMessage, finishMessage)')"
+                                                 alt="Voltar para lista" 
+                                                 icon="fa fa-reply Fs12 white"/>
+                                <p:spacer width="5" height="5"/>
+                            </p:toolbarGroup>                                            
+                        </p:toolbar>
+                        <div class="ui-fluid">
+                            <p:panelGrid layout="grid" columns="3" 
+                                         columnClasses="ui-grid-col-3, ui-grid-col-6, ui-grid-col-3"
+                                         id="PnlGrEdit" styleClass="semBorda"
+                                         rendered="#{submoduloProgramaFace.selectedBean != null}"
+                                         style="border: none !important; background-color: #dddddd">
+
+                                <p:outputLabel value="Programa" for="programa" style="color: black;"/>
+                                <p:inputText id="programa" disabled="true" value="#{submoduloProgramaFace.selectedBean.programa.codigo}"
+                                             style="color: red; font-weight: 700">
+                                </p:inputText>
+                                <p:spacer width="5"/>
+                                
+                                <p:outputLabel value="Submódulo" for="submodulo" style="color: black;"/>
+                                <p:inputText id="submodulo" disabled="true" value="#{submoduloProgramaFace.selectedBean.submodulo.codigo}"
+                                             style="color: red; font-weight: 700">
+                                </p:inputText>
+                                <p:spacer width="5"/>
+                                
+                                <c:if test="#{submoduloProgramaFace.islVerMenu()}">
+                                    
+                                    <p:outputLabel value="Consultar" for="consultar"/>
+                                    <p:selectBooleanCheckbox id="consultar" disabled="true" value="#{submoduloProgramaFace.selectedBean.consultar}"/>
+                                    <p:spacer width="5"/>
+                                    
+                                    <p:outputLabel value="Editar" for="editar"/>
+                                    <p:selectBooleanCheckbox id="editar" disabled="true" value="#{submoduloProgramaFace.selectedBean.editar}"/>
+                                    <p:spacer width="5"/>
+                                    
+                                    <p:outputLabel value="Incluir" for="incluir"/>
+                                    <p:selectBooleanCheckbox id="incluir" disabled="true" value="#{submoduloProgramaFace.selectedBean.incluir}"/>
+                                    <p:spacer width="5"/>
+                                    
+                                    <p:outputLabel value="Remover" for="remover"/>
+                                    <p:selectBooleanCheckbox id="remover" disabled="true" value="#{submoduloProgramaFace.selectedBean.remover}"/>
+                                    <p:spacer width="5"/>
+                                    
+                                </c:if>
+                            </p:panelGrid>
+                        </div>                                    
+                    </p:panel>
+                </h:form>
+            </f:view>
+        </ui:define>
+     </ui:composition>
+</html>

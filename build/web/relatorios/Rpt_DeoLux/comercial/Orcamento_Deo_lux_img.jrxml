@@ -1,0 +1,1324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Orcamento_Deo_lux_img" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a66b0220-c212-4253-9656-c6f500ace563">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="OnSysTeste"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="208"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="782"/>
+	<style name="zebra" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="idEmpresa" class="java.lang.Integer"/>
+	<parameter name="idCodIni" class="java.lang.Integer"/>
+	<parameter name="idCodFin" class="java.lang.Integer"/>
+	<parameter name="imgLogo" class="java.awt.Image"/>
+	<parameter name="pParc01" class="java.lang.String"/>
+	<parameter name="pParc02" class="java.lang.String"/>
+	<parameter name="pParc03" class="java.lang.String"/>
+	<parameter name="pParc04" class="java.lang.String"/>
+	<parameter name="pParc05" class="java.lang.String"/>
+	<parameter name="pParc06" class="java.lang.String"/>
+	<parameter name="pParc07" class="java.lang.String"/>
+	<parameter name="pParc08" class="java.lang.String"/>
+	<parameter name="pParc09" class="java.lang.String"/>
+	<parameter name="pParc10" class="java.lang.String"/>
+	<parameter name="pVenc01" class="java.lang.String"/>
+	<parameter name="pVenc02" class="java.lang.String"/>
+	<parameter name="pVenc03" class="java.lang.String"/>
+	<parameter name="pVenc04" class="java.lang.String"/>
+	<parameter name="pVenc05" class="java.lang.String"/>
+	<parameter name="pVenc06" class="java.lang.String"/>
+	<parameter name="pVenc07" class="java.lang.String"/>
+	<parameter name="pVenc08" class="java.lang.String"/>
+	<parameter name="pVenc09" class="java.lang.String"/>
+	<parameter name="pVenc10" class="java.lang.String"/>
+	<parameter name="pValor01" class="java.lang.String"/>
+	<parameter name="pValor02" class="java.lang.String"/>
+	<parameter name="pValor03" class="java.lang.String"/>
+	<parameter name="pValor04" class="java.lang.String"/>
+	<parameter name="pValor05" class="java.lang.String"/>
+	<parameter name="pValor06" class="java.lang.String"/>
+	<parameter name="pValor07" class="java.lang.String"/>
+	<parameter name="pValor08" class="java.lang.String"/>
+	<parameter name="pValor09" class="java.lang.String"/>
+	<parameter name="pValor10" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT pedidovendas.`DESCPROD` AS pedidovendas_DESCPROD,
+     pedidovendas.`DATAEMISSAO` AS DtEmissao,
+     pedidovendas.`DATAENTREGA` AS DtValidade,
+     tipodepedido.`DESCRICAO`   AS pedidovendas_TPPEDIDO,
+     pedidovendas.`NRPEDIDO` AS pedidovendas_NRPEDIDO,
+     pedidovendas.`NRORCAMENTO` AS NumPedido,
+     pedidovendas.`PERCFRETE` AS pedidovendas_PERCFRETE,
+     pedidovendas.`NRPEDREPRE` AS pedidovendas_NRPEDREPRE,
+     pedidovendas.`ENTREGAPROGRAMADA` AS pedidovendas_ENTREGAPROGRAMADA,
+     pedidovendas.`ENTREGAAGENDADA` AS pedidovendas_ENTREGAAGENDADA,
+     case when pedidovendas.`TIPOPEDIDO` = 'BO' THEN "Ped. Original" ELSE
+          (case when pedidovendas.`ENTREGAPROGRAMADA` THEN "ENT. PROG.: " ELSE "" END) END PROGRAMADA,
+     case when pedidovendas.`TIPOPEDIDO` = 'BO' THEN (SELECT PO.`NRPEDCLI` FROM `pedidovendas` PX INNER JOIN `pedidovendas` PO ON PX.`PEDIDOORIGINAL_ID` = PO.id
+            WHERE PX.`EMPRESA_id` = pedidovendas.`EMPRESA_id` AND PX.`NRPEDCLI` = pedidovendas.`NRPEDCLI`)
+         ELSE
+          (case when pedidovendas.`ENTREGAPROGRAMADA` AND pedidovendas.`MESENTREGAPROGRAMADA` IS NOT NULL THEN CONCAT("mês: ", pedidovendas.`MESENTREGAPROGRAMADA`, " - ano: ", pedidovendas.`ANOENTREGAPROGRAMADA`)
+     when pedidovendas.`ENTREGAPROGRAMADA` AND pedidovendas.`DTENTREGAPROGRAMADA`  IS NOT NULL THEN CONCAT(pedidovendas.`DTENTREGAPROGRAMADA`, " - dias")
+ ELSE "" END) END PROGRAMADA_DET,
+     case when pedidovendas.`ENTREGAAGENDADA` THEN "ENT. AGEND.: "
+     ELSE "" END AGENDADA,
+     pedidovendas.`CONTATOENTREGAAGENDADA` AS pedidovendas_CONTATOENTREGAAGENDADA,
+     pedidovendas.`CAMPANHA_ID` AS pedidovendas_CAMPANHA_id,
+     case when pedidovendas.`CAMPANHA_ID` IS NOT NULL THEN (SELECT C.`DESCRICAO` FROM CAMPANHA C WHERE C.ID = pedidovendas.`CAMPANHA_ID`)
+     ELSE "" END CAMPANHA_COD,
+     participante.`CODIGO` AS participante_CODIGO,
+     tabelapreco.`CODIGO` AS tabelapreco_CODIGO,
+     participante.`RAZAOSOCIAL` AS Cliente,
+     participante.`CNPJCPF` AS participante_CNPJCPF,
+     participante.`EMAIL` AS participante_EMAIL,
+     item.`CODIGO` AS CodItem,
+     item.`FOTOITEM` AS foto,
+     item.`URLIMAGEM` AS imagem,
+     pedidovendas.`COMPLEMENTO` AS enderecoparticipante_COMPLEMENTO,
+     CONCAT(pedidovendas.`LOGRADOURO`, ', ',pedidovendas.`NUMERO`) AS Endereco,
+     pedidovendas.`CIDADE` AS Cidade,
+     pedidovendas.`UF` AS Estado,
+     pedidovendas.`CEP` AS Cep,
+     pedidovendas.`NUMERO` AS enderecoparticipante_NRO,
+     subcatitem.`DESCRICAO` AS subcatitem_DESCRICAO,
+     pedidovendas.`BAIRRO` AS Bairro,
+     representante.`APELIDO` AS Vendedor,
+     empresa.`logoimg`  AS empresa_logo,
+     representante.`CODIGO` AS representante_CODIGO,
+     representante.`FONE` AS representante_FONE,
+     representante.`EMAIL` AS representante_EMAIL,
+     pedidovendas.`TELEFONE` AS Telefone,
+     item.`DESCRICAO` AS DescItem,
+     case WHEN itempedidovendas.`QUANTIDADE` IS NOT null THEN itempedidovendas.`QUANTIDADE` WHEN itempedidovendas.`QUANTIDADE` is null THEN itempedidovendas.`QTDBONIFICADA` END as Quantidade,
+     case WHEN itempedidovendas.`QUANTIDADE` IS NOT null THEN itempedidovendas.`QUANTIDADE` WHEN itempedidovendas.`QUANTIDADE` is null THEN itempedidovendas.`QTDBONIFICADA` END as Saldo,
+     itempedidovendas.`IPI` AS itempedidovendas_IPI,
+     itempedidovendas.`OBS` AS itempedidovendas_OBS,
+     itempedidovendas.`DESCONTO` AS itempedidovendas_DESCONTO,
+     itempedidovendas.`VLICMSSUBSTITU` AS itempedidovendas_VLICMSSUBSTITU,
+     itempedidovendas.`VLUNIT` AS VlUnit,
+     itempedidovendas.`VLUNITLIQ` AS itempedidovendas_VLUNITLIQ,
+     itempedidovendas.`VLTOTLIQITEM` AS itempedidovendas_VLTOTLIQITEM,
+     itempedidovendas.`VLTOTITEM` AS VLItemTOTITEM,
+     itempedidovendas.`VLTOT` AS VlTotal,
+     pedidovendas.`DESCPROD` AS Desconto,
+     itempedidovendas.`PERCICMS` AS itempedidovendas_PERCICMS,
+     itempedidovendas.`PERCFRETE` AS Frete,
+     itempedidovendas.`STYLE` AS ambiente,
+     itempedidovendas.`PERCIPI` AS itempedidovendas_PERCIPI,
+     itempedidovendas.`PERCST` AS itempedidovendas_PERCST,
+     pedidovendas.`VLTOTLIQPEDIDO` AS pedidovendas_VLTOTLIQPEDIDO,
+     pedidovendas.`VLTOTPEDIDO` AS VlProposta,
+     pedidovendas.`VLTOTPEDIDO` AS VlTotalItens,
+     pedidovendas.`OBSLOGISTICA` AS Obra,
+     pedidovendas.`OBSCREDITO` AS Observacao,
+     enderecoparticipante.ie AS enderecoparticipante_ie,
+     condpagamento.descricao as condpagamento_Descricao,
+     transportadora.`NOMEFANTASIA` AS transportadora_NOMEFANTASIA,
+     transredesp.`NOMEFANTASIA` AS transredesp_NOMEFANTASIA,
+     CONCAT (estab.`LOGRADOURO`, ', ', estab.`NUMERO`) AS EndrecoEst,
+     estab.`BAIRRO` AS BairroEst,
+     estab.`MUNICIPIO` AS MunicipioEst,
+     estab.`UF` AS UFEst,
+     estab.`CODCEP` AS CepEst,
+     estab.`FONE` AS TelefoneEst,
+     estab.`FAX` AS FaxEst,
+     estab.`DESCRICAO` AS DescEmpresa,
+     LOWER(estab.`EMAIL`) AS EmailEst,
+     'F1272 Instituto Hoffdahn' AS Referencia,
+     0 AS Servico,
+     0 AS Seguro,
+     '30 Dias' AS PrazoEntrega,
+    condpagamento.descricao AS CondPag,
+     a.`CODIGO` as codAmbiente,
+     itempedidovendas.`AMBIENTE_ID` as idAmbiente,
+     itempedidovendas.`SeqAmbiente` as seqAmbiente 
+FROM
+     `pedidovendas` pedidovendas INNER JOIN `itempedidovendas` itempedidovendas ON pedidovendas.`id` = itempedidovendas.`PEDIDOVENDAS_id`
+     INNER JOIN `item` item ON itempedidovendas.`ITEM_id` = item.`id`
+     LEFT OUTER JOIN ambiente a ON itempedidovendas.`AMBIENTE_ID` = a.id
+     LEFT OUTER JOIN `subcatitem` subcatitem ON item.`SUBCATITEM_id` = subcatitem.`id`
+     LEFT OUTER JOIN `tipodepedido` tipodepedido ON pedidovendas.`TIPODEPEDIDO_ID` = tipodepedido.`id`
+     LEFT OUTER JOIN `participante` participante ON pedidovendas.`CLIENTE_id` = participante.`id`
+     LEFT OUTER JOIN `empresa`       empresa            ON participante.`empresa_id`       = empresa.`id`
+     LEFT OUTER JOIN estabelecimento estab ON empresa.id = estab.`EMPRESA_id`
+     LEFT OUTER JOIN `representante` representante      ON pedidovendas.`REPRESENTANTE_id` = representante.`id`
+     LEFT OUTER JOIN `regiao` regiao               ON representante.`REGIAO_id`       = regiao.`id`
+     LEFT OUTER JOIN `tabelapreco` tabelapreco     ON pedidovendas.`TABELAPRECO_id`   = tabelapreco.`id`
+     LEFT OUTER JOIN `condpagamento` condpagamento ON pedidovendas.`CONDPAGAMENTO_id` = condpagamento.`id`
+     LEFT OUTER JOIN `enderecoparticipante` enderecoparticipante ON pedidovendas.`ENDERECOENTREGA_ID` = enderecoparticipante.`id`
+     LEFT OUTER JOIN `transportadora` transportadora ON pedidovendas.`TRANSPORTADORA_id` = transportadora.`id`
+     LEFT OUTER JOIN `transportadora` transredesp ON pedidovendas.`TRANSPREDES_id` = transredesp.`id`
+WHERE itempedidovendas.`QUANTIDADE` IS NOT null
+     and pedidovendas.`EMPRESA_id` = $P{idEmpresa}
+     and pedidovendas.`ID` >= $P{idCodIni}
+     and pedidovendas.`ID` <= $P{idCodFin}
+ORDER BY
+       NumPedido, ambiente, seqAmbiente ASC]]>
+	</queryString>
+	<field name="pedidovendas_DESCPROD" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_DESCPROD"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="DtEmissao" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="DtEmissao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="DtValidade" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="DtValidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="pedidovendas_TPPEDIDO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_TPPEDIDO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tipodepedido"/>
+	</field>
+	<field name="pedidovendas_NRPEDIDO" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_NRPEDIDO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="NumPedido" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NumPedido"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="pedidovendas_PERCFRETE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_PERCFRETE"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="pedidovendas_NRPEDREPRE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_NRPEDREPRE"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="pedidovendas_ENTREGAPROGRAMADA" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_ENTREGAPROGRAMADA"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="pedidovendas_ENTREGAAGENDADA" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_ENTREGAAGENDADA"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="PROGRAMADA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PROGRAMADA"/>
+	</field>
+	<field name="PROGRAMADA_DET" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PROGRAMADA_DET"/>
+	</field>
+	<field name="AGENDADA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="AGENDADA"/>
+	</field>
+	<field name="pedidovendas_CONTATOENTREGAAGENDADA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_CONTATOENTREGAAGENDADA"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="pedidovendas_CAMPANHA_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_CAMPANHA_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="CAMPANHA_COD" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CAMPANHA_COD"/>
+	</field>
+	<field name="participante_CODIGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="participante_CODIGO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="participante"/>
+	</field>
+	<field name="tabelapreco_CODIGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="tabelapreco_CODIGO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tabelapreco"/>
+	</field>
+	<field name="Cliente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Cliente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="participante"/>
+	</field>
+	<field name="participante_CNPJCPF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="participante_CNPJCPF"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="participante"/>
+	</field>
+	<field name="participante_EMAIL" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="participante_EMAIL"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="participante"/>
+	</field>
+	<field name="CodItem" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CodItem"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="item"/>
+	</field>
+	<field name="foto" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.label" value="foto"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="item"/>
+	</field>
+	<field name="imagem" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="imagem"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="item"/>
+	</field>
+	<field name="enderecoparticipante_COMPLEMENTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="enderecoparticipante_COMPLEMENTO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="Endereco" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Endereco"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="enderecoparticipante"/>
+	</field>
+	<field name="Cidade" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Cidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="Estado" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Estado"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="Cep" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Cep"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="enderecoparticipante_NRO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="enderecoparticipante_NRO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="subcatitem_DESCRICAO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="subcatitem_DESCRICAO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="subcatitem"/>
+	</field>
+	<field name="Bairro" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Bairro"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="Vendedor" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Vendedor"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="representante"/>
+	</field>
+	<field name="empresa_logo" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.label" value="empresa_logo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="representante_CODIGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="representante_CODIGO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="representante"/>
+	</field>
+	<field name="representante_FONE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="representante_FONE"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="representante"/>
+	</field>
+	<field name="representante_EMAIL" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="representante_EMAIL"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="representante"/>
+	</field>
+	<field name="Telefone" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Telefone"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="DescItem" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DescItem"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="item"/>
+	</field>
+	<field name="Quantidade" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="Quantidade"/>
+	</field>
+	<field name="Saldo" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="Saldo"/>
+	</field>
+	<field name="itempedidovendas_IPI" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="itempedidovendas_IPI"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="itempedidovendas_OBS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="itempedidovendas_OBS"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="itempedidovendas_DESCONTO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="itempedidovendas_DESCONTO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="itempedidovendas_VLICMSSUBSTITU" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="itempedidovendas_VLICMSSUBSTITU"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="VlUnit" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="VlUnit"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="itempedidovendas_VLUNITLIQ" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="itempedidovendas_VLUNITLIQ"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="itempedidovendas_VLTOTLIQITEM" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="itempedidovendas_VLTOTLIQITEM"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="VLItemTOTITEM" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="VLItemTOTITEM"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="VlTotal" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="VlTotal"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="Desconto" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="Desconto"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="itempedidovendas_PERCICMS" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="itempedidovendas_PERCICMS"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="Frete" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="Frete"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="ambiente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ambiente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="itempedidovendas_PERCIPI" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="itempedidovendas_PERCIPI"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="itempedidovendas_PERCST" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="itempedidovendas_PERCST"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="pedidovendas_VLTOTLIQPEDIDO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_VLTOTLIQPEDIDO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="VlProposta" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="VlProposta"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="VlTotalItens" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="VlTotalItens"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="Obra" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Obra"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="Observacao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Observacao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="enderecoparticipante_ie" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="enderecoparticipante_ie"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="enderecoparticipante"/>
+	</field>
+	<field name="condpagamento_Descricao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="condpagamento_Descricao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="condpagamento"/>
+	</field>
+	<field name="transportadora_NOMEFANTASIA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="transportadora_NOMEFANTASIA"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="transportadora"/>
+	</field>
+	<field name="transredesp_NOMEFANTASIA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="transredesp_NOMEFANTASIA"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="transportadora"/>
+	</field>
+	<field name="EndrecoEst" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="EndrecoEst"/>
+	</field>
+	<field name="BairroEst" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="BairroEst"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="estabelecimento"/>
+	</field>
+	<field name="MunicipioEst" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="MunicipioEst"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="estabelecimento"/>
+	</field>
+	<field name="UFEst" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="UFEst"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="estabelecimento"/>
+	</field>
+	<field name="CepEst" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CepEst"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="estabelecimento"/>
+	</field>
+	<field name="TelefoneEst" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="TelefoneEst"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="estabelecimento"/>
+	</field>
+	<field name="FaxEst" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="FaxEst"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="estabelecimento"/>
+	</field>
+	<field name="DescEmpresa" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DescEmpresa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="estabelecimento"/>
+	</field>
+	<field name="EmailEst" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="EmailEst"/>
+	</field>
+	<field name="Referencia" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Referencia"/>
+	</field>
+	<field name="Servico" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="Servico"/>
+	</field>
+	<field name="Seguro" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="Seguro"/>
+	</field>
+	<field name="PrazoEntrega" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PrazoEntrega"/>
+	</field>
+	<field name="CondPag" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CondPag"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="condpagamento"/>
+	</field>
+	<field name="codAmbiente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="codAmbiente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ambiente"/>
+	</field>
+	<field name="idAmbiente" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="idAmbiente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="seqAmbiente" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="seqAmbiente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<variable name="totItens" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{VlTotal}]]></variableExpression>
+	</variable>
+	<group name="Group1">
+		<groupExpression><![CDATA[$F{ambiente}]]></groupExpression>
+		<groupHeader>
+			<band height="17">
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="0" width="555" height="17" uuid="68794b14-ec92-430a-8587-ba489fe600ea">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ambiente}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="141" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="0" y="0" width="442" height="65" uuid="d3ee277d-9c28-480f-b277-d693a0b0c809"/>
+			</rectangle>
+			<rectangle radius="10">
+				<reportElement x="449" y="0" width="105" height="80" uuid="46a73dd2-e5e4-44e8-a322-e4d04c35d578"/>
+			</rectangle>
+			<rectangle radius="10">
+				<reportElement x="0" y="83" width="555" height="56" uuid="92802c37-3939-4aa9-b484-d8b063028bec"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="454" y="1" width="95" height="17" uuid="9cac9d32-a293-4f21-ae00-c6a81b3896e3">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ORÇAMENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="453" y="19" width="50" height="15" uuid="84bf870a-b1a2-43fa-a20b-aea5b635f581">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Número:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="453" y="34" width="48" height="15" uuid="588e71e4-88d0-481a-a8c4-8356c27a1fee"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Emissão:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="453" y="49" width="48" height="15" uuid="1b5ccaa1-fadc-4692-a1a6-e593d1c3c8c1"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Validade:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="453" y="64" width="45" height="15" uuid="7b5ee6e6-dfb0-42e2-85fe-60fbcd5d02b0"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Página:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="277" y="65" width="154" height="17" uuid="380575a9-dd67-4e6d-8ee9-843efbf5301b"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[www.deolux.com.br]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="8" y="89" width="50" height="15" uuid="f789aff3-2095-496b-93ed-c2c23430919a"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nome:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="8" y="104" width="50" height="15" uuid="cbd2abd3-aff8-4d87-863c-bb36aac1982b"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Endereço:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="8" y="119" width="50" height="15" uuid="3bdcee81-39e3-4808-a9bf-eb7185cfbc44"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cidade:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="290" y="104" width="34" height="15" uuid="62950e2d-6f46-4031-b13f-80c4a53ef486"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Bairro:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="325" y="89" width="27" height="15" uuid="78caca9d-18ad-4f03-b517-efe021267424"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Obs.:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="435" y="104" width="27" height="15" uuid="f4f242aa-5e2f-4c8b-88c4-ef72b3181fe7"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CEP:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="210" y="119" width="42" height="15" uuid="17a717b0-991f-4c76-b7b9-a0ee347bd635"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estado:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="290" y="119" width="34" height="15" uuid="ffa1b770-089d-42c4-9143-27dd4087af5c"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tel.:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="396" y="119" width="53" height="15" uuid="2a1b44d7-cca8-433a-8328-e7c2fd77d35c"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vendedor:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="504" y="19" width="50" height="15" uuid="43d056e7-aab8-4695-ba67-2f1057fbd5b0">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NumPedido}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="498" y="34" width="55" height="15" uuid="5bac3303-3176-4472-828a-035e39b32b45">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DtEmissao}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="498" y="49" width="55" height="15" uuid="29a9f47b-acd9-4f06-b19a-2df4b9cc2cab">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DtValidade}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="58" y="89" width="266" height="15" uuid="1afd9838-79b6-4635-8e75-0ca665002f7c"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Cliente}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="58" y="104" width="232" height="15" uuid="70e5ad2a-cd9b-4295-85d7-692fb1789838"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Endereco}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="324" y="104" width="111" height="15" uuid="498ed157-a865-4fb1-9c22-3eb9e916c58b"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Bairro}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="462" y="104" width="89" height="15" uuid="173a260f-ba41-4f38-9022-dddca440207f"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Cep}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="58" y="119" width="152" height="15" uuid="17b0e33a-7601-4668-ad28-c782f12c1a86"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Cidade}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="252" y="119" width="38" height="15" uuid="0f072e2f-0de4-40cd-baaa-26b82ea339d9"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Estado}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="323" y="119" width="73" height="15" uuid="a241918f-8817-40b4-9aed-72e7edc4f69e"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Telefone}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="449" y="119" width="102" height="15" uuid="b5a2daec-b150-4d0b-b833-87a8911e5f35"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Vendedor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="500" y="64" width="26" height="15" uuid="2c6b24c8-0045-4e4e-b7b7-9182ae398ab5"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="529" y="64" width="23" height="15" uuid="3cbd244c-4212-46fe-97fe-81fd02420938"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="6" y="8" width="73" height="47" uuid="8bdcdc6f-f4a5-434b-990a-4db569b01f98"/>
+				<imageExpression><![CDATA[$F{empresa_logo}]]></imageExpression>
+			</image>
+			<textField isBlankWhenNull="true">
+				<reportElement x="352" y="89" width="199" height="15" uuid="89ac7231-31d7-40de-b40a-88a215c341fb">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Obra}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="26" y="65" width="226" height="17" uuid="f8edbfe0-b42f-46b2-8b1e-9095ad837eb2">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EmailEst}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="363" y="31" width="68" height="15" uuid="8cc43000-2252-4697-84b0-e8eafb462235">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{UFEst}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="85" y="46" width="25" height="15" uuid="66708f8c-4292-43fc-a816-20052766e1bd">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[CEP:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="342" y="46" width="90" height="15" uuid="e0815ecc-b116-4eb5-83ba-bd1aa9d7db3a">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FaxEst}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="260" y="31" width="100" height="15" uuid="100ca5a1-2c8f-4030-a397-dd9c2fd30d7d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MunicipioEst}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="316" y="46" width="25" height="15" uuid="b2e948e4-0344-4fdc-a2c6-ec747504f488">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Fax:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="84" y="1" width="266" height="15" uuid="ba21b156-66a4-4de7-a860-41c8a38dfb54">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DescEmpresa}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="84" y="16" width="266" height="15" uuid="89c2045d-3762-4295-a69a-19e490d62ff9">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EndrecoEst}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="222" y="46" width="90" height="15" uuid="018efbf7-60c9-4631-b7df-9fb47a37dc86">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TelefoneEst}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="198" y="46" width="25" height="15" uuid="a0a3ad01-5666-433f-a5ff-24290446d5b1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Tel.:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="110" y="46" width="88" height="15" uuid="3a940d87-44e2-499a-ba81-2f98b7eba9be">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CepEst}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="84" y="31" width="176" height="15" uuid="e2e9603f-b86c-4dc8-8e0b-0b95469936b5">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BairroEst}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="126" height="20" backcolor="#CCCCCC" uuid="f6205ee7-dda9-46d7-b0cf-692fdac49086"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[                 Código Item]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="126" y="0" width="296" height="20" backcolor="#CCCCCC" uuid="8691072d-d683-49df-a445-a24192d74978">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descrição]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="422" y="0" width="40" height="20" backcolor="#CCCCCC" uuid="af30c8e5-ca67-42d8-bfab-108fa793404d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quantidade]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="462" y="0" width="48" height="20" backcolor="#CCCCCC" uuid="258905b6-6bdd-4017-90a3-505821fe2d6a"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor Unit.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="510" y="0" width="45" height="20" backcolor="#CCCCCC" uuid="fb2a3c4b-c9bf-4e9b-a5e7-4c5911726a15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="20" width="555" height="1" uuid="50c1b414-8681-4837-a617-07cb7bcc8427"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="30" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField pattern="###0;-###0" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="422" y="0" width="40" height="30" forecolor="#000000" uuid="a2c71040-c990-4d22-8347-c231c8ada6d0">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Quantidade}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="462" y="0" width="48" height="30" forecolor="#000000" uuid="c12fb67b-4aa1-488d-87b9-fd5ae5d7623c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VlUnit}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="510" y="0" width="45" height="30" forecolor="#000000" uuid="516ef87b-d557-4713-b71f-15330727683b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VlTotal}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="31" y="0" width="95" height="30" forecolor="#030000" uuid="52f6dee5-a81b-4be1-ad14-08e2b3a425c9">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7a630143-0e87-4206-93ba-a1e3c9bd7099"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodItem}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="126" y="0" width="296" height="30" forecolor="#030000" uuid="56ee9ac3-3c61-461a-a53f-4b17c77cfe02">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="692c3751-7468-46a9-9ea1-ec4fe7e046b1"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DescItem}]]></textFieldExpression>
+			</textField>
+			<image onErrorType="Blank">
+				<reportElement mode="Transparent" x="0" y="1" width="28" height="29" forecolor="#030000" uuid="5b06b5f6-d809-4fc3-be33-5ec279657ab7">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{imagem}]]></imageExpression>
+			</image>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="175" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="201" y="3" width="60" height="20" uuid="9e8f7385-4676-43e0-8ae5-6091f3f7658a"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Observações]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="198" y="26" width="347" height="144" uuid="bc3b1272-23c2-43da-be4a-d8e757ff6624"/>
+			</rectangle>
+			<textField isBlankWhenNull="true">
+				<reportElement x="205" y="33" width="330" height="126" uuid="7f2c7f57-ef18-48b4-bc3c-4854299fc99f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{Observacao}]]></textFieldExpression>
+			</textField>
+			<rectangle radius="10">
+				<reportElement x="8" y="24" width="165" height="140" uuid="1734d33d-17b9-4024-a440-4a218fe19d11"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="14" y="26" width="38" height="15" uuid="f2c3a068-a70a-4c13-9044-5152aba12359"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Número]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="54" y="26" width="56" height="15" uuid="dd648c0a-c449-402b-a4ca-4fb021b028de"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vencimento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="112" y="26" width="56" height="15" uuid="aeb73e4c-a753-4531-ad36-e7a85601e6b4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+			<line>
+				<reportElement x="8" y="41" width="165" height="1" uuid="f10d89cf-01b8-4efc-a622-55f02b2a9b18"/>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement x="14" y="42" width="38" height="12" uuid="4d134ce8-d4c8-405e-9919-39909c96ea42"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pParc01}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="54" y="42" width="56" height="12" uuid="379cc303-d058-4a31-ac0f-cf2ed2c0b38f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pVenc01}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="112" y="42" width="56" height="12" uuid="caea04a2-8211-4771-97ef-f2fee27546b3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pValor01}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="14" y="54" width="38" height="12" uuid="62d1d24b-fc27-4cd3-9717-30bc713ba753"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pParc02}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="54" y="54" width="56" height="12" uuid="e66a89da-441b-4f1e-b68e-577a4363f9d3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pVenc02}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="112" y="54" width="56" height="12" uuid="26363acf-f477-44ef-bd3c-91aa715e2ebe"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pValor02}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="14" y="66" width="38" height="12" uuid="6455ba28-cfa6-45a8-b951-e1fbbbce341f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pParc03}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="54" y="66" width="56" height="12" uuid="de94c4ed-2f98-4a03-9046-41ff8878b660"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pVenc03}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="112" y="66" width="56" height="12" uuid="fc20f097-c536-40ca-9e45-2089ea91bf8c"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pValor03}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="14" y="78" width="38" height="12" uuid="1615a23a-9402-4db6-a0f3-1cb3f365b53e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pParc04}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="54" y="78" width="56" height="12" uuid="3738f9fd-22d2-49fe-9090-19dac4d41f7c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pVenc04}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="112" y="78" width="56" height="12" uuid="2b524008-a396-4eb6-9d2d-8527e632ad4b"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pValor04}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="14" y="90" width="38" height="12" uuid="eb3cd1ec-139f-4828-a68d-9d7b4e35d0e3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pParc05}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="54" y="90" width="56" height="12" uuid="cc2c9a76-91e0-4bec-92f6-d9c2eacbdfb9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pVenc05}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="112" y="90" width="56" height="12" uuid="9ca666f4-ab99-4823-a269-828cbc485beb"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pValor05}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="14" y="102" width="38" height="12" uuid="484f5e2b-c359-4e86-b754-3c80dfe14bd9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pParc06}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="54" y="102" width="56" height="12" uuid="81618952-08ac-4d98-ace9-bb83e5327bb5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pVenc06}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="112" y="102" width="56" height="12" uuid="b210e13c-872e-4e7a-9eae-3b6522b26f4e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pValor06}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="14" y="114" width="38" height="12" uuid="a7fe143e-43cf-435b-a5ca-161ffcc62449"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pParc07}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="54" y="114" width="56" height="12" uuid="ed170745-a199-4b69-a632-f9a8313e4b7c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pVenc07}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="112" y="114" width="56" height="12" uuid="80af9a4b-975c-4ec6-9bb4-805746c9ae6c"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pValor07}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="14" y="126" width="38" height="12" uuid="28a428c7-0cab-4076-8f55-ae679f42af17"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pParc08}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="54" y="126" width="56" height="12" uuid="2fa52fd8-fadd-48db-ac2f-762d9cfa6eba"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pVenc08}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="112" y="126" width="56" height="12" uuid="7d377caf-c6fe-409f-b2b5-0ae37058b4f3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pValor08}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="14" y="138" width="38" height="12" uuid="42d5e88c-9fb6-4a05-968e-dd453454760c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pParc09}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="54" y="138" width="56" height="12" uuid="63e25a47-8d8f-4eb2-82a6-0e45eb83a6fa"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pVenc09}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="112" y="138" width="56" height="12" uuid="a94c3fb2-ccf4-442d-8067-b49e88ed5bf2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pValor09}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="14" y="150" width="38" height="12" uuid="a0f08e43-2d67-4303-84e0-92a9467ce3cd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pParc10}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="54" y="150" width="56" height="12" uuid="12b8a3d8-9aa8-4f2f-8747-dd754cb01472"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pVenc10}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="112" y="150" width="56" height="12" uuid="949d490e-c245-4fa0-b563-3e32e6469f86"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pValor10}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="5" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="74" splitType="Stretch">
+			<rectangle>
+				<reportElement x="10" y="3" width="521" height="50" uuid="69b7d220-8e07-49c4-afe6-11d087325f2b"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="12" y="7" width="122" height="20" uuid="93a0d3af-ef6d-4f6f-9e2d-2104bfbeba79"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Total dos Itens]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="145" y="7" width="122" height="20" uuid="f436dda5-b5cb-4fd6-8e28-7522c98a3e30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Serviços]]></text>
+			</staticText>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="145" y="31" width="122" height="20" uuid="dc364ee3-7929-4877-bd74-29a652d707a2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Servico}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="273" y="7" width="122" height="20" uuid="f7ad8a2f-2086-4d23-9c73-780178944579"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Descontos]]></text>
+			</staticText>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="274" y="31" width="121" height="20" uuid="c708c3d2-d694-4590-a48f-bb380e2cea2c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Desconto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="404" y="7" width="122" height="20" uuid="3b9a3b83-e7ed-4715-af9c-56aebc374be9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Valor da Proposta]]></text>
+			</staticText>
+			<line>
+				<reportElement x="10" y="29" width="521" height="1" uuid="268a233e-a7e8-44cc-9214-d29913ab2541"/>
+			</line>
+			<line>
+				<reportElement x="138" y="3" width="1" height="50" uuid="39a7b2f6-7a3d-4da5-ae3f-e554e4e788fe"/>
+			</line>
+			<line>
+				<reportElement x="269" y="3" width="1" height="50" uuid="4ce730e7-d713-4c6e-8925-13afb2c7158c"/>
+			</line>
+			<line>
+				<reportElement x="399" y="3" width="1" height="50" uuid="8f22429c-60a8-4f72-a3ee-8a6ab2bbc57d"/>
+			</line>
+			<staticText>
+				<reportElement x="8" y="54" width="130" height="20" uuid="9a87e03e-5e14-4bbb-9121-ab86e2314973"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRAZO DE ENTREGA: Até]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="138" y="54" width="88" height="20" uuid="f5d94ea7-2daa-4f4e-8b3e-ac19f021a5a2"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{PrazoEntrega}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="226" y="54" width="169" height="20" uuid="b99bfe7c-c825-4387-9ac8-a677cb32a3f6"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONDIÇÃO DE PAGAMENTO:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="396" y="54" width="135" height="20" uuid="f7d0eef6-c0bb-42af-bbc8-87c4dbb89389"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{CondPag}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###" isBlankWhenNull="true">
+				<reportElement x="404" y="31" width="122" height="20" uuid="77675def-aa13-40e6-8db2-9420d0a0bab8">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VlTotalItens}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###" isBlankWhenNull="true">
+				<reportElement x="12" y="30" width="122" height="21" uuid="c003a118-e0a1-4cd6-bdd3-6e42abdbdcdf"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VlTotalItens}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

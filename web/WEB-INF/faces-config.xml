@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config version="2.2"
+              xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+
+    <name>OnSys ERP Cloud</name>   
+    <navigation-rule>
+        <from-view-id>login.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{LoginFace.executarLogin}</from-action>
+            <from-outcome>success</from-outcome>
+            <to-view-id>success.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <!--CAPTCHA LOCALHOST	
+    <context-param>
+        <param-name>primefaces.PUBLIC_CAPTCHA_KEY</param-name>
+        <param-value>6LdqSOglAAAAACi6OAbXlr75NAIfKm5b_FEQR1_g</param-value>
+    </context-param>
+    <context-param>
+        <param-name>primefaces.PRIVATE_CAPTCHA_KEY</param-name>
+        <param-value>6LdqSOglAAAAADrQTkQM44f-OqLuJLpNPuHoIAoB</param-value>
+    </context-param>   
+    -->    
+    <!--CAPTCHA SERVIDOR--> 	
+    <context-param>
+        <param-name>primefaces.PUBLIC_CAPTCHA_KEY</param-name>
+        <param-value>6LdVQ-klAAAAALmxDTujUKTxqnckPkY-Te7-wYBs</param-value>
+    </context-param>
+    <context-param>
+        <param-name>primefaces.PRIVATE_CAPTCHA_KEY</param-name>
+        <param-value>6LdVQ-klAAAAAPGjgiZ8y5jWcjnKJUmSTdxlj7yE</param-value>
+    </context-param>  
+      
+    <application>
+        <action-listener>org.primefaces.application.DialogActionListener</action-listener>
+        <navigation-handler>org.primefaces.application.DialogNavigationHandler</navigation-handler>
+        <view-handler>org.primefaces.application.DialogViewHandler</view-handler>
+        <resource-bundle>
+            <base-name>messages</base-name>
+            <var>msg</var>
+        </resource-bundle>
+        <message-bundle id="msg">messages</message-bundle>
+        <locale-config>
+            <default-locale>pt</default-locale>
+            <supported-locale>pt</supported-locale>
+        </locale-config>        
+    </application>    
+    
+    <component>
+        <component-type>org.primefaces.component.FreyaMenu</component-type>
+        <component-class>org.primefaces.freya.component.FreyaMenu</component-class>
+    </component>
+    
+    <render-kit>
+        <renderer>
+            <component-family>org.primefaces.component</component-family>
+            <renderer-type>org.primefaces.component.FreyaMenuRenderer</renderer-type>
+            <renderer-class>org.primefaces.freya.component.FreyaMenuRenderer</renderer-class>
+        </renderer>
+    </render-kit>      
+    
+</faces-config>

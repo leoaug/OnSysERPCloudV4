@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Despesas_repre_Excel" pageWidth="1000" pageHeight="4000" orientation="Landscape" columnWidth="1000" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="844de2eb-2101-426d-8e08-f0928f50a920">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="OnSys"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<style name="zebra" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     despesasrep.`DATAMOVTO` AS despesasrep_DATAMOVTO,
+     CASE WEEKDAY(despesasrep.`DATAMOVTO`) 
+            WHEN 0 THEN 'Segunda-feira'
+            WHEN 1 THEN 'Terça-feira'
+            WHEN 2 THEN 'Quarta-feira'
+            WHEN 3 THEN 'Quinta-feira' 
+            WHEN 4 THEN 'Sexta-feira'
+            WHEN 5 THEN 'Sabado'
+            WHEN 6 THEN 'Domingo'
+     END DIASEMANA, 
+     despesasrep.`TIPO` AS despesasrep_TIPO,
+     despesasrep.`VALOR` AS despesasrep_VALOR,
+     despesasrep.`OBS` AS despesasrep_OBS,
+     CASE 
+        when (despesasrep.`TIPO` = 'Combustível KM rodado') THEN despesasrep.`QTD`
+        ELSE null
+     END despesasrep_QTD,
+     representante.`APELIDO` AS representante_APELIDO,
+     representante.`NOME` AS representante_NOME,
+     empresa.`logoimg` AS empresa_logo,
+     representante.`CODIGO` AS representante_CODIGO
+FROM
+     `representante` representante INNER JOIN `despesasrep` despesasrep ON representante.`id` = despesasrep.`REPRESENTANTE_id`
+     INNER JOIN `empresa` empresa ON despesasrep.`EMPRESA_id` = empresa.`id`
+$P!{cCondicao}
+ORDER BY representante_NOME, despesasrep_TIPO,despesasrep_DATAMOVTO]]>
+	</queryString>
+	<field name="despesasrep_DATAMOVTO" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="despesasrep_DATAMOVTO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="despesasrep"/>
+	</field>
+	<field name="DIASEMANA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DIASEMANA"/>
+	</field>
+	<field name="despesasrep_TIPO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="despesasrep_TIPO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="despesasrep"/>
+	</field>
+	<field name="despesasrep_VALOR" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="despesasrep_VALOR"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="despesasrep"/>
+	</field>
+	<field name="despesasrep_OBS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="despesasrep_OBS"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="despesasrep"/>
+	</field>
+	<field name="despesasrep_QTD" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="despesasrep_QTD"/>
+	</field>
+	<field name="representante_APELIDO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="representante_APELIDO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="representante"/>
+	</field>
+	<field name="representante_NOME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="representante_NOME"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="representante"/>
+	</field>
+	<field name="empresa_logo" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.label" value="empresa_logo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="representante_CODIGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="representante_CODIGO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="representante"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="59" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="1000" height="39" uuid="a1472c1c-dd28-4732-b5e2-acc470528f83"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relatório de despesas]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="39" width="1000" height="20" uuid="47d7d1ff-5f80-45f6-af4d-75be9699cf40"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="286" y="0" width="79" height="20" backcolor="#CCCCCC" uuid="73e69cba-1a5e-45fc-838c-a774e9006458"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="465" y="0" width="334" height="20" backcolor="#CCCCCC" uuid="da73efcc-6520-43d3-b6c6-78813ab94177"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Despesas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="899" y="0" width="101" height="20" backcolor="#CCCCCC" uuid="839623fb-8dd4-4b61-b631-882fb914adce"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="21" width="1000" height="1" uuid="d4504221-81e3-4cd6-b256-84dab1a10749"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="63" height="20" backcolor="#CCCCCC" uuid="7b2c5c08-fc4d-45e4-bd6f-0bcacc1b61f4"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="63" y="0" width="223" height="20" backcolor="#CCCCCC" uuid="642f5f8b-4bd1-4486-be71-33807a7d4f77"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Representante]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="365" y="0" width="100" height="20" backcolor="#CCCCCC" uuid="e43acd6b-82c2-494f-9dd7-7403b662c4c9">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="29b1fbbb-8d24-420d-bc57-cbfb3def07d8"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dias]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="799" y="0" width="100" height="20" backcolor="#CCCCCC" uuid="ada08d82-3e44-481d-8f48-603c22e395cf">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d6fd69f3-0ff7-436c-ba19-3a8c766745f8"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quantidade]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="286" y="0" width="79" height="15" forecolor="#000000" uuid="30adfd68-bb1c-44de-a97f-d27b6e531612"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{despesasrep_DATAMOVTO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="465" y="0" width="334" height="15" forecolor="#000000" uuid="dd5d535e-f6df-4d3c-95c1-160c03091e16"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{despesasrep_TIPO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="899" y="0" width="101" height="15" forecolor="#000000" uuid="3cf50a57-2934-49a2-843b-6cf865846de5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{despesasrep_VALOR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="63" height="15" forecolor="#000000" uuid="1264072d-0892-49f6-b60a-307b76bc5f93"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{representante_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="63" y="0" width="223" height="15" forecolor="#000000" uuid="63f2a7d5-d648-445f-94e1-e83e8eec35b0"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{representante_NOME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="365" y="0" width="100" height="15" forecolor="#000000" uuid="0a81566d-2786-4c47-b4ed-f096998d201a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="29b1fbbb-8d24-420d-bc57-cbfb3def07d8"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DIASEMANA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="799" y="0" width="100" height="15" forecolor="#000000" uuid="0f265bb9-a88e-4acf-bbfb-bff08ee77678">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d6fd69f3-0ff7-436c-ba19-3a8c766745f8"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{despesasrep_QTD}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

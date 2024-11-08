@@ -1,0 +1,263 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">SEG0108 - Submódulo x Programa</ui:define>
+    <ui:define name="content">
+        <style>
+            .ui-menu {
+                min-width: 300px;
+            }                    
+        </style>
+        <style> 
+            .ui-datatable .ui-datatable-data .even-row td{
+                background-color: #EEF5FF;                          
+                font-size: 12px; 
+                height: 10px;  
+            }
+            .ui-datatable .ui-datatable-data .odd-row td{
+                background-color:#E8EDF0;
+                font-size: 12px; 
+                height: 10px;                         
+            }                    
+        </style>        
+        <h:form id="form">
+            <div class="grid crud-demo">
+                <div class="col-12">
+                    <div class="card">
+                        <p:growl id="messages" showDetail="true"/>                        
+                        <p:toolbar styleClass="mb-4" id="toolbar">
+                            <p:toolbarGroup>
+                                <p:menuButton style="text-align: center; width: 140px;margin-right: .5rem" value="Mais opções">  
+                                    <c:if test="#{!favoritosFace.validaExistente()}">
+                                        <p:menuitem value="Adicionar aos favoritos" 
+                                                    icon="pi pi-star" 
+                                                    update="toolbar"
+                                                    actionListener="#{favoritosFace.criaFavorito(usuarioFace.loggedUser.empresa.codigo)}"/>
+                                    </c:if>
+                                    <c:if test="#{favoritosFace.validaExistente()}">
+                                        <p:menuitem value="Remover dos favoritos" 
+                                                    icon="pi pi-star-fil" 
+                                                    update="toolbar"
+                                                    actionListener="#{favoritosFace.deletaFavorito()}"/>
+                                    </c:if>                                    
+                                    <p:menuitem value="Ajuda" icon="pi pi-question"/>
+                                </p:menuButton> 
+                                <p:spacer width="3" height="3"/>  
+                                <p:commandButton id="limparFiltro"
+                                                 title="Atualizar lista e limpar pesquisa"
+                                                 style="text-align: center; width: 30px;margin-right: .5rem"
+                                                 actionListener="#{submoduloFace.limparFiltros}"
+                                                 icon="pi pi-bolt Fs14 white"
+                                                 update="dtb,toolbar">
+                                    <p:resetInput target="dtb"/>
+                                </p:commandButton>                                
+                            </p:toolbarGroup>
+                        </p:toolbar>
+                        <p:dataTable id="dtb" 
+                                     widgetVar="tabela" 
+                                     var="registro" 
+                                     value="#{submoduloFace.lazy}" 
+                                     reflow="true" 
+                                     styleClass="products-table"
+                                     rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}"
+                                     rowKey="#{registro.id}" 
+                                     paginator="true" 
+                                     rows="5" 
+                                     rowSelectMode="add" 
+                                     rowIndexVar="rowIx"
+                                     paginatorPosition="both"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                                     rowsPerPageTemplate="5,10,{ShowAll|'Todos'}">
+                            
+                            <f:facet name="header">
+                                <div class="products-table-header">
+                                    <span style="font-weight: bold">SEG0108 - Submódulo x Programa</span>
+                                
+                                    <span class="filter-container ui-input-icon-left">
+                                        <i class="pi pi-search"></i>
+                                        <p:inputText id="globalFilter" onkeyup="PF('tabela').filter()" placeholder="Pesquisar"/>
+                                    </span>
+                                </div>
+                            </f:facet>
+                            
+                            <p:column id="id" visible="false" exportable="false">                                    
+                                <h:outputText value="#{item.id}"/>
+                            </p:column>                              
+                            <p:column headerText="Código" 
+                                      style="height: 25px; width: 160px"
+                                      sortBy="#{registro.codigo}" filterBy="#{registro.codigo}">
+                                <h:outputText value="#{registro.codigo}" style="color: black"/>
+                            </p:column>
+                            <p:column headerText="Descrição" sortBy="#{registro.descricao}" filterBy="#{registro.descricao}">
+                                <h:outputText value="#{registro.descricao}" style="color: black"/>
+                            </p:column>
+                            <p:column style="height: 25px; width: 160px" exportable="false">
+                                <p:commandButton icon="pi pi-pencil" 
+                                                 title="Alterar registro selecionado."
+                                                 update=":form:manage-registro-content,:form:manageDialog" 
+                                                 oncomplete="PF('manageDialog').show()"
+                                                 action="#{submoduloProgramaFace.alterar()}"
+                                                 styleClass="edit-button rounded-button ui-button-success" 
+                                                 process="@this">
+                                    <f:setPropertyActionListener value="#{registro}" target="#{submoduloProgramaFace.submoduloSelecionado}"/>
+                                </p:commandButton>
+                                <p:commandButton icon="pi pi-eye"
+                                                 title="Consultar registro selecionado."
+                                                 action="#{submoduloProgramaFace.consultar()}"
+
+                                                 styleClass="ui-button-info rounded-button mr-2 mb-2" 
+                                                 process="@this">
+                                    <f:setPropertyActionListener value="#{registro}" target="#{submoduloProgramaFace.submoduloSelecionado}"/>
+                                </p:commandButton>
+                            </p:column>
+                            
+                        </p:dataTable>                        
+                        <p:dialog id="manageDialog" 
+                                  header="#{submoduloProgramaFace.titulo}" 
+                                  style="max-width: 1000px!important"
+                                  width="95%" height="95%"
+                                  showEffect="fade" modal="true" widgetVar="manageDialog" responsive="true">
+                            <p:outputPanel rendered="#{not empty submoduloProgramaFace.submoduloSelecionado}" id="manage-registro-content" class="ui-fluid">
+                                <table id="tdSize15" cellspacing="5">
+                                    <tr>
+                                        <td>
+                                            <h:outputText value="Submódulo" style="color: black"/>
+                                        </td>
+                                        <td>
+                                            <p:inputText disabled="true" value="#{submoduloProgramaFace.submoduloSelecionado.codigo}" 
+                                                             style="color: blue; font-weight: 700; opacity: 1!important">
+                                            </p:inputText>
+                                        </td>
+                                    </tr>
+                                </table>    
+                                <hr/>                                                                        
+                                <div class="EmptyBox10"></div>
+                                <div class="col-12 lg:col-12">
+                                    <div class="card">
+                                        <h5>Programas</h5>
+                                        <p:pickList id="pickList" value="#{submoduloProgramaFace.programas}" var="registros"
+                                                    converter="represConverter2"
+                                                    showSourceFilter="true" 
+                                                    showTargetFilter="true"
+                                                    filterMatchMode="contains"
+                                                    itemLabel="#{registros.codigo} - #{registros.descricao}" 
+                                                    itemValue="#{registros}"
+                                                    showSourceControls="true" 
+                                                    showTargetControls="true" 
+                                                    responsive="true">
+
+                                            <f:facet name="sourceCaption">Programas disponíveis</f:facet>
+                                            <f:facet name="targetCaption">Programa(s) do módulo</f:facet>
+
+                                            <p:ajax event="transfer" listener="#{submoduloProgramaFace.onTransfer}" update="messages,form:manage-registro-content-permissao,:form:manageDialogPermissao"/>                                                
+
+                                        </p:pickList>
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+                            <f:facet name="footer">
+                                <p:commandButton value="Salvar" 
+                                                 style="text-align: center; width: 100px;margin-right: .5rem"
+                                                 icon="pi pi-check"
+                                                 update="manage-registro-content" 
+                                                 onclick="PF('manageDialog').hide()"
+                                                 process="manage-registro-content @this"/>
+                                <p:commandButton value="Cancelar" 
+                                                 style="text-align: center; width: 100px;margin-right: .5rem"
+                                                 icon="pi pi-times" 
+                                                 onclick="PF('manageDialog').hide()" 
+                                                 class="ui-button-secondary"/>
+                            </f:facet>
+                        </p:dialog>                        
+                        <p:dialog id="manageDialogCopiar" header="#{submoduloProgramaFace.titulo}" 
+                                  style="max-width: 1000px!important"
+                                  width="95%" height="95%"
+                                  showEffect="fade" modal="true" widgetVar="manageDialogCopiar" responsive="true">
+                            <p:outputPanel rendered="#{not empty submoduloProgramaFace.submoduloSelecionado}" id="manage-registro-content-copiar" class="ui-fluid">
+                                <table id="tdSize15" cellspacing="5">
+                                    <tr>
+                                        <td>
+                                            <h:outputText value="Submódulo" style="color: black"/>
+                                        </td>
+                                        <td>
+                                            <p:inputText disabled="true" value="#{submoduloProgramaFace.submoduloSelecionado.descricao}" 
+                                                             style="color: blue; font-weight: 700; opacity: 1!important">
+                                            </p:inputText>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </p:outputPanel>
+                            <f:facet name="footer">
+                                <p:commandButton value="Salvar" 
+                                                 style="text-align: center; width: 100px;margin-right: .5rem"
+                                                 icon="pi pi-check" 
+                                                 actionListener="#{submoduloProgramaFace.salva}" 
+                                                 update="manage-registro-content" process="manage-registro-content @this"/>
+                                <p:commandButton value="Cancelar" 
+                                                 style="text-align: center; width: 100px;margin-right: .5rem"
+                                                 icon="pi pi-times" 
+                                                 onclick="PF('manageDialog').hide()" 
+                                                 class="ui-button-secondary"/>
+                            </f:facet>
+                        </p:dialog>
+                        <p:dialog id="manageDialogPermissao" header="#{submoduloProgramaFace.titulo}" 
+                                  style="max-width: 1000px!important"
+                                  width="95%" height="95%"
+                                  showEffect="fade" modal="true" widgetVar="manageDialogPermissao" responsive="true">
+                            <p:outputPanel rendered="#{not empty submoduloProgramaFace.submoduloSelecionado}" id="manage-registro-content-permissao" class="ui-fluid">
+                                <div class="field">
+                                    <p:outputLabel value="Consultar" for="permissaoConsultar" style="color: black"/>
+                                    <p:selectBooleanCheckbox id="permissaoConsultar" value="#{submoduloProgramaFace.permissaoConsultar}"/>                                    
+                                </div>
+                                <div class="field">
+                                    <p:outputLabel value="Alterar" for="permissaoAlterar" style="color: black"/>
+                                    <p:selectBooleanCheckbox id="permissaoAlterar" value="#{submoduloProgramaFace.permissaoAlterar}"/>                                    
+                                </div>
+                                <div class="field">
+                                    <p:outputLabel value="Incluir" for="permissaoIncluir" style="color: black"/>
+                                    <p:selectBooleanCheckbox id="permissaoIncluir" value="#{submoduloProgramaFace.permissaoIncluir}"/>                                    
+                                </div>
+                                <div class="field">
+                                    <p:outputLabel value="Remover" for="permissaoRemover" style="color: black"/>
+                                    <p:selectBooleanCheckbox id="permissaoRemover" value="#{submoduloProgramaFace.permissaoRemover}"/>                                    
+                                </div>
+                            </p:outputPanel>
+                            <f:facet name="footer">
+                                <p:commandButton value="Salvar" 
+                                                 style="text-align: center; width: 100px;margin-right: .5rem"
+                                                 icon="pi pi-check" 
+                                                 actionListener="#{submoduloProgramaFace.salvarPermisao}" 
+                                                 update="manage-registro-content-permissao" process="manage-registro-content-permissao @this"/>
+                                <p:commandButton value="Cancelar" 
+                                                 style="text-align: center; width: 100px;margin-right: .5rem"
+                                                 icon="pi pi-times" 
+                                                 onclick="PF('manageDialogPermissao').hide()" 
+                                                 class="ui-button-secondary"/>
+                            </f:facet>
+                        </p:dialog>  
+
+                        <p:confirmDialog widgetVar="deleteProductDialog" showEffect="fade" width="300" message="Deletar registro(s)?" header="Confirmação" severity="warn">
+                            <p:commandButton value="Sim" icon="pi pi-check" actionListener="#{tipoDePedidoFace.remover()}" process="@this" oncomplete="PF('deleteProductDialog').hide()"/>
+                            <p:commandButton value="Não" type="button" styleClass="ui-button-secondary" icon="pi pi-times" onclick="PF('deleteProductDialog').hide()" />
+                        </p:confirmDialog>
+
+                        <p:confirmDialog global="true" showEffect="fade" width="300">
+                            <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                            <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times" />
+                        </p:confirmDialog>                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

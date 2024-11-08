@@ -1,0 +1,123 @@
+<html xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                    xmlns:p="http://primefaces.org/ui"
+                    template="/WEB-INF/template.xhtml"
+                    xmlns:f="http://java.sun.com/jsf/core"
+                    xmlns:h="http://java.sun.com/jsf/html">
+        <ui:define name="conteudo">            
+            <f:view contentType="text/html; charset=utf-8">
+                <h:head>  
+                    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>  
+                </h:head>
+                <p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" widgetVar="statusDialog" />
+                <p:dialog modal="true" widgetVar="statusDialog" header="Processando..." draggable="false" closable="false" resizable="false">                               
+                    <p:graphicImage value="#{pageContext.servletContext.contextPath}/resources/imagens/onsys/bar180.gif" /> 
+                </p:dialog>         
+                <script type="text/javascript">
+                    function startMessage() {
+                         statusDialog.show();
+                    }
+                    function finishMessage() {
+                        statusDialog.hide();
+                    }
+                </script>
+                <h:form id="fmListarProgramas">
+                    <p:panel>
+                        <p:toolbar style="height: 35px" id="toolbar">
+                            <f:facet name="left">                                
+                                <p:commandButton immediate="true" action="#{submoduloProgramaFace.listar()}" 
+                                                 style="height: 30px; width: 30px;"
+                                                 title="Voltar para lista de submódulos." 
+                                                 onclick="PF('PrimeFaces.monitorDownload(startMessage, finishMessage)')"
+                                                 alt="Voltar para lista de submódulos." 
+                                                 icon="fa fa-reply Fs12 white"/>
+                                <p:spacer width="5" height="5"/>                                                                    
+                                <p:commandButton id="limparFiltro"
+                                                 title="Atualizar lista e limpar filtros" 
+                                                 style="height: 30px; width: 30px;"
+                                                 onclick="PF('tabela').clearFilters()" 
+                                                 actionListener="#{submoduloProgramaFace.limparFiltros}"
+                                                 icon="fa fa-flash Fs14 white"
+                                                 update="Dtb,toolbar">
+                                    <p:resetInput target="Dtb"/>
+                                </p:commandButton>                                
+                                <p:spacer width="3" height="3"/>
+                                <p:growl id="messages" showDetail="true"/>  
+                            </f:facet>                        
+                        </p:toolbar>
+                        <p:dataTable id="Dtb" var="item" value="#{submoduloProgramaFace.lazy}" 
+                                     lazy="true" widgetVar="tabela"
+                                     first="#{submoduloProgramaFace.pagina}" 
+                                     selection="#{submoduloProgramaFace.selectedLinha}" 
+                                     selectionMode="single" filterDelay="1000"
+                                     paginator="true" rows="10" paginatorPosition="top"                                              
+                                     emptyMessage="Não há registros a exibir"                                        
+                                     rowIndexVar="rowIx" reflow="true">
+
+                            <f:facet name="header">                                                     
+                                <h:outputText value="Permissão de programas" styleClass="Fs14"/>
+                                <p:spacer width="20" height="5"/>
+                                <h:commandLink>
+                                    <p:graphicImage title="Gera planilha" value="#{pageContext.servletContext.contextPath}/resources/imagens/onsys/excel.png" width="20"/>
+                                    <p:dataExporter type="xls" target="Dtb" fileName="SEG0108A"/>                                    
+                                </h:commandLink>
+                                <p:spacer width="40" height="5"/>
+                                <h:outputText value="  Filtrar  "/>
+                                <p:inputText id="globalFilter" onkeyup="PF('tabela').filter()" styleClass="Fs12"  
+                                             style="text-align: right; height: 10px"/>
+                            </f:facet>
+                           
+                            <p:ajax event="filter" update="Dtb"/>
+                            <p:ajax event="page" listener="#{submoduloProgramaFace.datatablePagina}"/>
+                            
+                            <p:column sortBy="#{item.programa.codigo}" filterBy="#{item.programa.codigo}" 
+                                      style="color: #1578c9; height: 25px;" styleClass="Fs12"
+                                      headerText="Código">  
+                                <h:outputText value="#{item.programa.codigo}" styleClass="Fs12" style="color: black" />  
+                            </p:column>                              
+                            <p:column sortBy="#{item.programa.descricao}" filterBy="#{item.programa.descricao}" 
+                                      style="color: #1578c9; height: 25px;" styleClass="Fs12"
+                                      headerText="Descrição">  
+                                <h:outputText value="#{item.programa.descricao}" styleClass="Fs12" style="color: black" />  
+                            </p:column>
+                            <f:facet name="footer">
+                                <p:commandButton process="Dtb" update=":fmListarProgramas:dlgPermissao"
+                                                 actionListener="#{submoduloProgramaFace.editarPemissao()}"
+                                                 value="Permissões" oncomplete="PF('permissaoDialog').show()" />
+                            </f:facet>                            
+                        </p:dataTable>
+                        <p:dialog modal="true" header="Permissões do programa - #{submoduloProgramaFace.submoduloPrograma.programa.codigo} " 
+                                  showEffect="fade" hideEffect="fade"  
+                                  id="dlgPermissao"
+                                  widgetVar="permissaoDialog">
+                            <h:form id="frmPermissao">                             
+                                <p:panelGrid columns="2" layout="grid"                                             
+                                             style="border: none !important;"
+                                             columnClasses="ui-grid-col-5, ui-grid-col-7"
+                                             id="displayPermissao">
+                                    <h:outputText value="Incluir" />
+                                    <p:selectBooleanCheckbox value="#{submoduloProgramaFace.submoduloPrograma.incluir}"/>
+                                    <h:outputText value="Alterar" />
+                                    <p:selectBooleanCheckbox value="#{submoduloProgramaFace.submoduloPrograma.editar}"/>
+                                    <h:outputText value="Remover" />
+                                    <p:selectBooleanCheckbox value="#{submoduloProgramaFace.submoduloPrograma.remover}"/>
+                                    <h:outputText value="Consultar" />
+                                    <p:selectBooleanCheckbox value="#{submoduloProgramaFace.submoduloPrograma.consultar}"/>
+                                    
+                                    <p:commandButton value="Salvar" style="height: 30px; width: 85px;"
+                                            action="#{submoduloProgramaFace.fimEditarPemissao}"
+                                            process="displayPermissao"
+                                            oncomplete="if (!args.validationFailed) PF('permissaoDialog').hide()"/>
+                                    <p:commandButton value="Cancelar" style="height: 30px; width: 85px;"
+                                        immediate="true" onclick="PF('permissaoDialog').hide();">
+                                    </p:commandButton>     
+
+                                </p:panelGrid>
+                            </h:form>
+                        </p:dialog>                        
+                    </p:panel>                        
+                </h:form>
+            </f:view>
+        </ui:define>
+    </ui:composition>        
+</html>

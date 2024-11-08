@@ -1,0 +1,44 @@
+<html   xmlns:c="http://java.sun.com/jsp/jstl/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"                   
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"> 
+    
+    
+    <p:dialog header="Trocar idioma" modal="true" id="trocarIdioma" widgetVar="trocarIdioma">
+        <h:form id="fmTrocarIdioma">
+
+            <p:panelGrid style="border: none !important; background-color: #dddddd"
+                    columnClasses="Container120" 
+                    columns="1" layout="grid">
+
+                <p:outputLabel value="Novo idioma" for="novoIdioma"/>
+                <p:selectOneMenu id="novoIdioma" value="#{trocarIdioma.idiomaSelecionado}"
+                                 style="font-size: 15px; font-weight: 700; color: black">
+                    <f:selectItem itemValue=" " itemLabel=" "/>             
+                    <f:selectItem itemLabel="#{msg.label_portugues}"    itemValue="pt"/>  
+                    <f:selectItem itemLabel="#{msg.label_ingles}"       itemValue="en"/>
+                    <f:selectItem itemLabel="#{msg.label_espanhol}"     itemValue="es"/> 
+                    
+                </p:selectOneMenu>                                                   
+
+            </p:panelGrid>
+
+            <p:commandButton action="#{trocarIdioma.fimTrocarIdioma()}"   
+                             value="Confirma" 
+                             process="@form"
+                             update="fmTrocarIdioma,@form"
+                             styleClass="GreenButton">
+            </p:commandButton>
+            <p:commandButton value="Sair" update="@none"                   
+                             process="@this"
+                             styleClass="RedButton"    
+                             oncomplete="if (!args.validationFailed) PF('trocarIdioma').hide()">
+            </p:commandButton>                        
+        </h:form>
+    </p:dialog>                 
+    
+    
+    
+
+</html>

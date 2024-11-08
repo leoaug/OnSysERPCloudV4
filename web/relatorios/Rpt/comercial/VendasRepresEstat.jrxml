@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VendasRepresEstat" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="zebra" isDefault="false" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style isDefault="false" style="zebra" mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="cPar" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="idEmpresa" class="java.lang.Integer"/>
+	<parameter name="dtIni" class="java.lang.String"/>
+	<parameter name="dtFim" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Fernando\\Projetos\\OnSys\\web\\relatorios\\Rpt\\comercial\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     representante.`CODIGO` AS representante_CODIGO,
+     representante.`NOME` AS representante_NOME,
+     regiao.`DESCRICAO` AS regiao_DESCRICAO,
+     SUM(itempedidovendas.`QUANTIDADE`) AS Qtd,
+     SUM(itempedidovendas.`VLTOTLIQITEM`) AS VlMerc,
+     SUM(itempedidovendas.`VLTOTITEM`) AS VlTotal,
+     (SELECT COUNT(*)
+      FROM
+     	 `participante` participantex, `pedidovendas` pedidovendasx
+       WHERE (participantex.`REPRESENTANTE_id` =  representante.`id`) AND
+             (pedidovendasx.`CLIENTE_id` = participantex.`id`) AND
+             (pedidovendasx.`DATAEMISSAO` BETWEEN $P{dtIni} AND $P{dtFim})) AS nTotAte,
+     (SELECT COUNT(*)
+      FROM
+     	`participante` participantex, `representante` representantex
+       WHERE (representantex.`id` =  representante.`id`) AND (representantex.`id` = participantex.`REPRESENTANTE_id`)) AS nTotCli,
+     (SELECT COUNT(*)
+      FROM
+     	 `participante` participantex, `pedidovendas` pedidovendasx
+       WHERE (participantex.`REPRESENTANTE_id` =  representante.`id`) AND (pedidovendasx.`SITUACAO` <> 'Faturado') AND
+             (pedidovendasx.`CLIENTE_id` = participantex.`id`) AND
+             (pedidovendasx.`DATAEMISSAO` BETWEEN $P{dtIni} AND $P{dtFim})) AS nTotCart
+FROM
+     `regiao` regiao INNER JOIN `representante` representante ON regiao.`id` = representante.`REGIAO_id`
+     INNER JOIN `participante` participante ON representante.`id` = participante.`REPRESENTANTE_id`
+     INNER JOIN `pedidovendas` pedidovendas ON participante.`id` = pedidovendas.`CLIENTE_id`
+     INNER JOIN `itempedidovendas` itempedidovendas ON pedidovendas.`id` = itempedidovendas.`PEDIDOVENDAS_id`
+WHERE (pedidovendas.`SITUACAO` = 'Faturado') AND (representante.`EMPRESA_ID` = $P{idEmpresa}) AND (pedidovendas.`DATAEMISSAO` BETWEEN $P{dtIni} AND $P{dtFim})
+GROUP BY representante.`CODIGO`, representante.`NOME`, representante.`NOME`
+ORDER BY regiao_DESCRICAO, representante_NOME]]>
+	</queryString>
+	<field name="representante_CODIGO" class="java.lang.String"/>
+	<field name="representante_NOME" class="java.lang.String"/>
+	<field name="regiao_DESCRICAO" class="java.lang.String"/>
+	<field name="Qtd" class="java.math.BigDecimal"/>
+	<field name="VlMerc" class="java.math.BigDecimal"/>
+	<field name="VlTotal" class="java.math.BigDecimal"/>
+	<field name="nTotAte" class="java.lang.Long"/>
+	<field name="nTotCli" class="java.lang.Long"/>
+	<field name="nTotCart" class="java.lang.Long"/>
+	<variable name="nAtend" class="java.lang.Long">
+		<variableExpression><![CDATA[$F{nTotCli} - $F{nTotAte}]]></variableExpression>
+	</variable>
+	<variable name="totQtde" class="java.math.BigDecimal" resetType="Group" resetGroup="Regiao" calculation="Sum">
+		<variableExpression><![CDATA[$F{Qtd}]]></variableExpression>
+	</variable>
+	<variable name="totMerc" class="java.math.BigDecimal" resetType="Group" resetGroup="Regiao" calculation="Sum">
+		<variableExpression><![CDATA[$F{VlMerc}]]></variableExpression>
+	</variable>
+	<variable name="totTotal" class="java.math.BigDecimal" resetType="Group" resetGroup="Regiao" calculation="Sum">
+		<variableExpression><![CDATA[$F{VlTotal}]]></variableExpression>
+	</variable>
+	<variable name="totAtend" class="java.lang.Long" resetType="Group" resetGroup="Regiao" calculation="Sum">
+		<variableExpression><![CDATA[$F{nTotAte}]]></variableExpression>
+	</variable>
+	<variable name="totNAtd" class="java.lang.Long" resetType="Group" resetGroup="Regiao" calculation="Sum">
+		<variableExpression><![CDATA[$V{nAtend}]]></variableExpression>
+	</variable>
+	<variable name="totCli" class="java.lang.Long" resetType="Group" resetGroup="Regiao" calculation="Sum">
+		<variableExpression><![CDATA[$F{nTotCli}]]></variableExpression>
+	</variable>
+	<variable name="totGQtd" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Qtd}]]></variableExpression>
+	</variable>
+	<variable name="totGMerc" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{VlMerc}]]></variableExpression>
+	</variable>
+	<variable name="totGToto" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{VlTotal}]]></variableExpression>
+	</variable>
+	<variable name="totGAtend" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nTotAte}]]></variableExpression>
+	</variable>
+	<variable name="totGNAtde" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$V{nAtend}]]></variableExpression>
+	</variable>
+	<variable name="totGTotCli" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nTotCli}]]></variableExpression>
+	</variable>
+	<variable name="perct" class="java.lang.Double">
+		<variableExpression><![CDATA[($F{nTotAte}.doubleValue()/$F{nTotCli}.doubleValue())*100]]></variableExpression>
+	</variable>
+	<variable name="totPerc" class="java.lang.Double" resetType="Group" resetGroup="Regiao">
+		<variableExpression><![CDATA[($V{totAtend}.doubleValue()/$V{totCli}.doubleValue())*100]]></variableExpression>
+	</variable>
+	<variable name="totGPerc" class="java.lang.Double">
+		<variableExpression><![CDATA[($V{totGAtend}.doubleValue()/$V{totGTotCli}.doubleValue())*100]]></variableExpression>
+	</variable>
+	<variable name="totRegCart" class="java.lang.Long" resetType="Group" resetGroup="Regiao" calculation="Sum">
+		<variableExpression><![CDATA[$F{nTotCart}]]></variableExpression>
+	</variable>
+	<variable name="totGerCart" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nTotCart}]]></variableExpression>
+	</variable>
+	<group name="Regiao">
+		<groupExpression><![CDATA[$F{regiao_DESCRICAO}]]></groupExpression>
+		<groupFooter>
+			<band height="25">
+				<staticText>
+					<reportElement x="1" y="0" width="53" height="25"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total Região:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="54" y="0" width="168" height="25"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{regiao_DESCRICAO}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0;-#,##0">
+					<reportElement x="222" y="0" width="34" height="25"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{totQtde}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="256" y="0" width="55" height="25"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{totMerc}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="311" y="0" width="55" height="25"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{totTotal}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0;-#,##0">
+					<reportElement x="366" y="0" width="39" height="25"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{totAtend}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="405" y="0" width="36" height="25"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{totNAtd}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0;-#,##0">
+					<reportElement x="441" y="0" width="43" height="25"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{totCli}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="484" y="0" width="36" height="25"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$V{totPerc}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0;-#,##0">
+					<reportElement x="520" y="0" width="35" height="25"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{totRegCart}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="55" splitType="Stretch">
+			<staticText>
+				<reportElement x="100" y="0" width="353" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vendas Representantes]]></text>
+			</staticText>
+			<image>
+				<reportElement x="0" y="0" width="100" height="52"/>
+				<imageExpression class="java.awt.Image"><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="100" y="28" width="353" height="24"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="16" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="35" height="15" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Codigo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="35" y="0" width="187" height="15" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Representante]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="222" y="0" width="34" height="15" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qtde]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="256" y="0" width="55" height="15" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vl. Merc.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="311" y="0" width="55" height="15" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vl Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="366" y="0" width="39" height="15" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Atend.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="441" y="0" width="43" height="15" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tot. Cli]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="15" width="555" height="1"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="405" y="0" width="36" height="15" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[N Atd]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="484" y="0" width="36" height="15" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[% Cob.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="520" y="0" width="35" height="15" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cart]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="35" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{representante_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="35" y="0" width="187" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{representante_NOME}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0">
+				<reportElement style="zebra" mode="Opaque" x="222" y="0" width="34" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{Qtd}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="256" y="0" width="55" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{VlMerc}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="311" y="0" width="55" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{VlTotal}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0">
+				<reportElement style="zebra" mode="Opaque" x="366" y="0" width="39" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{nTotAte}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0">
+				<reportElement style="zebra" mode="Opaque" x="441" y="0" width="43" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{nTotCli}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0">
+				<reportElement style="zebra" mode="Opaque" x="405" y="0" width="36" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nAtend}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="484" y="0" width="36" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$V{perct}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0">
+				<reportElement style="zebra" mode="Opaque" x="520" y="0" width="35" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{nTotCart}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="434" y="2" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="514" y="2" width="40" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="139" y="2" width="168" height="20" forecolor="#3333FF"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[OnSys - Sistemas OnLine - iDesk]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="1" y="2" width="100" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="1" y="1" width="553" height="1"/>
+			</line>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="125" splitType="Stretch">
+			<staticText>
+				<reportElement x="1" y="0" width="100" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Geral:]]></text>
+			</staticText>
+			<textField pattern="#,##0;-#,##0">
+				<reportElement x="207" y="0" width="49" height="25"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{totGQtd}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="256" y="0" width="55" height="25"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{totGMerc}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="311" y="0" width="55" height="25"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{totGToto}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0">
+				<reportElement x="366" y="0" width="39" height="25"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{totGAtend}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0">
+				<reportElement x="405" y="0" width="36" height="25"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{totGNAtde}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0">
+				<reportElement x="441" y="0" width="43" height="25"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{totGTotCli}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="484" y="0" width="36" height="25"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$V{totGPerc}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="0" y="25" width="200" height="100"/>
+				<subreportParameter name="dtFim">
+					<subreportParameterExpression><![CDATA[$P{dtFim}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="idEmpresa">
+					<subreportParameterExpression><![CDATA[$P{idEmpresa}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="dtIni">
+					<subreportParameterExpression><![CDATA[$P{dtIni}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "VendasRepresResumo.jasper"]]></subreportExpression>
+			</subreport>
+			<textField pattern="#,##0;-#,##0">
+				<reportElement x="520" y="0" width="35" height="25"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{totGerCart}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

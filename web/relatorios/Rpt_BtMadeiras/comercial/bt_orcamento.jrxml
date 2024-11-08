@@ -1,0 +1,667 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bt_orcamento" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ebb6c9ad-bffa-4d1a-ab5c-7986c7d93cc9">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="OnSys"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="334"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="655"/>
+	<parameter name="idEmpresa" class="java.lang.Integer"/>
+	<parameter name="idCodIni" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT pedidovendas.`DESCPROD` AS pedidovendas_DESCPROD,
+     pedidovendas.`DATAEMISSAO` AS DtEmissao,
+     pedidovendas.`DATAENTREGA` AS DtValidade,
+     tipodepedido.`DESCRICAO`   AS pedidovendas_TPPEDIDO,
+     pedidovendas.`NRPEDIDO` AS pedidovendas_NRPEDIDO,
+     pedidovendas.`NRORCAMENTO` AS NumPedido,
+     pedidovendas.`PERCFRETE` AS pedidovendas_PERCFRETE,
+     pedidovendas.`NRPEDREPRE` AS pedidovendas_NRPEDREPRE,
+     pedidovendas.`ENTREGAPROGRAMADA` AS pedidovendas_ENTREGAPROGRAMADA,
+     pedidovendas.`ENTREGAAGENDADA` AS pedidovendas_ENTREGAAGENDADA,
+     unidademedida.`DESCRICAO` AS medida,
+     case when pedidovendas.`TIPOPEDIDO` = 'BO' THEN "Ped. Original" ELSE
+          (case when pedidovendas.`ENTREGAPROGRAMADA` THEN "ENT. PROG.: " ELSE "" END) END PROGRAMADA,
+     case when pedidovendas.`TIPOPEDIDO` = 'BO' THEN (SELECT PO.`NRPEDCLI` FROM `pedidovendas` PX INNER JOIN `pedidovendas` PO ON PX.`PEDIDOORIGINAL_ID` = PO.id
+            WHERE PX.`EMPRESA_id` = pedidovendas.`EMPRESA_id` AND PX.`NRPEDCLI` = pedidovendas.`NRPEDCLI`)
+         ELSE
+          (case when pedidovendas.`ENTREGAPROGRAMADA` AND pedidovendas.`MESENTREGAPROGRAMADA` IS NOT NULL THEN CONCAT("mês: ", pedidovendas.`MESENTREGAPROGRAMADA`, " - ano: ", pedidovendas.`ANOENTREGAPROGRAMADA`)
+     when pedidovendas.`ENTREGAPROGRAMADA` AND pedidovendas.`DTENTREGAPROGRAMADA`  IS NOT NULL THEN CONCAT(pedidovendas.`DTENTREGAPROGRAMADA`, " - dias")
+ ELSE "" END) END PROGRAMADA_DET,
+     case when pedidovendas.`ENTREGAAGENDADA` THEN "ENT. AGEND.: "
+     ELSE "" END AGENDADA,
+     pedidovendas.`CONTATOENTREGAAGENDADA` AS pedidovendas_CONTATOENTREGAAGENDADA,
+     pedidovendas.`CAMPANHA_ID` AS pedidovendas_CAMPANHA_id,
+     case when pedidovendas.`CAMPANHA_ID` IS NOT NULL THEN (SELECT C.`DESCRICAO` FROM CAMPANHA C WHERE C.ID = pedidovendas.`CAMPANHA_ID`)
+     ELSE "" END CAMPANHA_COD,
+     participante.`CODIGO` AS participante_CODIGO,
+     tabelapreco.`CODIGO` AS tabelapreco_CODIGO,
+     participante.`RAZAOSOCIAL` AS Cliente,
+     participante.`CNPJCPF` AS participante_CNPJCPF,
+     participante.`EMAIL` AS participante_EMAIL,
+     item.`CODIGO` AS CodItem,
+     item.`FOTOITEM` AS foto,
+     item.`URLIMAGEM` AS imagem,
+     enderecoparticipante.`COMPLEMENTO` AS enderecoparticipante_COMPLEMENTO,
+     enderecoparticipante.`LOGRADOURO` AS Endereco,
+     enderecoparticipante.`CIDADE` AS Cidade,
+     enderecoparticipante.`UF` AS Estado,
+     enderecoparticipante.`COD_CEP` AS Cep,
+     enderecoparticipante.`NUMERO` AS enderecoparticipante_NRO,
+     subcatitem.`DESCRICAO` AS subcatitem_DESCRICAO,
+     enderecoparticipante.`BAIRRO` AS Bairro,
+     representante.`APELIDO` AS Vendedor,
+     empresa.`logoimg`  AS empresa_logo,
+     representante.`CODIGO` AS representante_CODIGO,
+     representante.`FONE` AS representante_FONE,
+     representante.`EMAIL` AS representante_EMAIL,
+     participante.`FONE` AS Telefone,
+     item.`DESCRICAO` AS descricao,
+     item.`REFERENCIA` AS modelo,
+     case WHEN itempedidovendas.`QUANTIDADE` IS NOT null THEN itempedidovendas.`QUANTIDADE` WHEN itempedidovendas.`QUANTIDADE` is null THEN itempedidovendas.`QTDBONIFICADA` END as qtd,
+     case WHEN itempedidovendas.`QUANTIDADE` IS NOT null THEN itempedidovendas.`QUANTIDADE` WHEN itempedidovendas.`QUANTIDADE` is null THEN itempedidovendas.`QTDBONIFICADA` END as Saldo,
+     itempedidovendas.`QTDBONISALDO` AS qtd_mts,
+     itempedidovendas.`IPI` AS itempedidovendas_IPI,
+     itempedidovendas.`OBS` AS itempedidovendas_OBS,
+     itempedidovendas.`DESCONTO` AS itempedidovendas_DESCONTO,
+     itempedidovendas.`VLICMSSUBSTITU` AS itempedidovendas_VLICMSSUBSTITU,
+     itempedidovendas.`VLUNIT` AS preco,
+     itempedidovendas.`VLUNITLIQ` AS itempedidovendas_VLUNITLIQ,
+     itempedidovendas.`VLTOTLIQITEM` AS itempedidovendas_VLTOTLIQITEM,
+     itempedidovendas.`VLTOTITEM` AS VLItemTOTITEM,
+     itempedidovendas.`VLTOT` AS total,
+     pedidovendas.`DESCPROD` AS Desconto,
+     itempedidovendas.`PERCICMS` AS itempedidovendas_PERCICMS,
+     itempedidovendas.`PERCFRETE` AS Frete,
+     itempedidovendas.`PERCIPI` AS itempedidovendas_PERCIPI,
+     itempedidovendas.`PERCST` AS itempedidovendas_PERCST,
+     pedidovendas.`VLTOTLIQPEDIDO` AS pedidovendas_VLTOTLIQPEDIDO,
+     pedidovendas.`VLTOTPEDIDO` AS VlProposta,
+     pedidovendas.`VLTOTPEDIDO` AS VlTotalItens,
+     pedidovendas.`OBSLOGISTICA` AS Obra,
+     pedidovendas.`OBSCREDITO` AS Observacao,
+     enderecoparticipante.ie AS enderecoparticipante_ie,
+     condpagamento.descricao as condpagamento_Descricao,
+     transportadora.`NOMEFANTASIA` AS transportadora_NOMEFANTASIA,
+     transredesp.`NOMEFANTASIA` AS transredesp_NOMEFANTASIA,
+     CONCAT (estab.`LOGRADOURO`, ', ', estab.`NUMERO`) AS EndrecoEst,
+     estab.`BAIRRO` AS BairroEst,
+     estab.`MUNICIPIO` AS MunicipioEst,
+     estab.`UF` AS UFEst,
+     estab.`CODCEP` AS CepEst,
+     estab.`FONE` AS TelefoneEst,
+     estab.`FAX` AS FaxEst,
+     estab.`DESCRICAO` AS DescEmpresa,
+     LOWER(estab.`EMAIL`) AS EmailEst,
+     'F1272 Instituto Hoffdahn' AS Referencia,
+     0 AS Servico,
+     0 AS Seguro,
+     '30 Dias' AS PrazoEntrega,
+    condpagamento.descricao AS CondPag
+FROM
+     `pedidovendas` pedidovendas INNER JOIN `itempedidovendas` itempedidovendas ON pedidovendas.`id` = itempedidovendas.`PEDIDOVENDAS_id`
+     INNER JOIN `item` item ON itempedidovendas.`ITEM_id` = item.`id`
+     LEFT OUTER JOIN `subcatitem` subcatitem ON item.`SUBCATITEM_id` = subcatitem.`id`
+     LEFT OUTER JOIN `tipodepedido` tipodepedido ON pedidovendas.`TIPODEPEDIDO_ID` = tipodepedido.`id`
+     LEFT OUTER JOIN `participante` participante ON pedidovendas.`CLIENTE_id` = participante.`id`
+     LEFT OUTER JOIN `empresa`       empresa            ON participante.`empresa_id`       = empresa.`id`
+     LEFT OUTER JOIN estabelecimento estab ON empresa.id = estab.`EMPRESA_id`
+     LEFT OUTER JOIN `representante` representante      ON pedidovendas.`REPRESENTANTE_id` = representante.`id`
+     LEFT OUTER JOIN `regiao` regiao               ON representante.`REGIAO_id`       = regiao.`id`
+     LEFT OUTER JOIN `tabelapreco` tabelapreco     ON pedidovendas.`TABELAPRECO_id`   = tabelapreco.`id`
+     LEFT OUTER JOIN `condpagamento` condpagamento ON pedidovendas.`CONDPAGAMENTO_id` = condpagamento.`id`
+     LEFT OUTER JOIN `enderecoparticipante` enderecoparticipante ON pedidovendas.`ENDERECOENTREGA_ID` = enderecoparticipante.`id`
+     LEFT OUTER JOIN `transportadora` transportadora ON pedidovendas.`TRANSPORTADORA_id` = transportadora.`id`
+     LEFT OUTER JOIN `transportadora` transredesp ON pedidovendas.`TRANSPREDES_id` = transredesp.`id`
+     LEFT OUTER JOIN unidademedida unidademedida ON item.`UNIDADEMEDIDA_id` = unidademedida.id
+WHERE itempedidovendas.`QUANTIDADE` IS NOT null
+     and pedidovendas.`EMPRESA_id` = $P{idEmpresa}
+     and pedidovendas.`ID` = $P{idCodIni}
+ORDER BY
+       NumPedido ASC]]>
+	</queryString>
+	<field name="pedidovendas_DESCPROD" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_DESCPROD"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="DtEmissao" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="DtEmissao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="DtValidade" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="DtValidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="pedidovendas_TPPEDIDO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_TPPEDIDO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tipodepedido"/>
+	</field>
+	<field name="pedidovendas_NRPEDIDO" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_NRPEDIDO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="NumPedido" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NumPedido"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="pedidovendas_PERCFRETE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_PERCFRETE"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="pedidovendas_NRPEDREPRE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_NRPEDREPRE"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="pedidovendas_ENTREGAPROGRAMADA" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_ENTREGAPROGRAMADA"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="pedidovendas_ENTREGAAGENDADA" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_ENTREGAAGENDADA"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="medida" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="medida"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="unidademedida"/>
+	</field>
+	<field name="PROGRAMADA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PROGRAMADA"/>
+	</field>
+	<field name="PROGRAMADA_DET" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PROGRAMADA_DET"/>
+	</field>
+	<field name="AGENDADA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="AGENDADA"/>
+	</field>
+	<field name="pedidovendas_CONTATOENTREGAAGENDADA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_CONTATOENTREGAAGENDADA"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="pedidovendas_CAMPANHA_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_CAMPANHA_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="CAMPANHA_COD" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CAMPANHA_COD"/>
+	</field>
+	<field name="participante_CODIGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="participante_CODIGO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="participante"/>
+	</field>
+	<field name="tabelapreco_CODIGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="tabelapreco_CODIGO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tabelapreco"/>
+	</field>
+	<field name="Cliente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Cliente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="participante"/>
+	</field>
+	<field name="participante_CNPJCPF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="participante_CNPJCPF"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="participante"/>
+	</field>
+	<field name="participante_EMAIL" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="participante_EMAIL"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="participante"/>
+	</field>
+	<field name="CodItem" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CodItem"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="item"/>
+	</field>
+	<field name="foto" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.label" value="foto"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="item"/>
+	</field>
+	<field name="imagem" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="imagem"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="item"/>
+	</field>
+	<field name="enderecoparticipante_COMPLEMENTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="enderecoparticipante_COMPLEMENTO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="enderecoparticipante"/>
+	</field>
+	<field name="Endereco" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Endereco"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="enderecoparticipante"/>
+	</field>
+	<field name="Cidade" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Cidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="enderecoparticipante"/>
+	</field>
+	<field name="Estado" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Estado"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="enderecoparticipante"/>
+	</field>
+	<field name="Cep" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Cep"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="enderecoparticipante"/>
+	</field>
+	<field name="enderecoparticipante_NRO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="enderecoparticipante_NRO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="enderecoparticipante"/>
+	</field>
+	<field name="subcatitem_DESCRICAO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="subcatitem_DESCRICAO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="subcatitem"/>
+	</field>
+	<field name="Bairro" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Bairro"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="enderecoparticipante"/>
+	</field>
+	<field name="Vendedor" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Vendedor"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="representante"/>
+	</field>
+	<field name="empresa_logo" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.label" value="empresa_logo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="representante_CODIGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="representante_CODIGO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="representante"/>
+	</field>
+	<field name="representante_FONE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="representante_FONE"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="representante"/>
+	</field>
+	<field name="representante_EMAIL" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="representante_EMAIL"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="representante"/>
+	</field>
+	<field name="Telefone" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Telefone"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="participante"/>
+	</field>
+	<field name="descricao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descricao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="item"/>
+	</field>
+	<field name="modelo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="modelo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="item"/>
+	</field>
+	<field name="qtd" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="qtd"/>
+	</field>
+	<field name="Saldo" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="Saldo"/>
+	</field>
+	<field name="qtd_mts" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="qtd_mts"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="itempedidovendas_IPI" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="itempedidovendas_IPI"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="itempedidovendas_OBS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="itempedidovendas_OBS"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="itempedidovendas_DESCONTO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="itempedidovendas_DESCONTO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="itempedidovendas_VLICMSSUBSTITU" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="itempedidovendas_VLICMSSUBSTITU"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="preco" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="preco"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="itempedidovendas_VLUNITLIQ" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="itempedidovendas_VLUNITLIQ"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="itempedidovendas_VLTOTLIQITEM" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="itempedidovendas_VLTOTLIQITEM"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="VLItemTOTITEM" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="VLItemTOTITEM"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="total" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="total"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="Desconto" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="Desconto"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="itempedidovendas_PERCICMS" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="itempedidovendas_PERCICMS"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="Frete" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="Frete"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="itempedidovendas_PERCIPI" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="itempedidovendas_PERCIPI"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="itempedidovendas_PERCST" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="itempedidovendas_PERCST"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itempedidovendas"/>
+	</field>
+	<field name="pedidovendas_VLTOTLIQPEDIDO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="pedidovendas_VLTOTLIQPEDIDO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="VlProposta" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="VlProposta"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="VlTotalItens" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="VlTotalItens"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="Obra" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Obra"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="Observacao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Observacao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedidovendas"/>
+	</field>
+	<field name="enderecoparticipante_ie" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="enderecoparticipante_ie"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="enderecoparticipante"/>
+	</field>
+	<field name="condpagamento_Descricao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="condpagamento_Descricao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="condpagamento"/>
+	</field>
+	<field name="transportadora_NOMEFANTASIA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="transportadora_NOMEFANTASIA"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="transportadora"/>
+	</field>
+	<field name="transredesp_NOMEFANTASIA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="transredesp_NOMEFANTASIA"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="transportadora"/>
+	</field>
+	<field name="EndrecoEst" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="EndrecoEst"/>
+	</field>
+	<field name="BairroEst" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="BairroEst"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="estabelecimento"/>
+	</field>
+	<field name="MunicipioEst" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="MunicipioEst"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="estabelecimento"/>
+	</field>
+	<field name="UFEst" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="UFEst"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="estabelecimento"/>
+	</field>
+	<field name="CepEst" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CepEst"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="estabelecimento"/>
+	</field>
+	<field name="TelefoneEst" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="TelefoneEst"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="estabelecimento"/>
+	</field>
+	<field name="FaxEst" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="FaxEst"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="estabelecimento"/>
+	</field>
+	<field name="DescEmpresa" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DescEmpresa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="estabelecimento"/>
+	</field>
+	<field name="EmailEst" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="EmailEst"/>
+	</field>
+	<field name="Referencia" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Referencia"/>
+	</field>
+	<field name="Servico" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="Servico"/>
+	</field>
+	<field name="Seguro" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="Seguro"/>
+	</field>
+	<field name="PrazoEntrega" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PrazoEntrega"/>
+	</field>
+	<field name="CondPag" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CondPag"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="condpagamento"/>
+	</field>
+	<variable name="vSubTotal" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{total}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="121" splitType="Stretch">
+			<staticText>
+				<reportElement x="159" y="0" width="274" height="40" uuid="acd0575b-847b-4aa5-b64b-3c8d5b3797ee"/>
+				<textElement textAlignment="Center">
+					<font size="30" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Bt Madeiras]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="151" y="45" width="100" height="20" uuid="066a02d1-7965-4683-9c24-69392eaea526"/>
+				<textElement>
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[(21) 99081-1430]]></text>
+			</staticText>
+			<image>
+				<reportElement x="326" y="42" width="40" height="20" uuid="1f898124-7e38-4b2e-a8fe-3cf7125d6b75"/>
+				<imageExpression><![CDATA["telefone.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="353" y="45" width="100" height="20" uuid="84c06480-fd2c-4777-bedd-bd576a61c575"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["(21) 2688-8792"]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="120" y="67" width="39" height="22" uuid="82aa1f07-3ef4-4008-992e-c0511c0c1dfa"/>
+				<imageExpression><![CDATA["email.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="154" y="68" width="270" height="20" uuid="7178ad77-436b-4abb-ac9d-0a98055546df"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["btmadeiras@yahoo.com.br"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="95" width="554" height="26" uuid="084ea479-84d9-4521-b136-7e8020615892"/>
+				<textElement textAlignment="Center">
+					<font size="15" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["AV. PREF. ISOLDAKSON CRUZ DE BRITO LT16, BRISAMAR - ITAGUAI - RJ"]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="6" y="8" width="99" height="80" uuid="b5021655-babc-4d2d-a6f9-24c8bb3d8b2c"/>
+				<imageExpression><![CDATA[$F{empresa_logo}]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="120" y="42" width="47" height="24" uuid="91e4524f-c4f8-46f9-85e2-f53aea0a235a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA["whatsapp.png"]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="3" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="76" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="1" y="0" width="554" height="68" uuid="f7041ed4-54a0-4aef-b308-40891ddfa1dd"/>
+			</rectangle>
+			<textField isBlankWhenNull="true">
+				<reportElement x="105" y="2" width="221" height="20" uuid="eebfa7f9-4059-46d2-bd4e-07d9e8d8d375"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="334" y="2" width="67" height="15" uuid="d56a43db-ea7c-40e7-904c-cbcb8727baff"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO/MODELO]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="334" y="17" width="100" height="13" uuid="70ef5292-d788-40fe-9e5e-eab7456789d9"/>
+				<textElement verticalAlignment="Top">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{modelo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="334" y="38" width="100" height="13" uuid="4e44663e-f01c-4588-b855-b10d39e4a5ae"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[QUANTIDADE/MTS]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="348" y="51" width="41" height="13" uuid="69b25c6a-5f78-4173-be51-83022bd98551"/>
+				<textElement verticalAlignment="Top">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{qtd_mts}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="454" y="2" width="87" height="15" uuid="f27f1377-51b0-451d-87fb-d8d711a689e7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[QUANTIDADE]]></text>
+			</staticText>
+			<textField pattern="###0">
+				<reportElement mode="Opaque" x="455" y="17" width="86" height="15" backcolor="#CCCCCC" uuid="3cb3fb1f-867e-48e4-884c-6a5333e6d9d2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{qtd}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="455" y="36" width="90" height="15" uuid="f6fead94-b4ec-4734-b335-6b895b18d01c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR TOTAL]]></text>
+			</staticText>
+			<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="455" y="51" width="86" height="15" backcolor="#CCCCCC" uuid="48ed5b25-10f1-4583-804d-c34ac5d78fb5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="105" y="43" width="26" height="18" uuid="ad57b183-726a-47e1-9f62-3c501236dbc1"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[R$]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="131" y="43" width="100" height="18" uuid="f107f489-ee94-4200-86de-e8c8c5a08374"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{preco}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="234" y="43" width="100" height="18" uuid="4320faff-2ae8-4b42-9a9c-8309e8d846fe"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{medida}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement mode="Transparent" x="6" y="2" width="87" height="62" forecolor="#030000" uuid="70bc468c-2b4b-4981-84e3-4db711a196ce">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{imagem}]]></imageExpression>
+			</image>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="47" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="1" y="0" width="554" height="47" uuid="da22a7f4-ef4c-435c-8a4a-6fb145265cfa"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="16" y="4" width="318" height="20" uuid="f6ddbfa2-249e-444d-9f21-20eae53710c6"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[FALAR COM BT MADEIRAS - (21) 99081-1430]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="16" y="25" width="475" height="20" uuid="85791f98-4bbf-472a-b532-3665825916ea"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[VALIDADE DO ORÇAMENTO: 30 DIAS - DATA DE EMISSÃO: 29/09/2023]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="25" splitType="Stretch">
+			<line>
+				<reportElement x="1" y="2" width="554" height="1" uuid="2051a169-128c-4a88-b069-f32c750ec483"/>
+			</line>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="4" y="5" width="100" height="20" uuid="507b386e-6bbb-4602-8547-0dc87f41f6a2"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="424" y="4" width="88" height="20" uuid="8986626c-d8f0-45cb-a15b-32405e45c36d"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="512" y="4" width="40" height="20" uuid="b87815f3-ad38-4089-9bd6-73ab98b0a902"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="170" y="4" width="248" height="20" uuid="a385b0c6-ec06-4408-877c-1defbe2394ea"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[OnSys ERP Cloud - www.onsys.com.br]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="1" y="0" width="554" height="32" uuid="7a1c6a18-83e0-4f02-bbb2-76514be6f501"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="302" y="6" width="116" height="20" uuid="339fd4a3-e07f-4fdc-8254-b78e6e87d64f"/>
+				<textElement textAlignment="Right">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SUBTOTAL:]]></text>
+			</staticText>
+			<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="424" y="6" width="117" height="20" backcolor="#CCCCCC" uuid="01dc143e-ce8f-45a8-99a3-51353bf57f9a"/>
+				<textElement textAlignment="Right">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{vSubTotal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

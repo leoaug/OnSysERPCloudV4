@@ -1,0 +1,22 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:h="http://java.sun.com/jsf/html" 
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets" 
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fr="http://primefaces.org/freya">
+    <div class="menu-wrapper">
+        <div class="sidebar-logo">
+            <a href="dashboard.xhtml">
+                <p:graphicImage value="#{pageContext.servletContext.contextPath}/resources/imagens/onsys/OnSysMenor.png" cache="false"/>
+            </a>
+            <a href="#" class="sidebar-pin" title="Toggle Menu">
+                <span class="pin"></span>
+            </a>
+        </div>
+        <div class="layout-menu-container">
+            <h:form id="menuform">
+                <fr:menu  widgetVar="FreyaMenuWidget"  model="#{loginFace.menuXhtml()}"/>
+            </h:form>
+        </div>
+    </div>
+</ui:composition>

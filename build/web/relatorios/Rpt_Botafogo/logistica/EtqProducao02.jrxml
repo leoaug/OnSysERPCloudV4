@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EtqProducao02" pageWidth="291" pageHeight="85" columnWidth="291" leftMargin="0" rightMargin="0" topMargin="1" bottomMargin="0" uuid="a8288ddb-1bce-4d73-aeab-ef602d5e289c">
+	<property name="ireport.zoom" value="1.9487171000000019"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Botafogo"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="220"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="775"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<parameter name="usuario" class="java.lang.String"/>
+	<parameter name="tipoEtq" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT 
+id_usuario as usuario,
+etq_TipoEtiqueta as tipoEtiqueta,
+etq_CodItem as codItem,
+etq_Descricao as descricao,
+SUBSTRING(etq_CodBarras, 1, 12) as codBarras,
+etq_CNPJ as cnpj,
+etq_Peso as peso,
+etq_Altura as altura,
+etq_NrPessoas as nrPessoas,
+etq_Degraus as degraus,
+etq_Composicao as composicao,
+etq_DescAuxiliar as descAuxiliar,
+etq_Carga as carga,
+etq_Marca as marca,
+etq_DescDocto as descDocto,
+etq_NrPedido as nrPedido,
+etq_Volume as volume,
+etq_CodCliente as codCliente,
+etq_NomeCliente as nomeCliente,
+etq_NrEmbarque as nrEmbarque,
+etq_Quantidade as quantidade,
+etq_Valor as valor,
+etq_Serie as serie,
+etq_Emissao as emissao,
+etq_Emitente as emitente,
+etq_UFEmitente as ufEmitente,
+etq_Endereco as endereco,
+etq_NumEndereco as numEndereco,
+etq_Complemento as complemento,
+etq_Bairro as bairro,
+etq_Cidade as cidade,
+etq_CEP as cep,
+etq_Estado as estado,
+etq_Telefone as telefone,
+etq_Transportadora as transportadora,
+etq_ChaveAcesso as chaveAcesso,
+etq_Protocolo as protocolo,
+etq_Data as dataBtf,
+etq_etq as etq
+FROM Etiqueta
+WHERE id_usuario = $P{usuario} and etq_TipoEtiqueta = $P{tipoEtq}
+ORDER BY etq]]>
+	</queryString>
+	<field name="usuario" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="usuario"/>
+	</field>
+	<field name="tipoEtiqueta" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="tipoEtiqueta"/>
+	</field>
+	<field name="codItem" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="codItem"/>
+	</field>
+	<field name="descricao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descricao"/>
+	</field>
+	<field name="codBarras" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="codBarras"/>
+	</field>
+	<field name="cnpj" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="cnpj"/>
+	</field>
+	<field name="peso" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="peso"/>
+	</field>
+	<field name="altura" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="altura"/>
+	</field>
+	<field name="nrPessoas" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="nrPessoas"/>
+	</field>
+	<field name="degraus" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="degraus"/>
+	</field>
+	<field name="composicao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="composicao"/>
+	</field>
+	<field name="descAuxiliar" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descAuxiliar"/>
+	</field>
+	<field name="carga" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="carga"/>
+	</field>
+	<field name="marca" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="marca"/>
+	</field>
+	<field name="descDocto" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descDocto"/>
+	</field>
+	<field name="nrPedido" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nrPedido"/>
+	</field>
+	<field name="volume" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="volume"/>
+	</field>
+	<field name="codCliente" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="codCliente"/>
+	</field>
+	<field name="nomeCliente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nomeCliente"/>
+	</field>
+	<field name="nrEmbarque" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="nrEmbarque"/>
+	</field>
+	<field name="quantidade" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="quantidade"/>
+	</field>
+	<field name="valor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="valor"/>
+	</field>
+	<field name="serie" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="serie"/>
+	</field>
+	<field name="emissao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="emissao"/>
+	</field>
+	<field name="emitente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="emitente"/>
+	</field>
+	<field name="ufEmitente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ufEmitente"/>
+	</field>
+	<field name="endereco" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="endereco"/>
+	</field>
+	<field name="numEndereco" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="numEndereco"/>
+	</field>
+	<field name="complemento" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="complemento"/>
+	</field>
+	<field name="bairro" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="bairro"/>
+	</field>
+	<field name="cidade" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="cidade"/>
+	</field>
+	<field name="cep" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="cep"/>
+	</field>
+	<field name="estado" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="estado"/>
+	</field>
+	<field name="telefone" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="telefone"/>
+	</field>
+	<field name="transportadora" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="transportadora"/>
+	</field>
+	<field name="chaveAcesso" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="chaveAcesso"/>
+	</field>
+	<field name="protocolo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="protocolo"/>
+	</field>
+	<field name="dataBtf" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="dataBtf"/>
+	</field>
+	<field name="etq" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="etq"/>
+	</field>
+	<variable name="codBarras" class="java.lang.String">
+		<variableExpression><![CDATA[$F{codBarras}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="84" splitType="Stretch">
+			<staticText>
+				<reportElement x="26" y="4" width="22" height="8" uuid="e2b76953-1e86-4ea0-b9f6-974fe21a9fd0"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[CNPJ:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="48" y="4" width="88" height="8" uuid="c1abdc8a-a878-4511-9167-b2f83cbaf5db"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cnpj}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="179" y="4" width="22" height="8" uuid="d652518a-0dd9-4715-aca8-7117a1ea4f10"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[CNPJ:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="201" y="4" width="88" height="8" uuid="531fdd78-ef1a-4a34-aa86-c925e725a931"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cnpj}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="12" width="138" height="16" uuid="455ea32a-116c-4b26-add6-1987799a140c"/>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="158" y="12" width="138" height="16" uuid="145fdaea-435c-429c-a0aa-68f186d7354d"/>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="2" y="39" width="135" height="1" uuid="ddf5b666-a143-4dbf-ba69-81943c3e3603"/>
+			</line>
+			<line>
+				<reportElement x="159" y="39" width="135" height="1" uuid="5dfadf8b-d760-4599-90d4-9f0ebdcb0016"/>
+			</line>
+			<textField>
+				<reportElement x="194" y="28" width="63" height="11" uuid="442c80da-3e7d-4b62-8b96-e66b5b334bf3"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codItem}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="192" y="71" width="73" height="9" uuid="dceba2a0-ec3f-43d9-969d-6870f9ae17cb"/>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataBtf}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="38" y="28" width="63" height="11" uuid="e0f0135f-d126-4b6c-a944-c09e2d30c311"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codItem}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="32" y="71" width="73" height="9" uuid="8ee3d663-4494-4f58-bbe8-889881d5bc63"/>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataBtf}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement x="173" y="44" width="100" height="30" uuid="f813e613-81b7-4b86-bc86-611c4b096708"/>
+				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="EAN13" drawText="true" checksumRequired="false">
+					<jr:codeExpression><![CDATA[$F{codBarras}]]></jr:codeExpression>
+				</jr:barbecue>
+			</componentElement>
+			<componentElement>
+				<reportElement x="18" y="44" width="100" height="30" uuid="72ac3eb5-7329-4ae2-8597-444a154a29e5"/>
+				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="EAN13" drawText="true" checksumRequired="false">
+					<jr:codeExpression><![CDATA[$F{codBarras}]]></jr:codeExpression>
+				</jr:barbecue>
+			</componentElement>
+		</band>
+	</detail>
+</jasperReport>

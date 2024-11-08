@@ -1,0 +1,54 @@
+<html   xmlns:c="http://java.sun.com/jsp/jstl/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"                   
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"> 
+    
+    <p:dialog widgetVar="dialogoConsultar" id="dialogoConsultar" positionType="absolute"   
+              onShow="PF('tbvConsultar').select(0);"
+              position="top" style="max-width:1000px!important" 
+              responsive="true" width="95%" height="95%"
+              modal="true" header="#{programaFace.tituloDialogo}"
+              resizable="true">    
+
+        <f:view contentType="text/html; charset=utf-8"> 
+            <h:form id="fmConsultar">
+                <script type="text/javascript" src="../../../../resources/js/jquery.price_format.js"></script> 
+                <script type="text/javascript" src="../../../../resources/js/locale-primefaces.js" ></script>
+                    <p:toolbar style="height: 35px">
+                        <f:facet name="left">
+                            <p:commandButton immediate="true"
+                                             style="height: 30px; width: 100px;"
+                                             icon="fa fa-reply Fs12 white"
+                                             styleClass="RedButton"
+                                             value="Voltar"
+                                             oncomplete="if (!args.validationFailed) PF('dialogoConsultar').hide()"
+                                             title="Voltar para lista de programas." 
+                                             onclick="PF('PrimeFaces.monitorDownload(startMessage, finishMessage)')"
+                                             alt="Voltar para lista de programas."/>
+                            <p:spacer width="3" height="3"/>
+                            <c:if test="#{programaFace.getInativo() == 'S'}">
+                                <h:outputText value="Registro inativado em - " style=" color: red; font-size: 12px"/>
+                                <h:outputText value="#{programaFace.registroSelecionado.datainativo}" 
+                                              style=" color: red; font-size: 12px">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+                                </h:outputText>
+                            </c:if>                                        
+                        </f:facet>
+                    </p:toolbar>
+                    <div class="ui-fluid">
+                        <p:accordionPanel id="tbvConsultar" widgetVar="tbvConsultar"
+                                          activeIndex="0"
+                                    style="background-color: #dddddd">                           
+                            <p:tab  title="Dados gerais">
+                                <ui:include src="/views/seguranca/cadastros/programa/consultarDadosGerais.xhtml"/>
+                            </p:tab>
+                            <p:tab title="Recebimento de e-mail">
+                                <ui:include src="/views/seguranca/cadastros/programa/consultarUsuarioEmail.xhtml"/>
+                            </p:tab>      
+                        </p:accordionPanel>
+                    </div>
+            </h:form>
+        </f:view>
+    </p:dialog>                        
+</html>

@@ -1,0 +1,102 @@
+<html   xmlns:c="http://java.sun.com/jsp/jstl/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"                   
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"> 
+    
+    <p:dialog widgetVar="dialogoAlterar" id="dialogoAlterar" positionType="absolute"   
+              position="top" style="max-width: 800px!important" 
+              responsive="true" width="95%" height="95%"
+              modal="true" header="#{subcatChamadoFace.tituloDialogo}"
+              resizable="true">    
+        
+        <f:view contentType="text/html; charset=utf-8"> 
+            <h:form id="fmAlterar">   
+                <p:focus for="codigoAlterar"/>
+                <script type="text/javascript" src="../../../../resources/js/jquery.price_format.js"></script> 
+                <script type="text/javascript" src="../../../../resources/js/locale-primefaces.js" ></script>
+                    <p:toolbar style="height: 35px">
+                        <f:facet name="left">
+                            <p:commandButton title="Salvar dados do registro corrente e voltar para lista de subcategorias de chamado." 
+                                             action="#{subcatChamadoFace.fimAlterar(usuarioFace.loggedUser.empresa.codigo, false)}" 
+                                             style="height: 30px; width: 100px;"
+                                             styleClass="GreenButton"
+                                             value="Salvar"
+                                             icon="fa fa-check white"
+                                             update=":fmListar:Dtb, fmAlterar"
+                                             alt="Salvar dados do registro corrente e voltar para lista de subcategorias de chamado."
+                                             process="@form"
+                                             onclick="PF('PrimeFaces.monitorDownload(startMessage, finishMessage)')"/>                                
+                            <p:spacer width="5" height="5"/>
+                            <p:commandButton immediate="true"
+                                             style="height: 30px; width: 100px;"
+                                             icon="fa fa-reply Fs12 white"
+                                             value="Voltar" styleClass="RedButton"
+                                             oncomplete="if (!args.validationFailed) PF('dialogoAlterar').hide()"
+                                             title="Voltar para lista de subcategorias de chamado." 
+                                             onclick="PF('PrimeFaces.monitorDownload(startMessage, finishMessage)')"
+                                             alt="Voltar para lista de subcategorias de chamado."/>
+                            <p:spacer width="5" height="5"/>
+                            <c:if test="#{subcatChamadoFace.getInativo() == 'N'}">
+                                <p:commandButton immediate="true" title="Inativar subcategoria."
+                                                 style="height: 30px; width: 100px;"
+                                                 process="@form"
+                                                 value="Inativar"
+                                                 action="#{subcatChamadoFace.inativar()}" alt="Inativar" icon="fa fa-lock white"/>
+                            </c:if>
+                            <c:if test="#{subcatChamadoFace.getInativo() == 'S'}">
+                                <p:commandButton immediate="true" title="Ativar" 
+                                                 action="#{subcatChamadoFace.ativar()}" alt="Ativar subcategoria." 
+                                                 style="height: 30px; width: 100px;"
+                                                 process="@form"
+                                                 value="Ativar"
+                                                 icon="fa fa-unlock white"/>
+                            </c:if>
+                            <c:if test="#{subcatChamadoFace.getInativo() == 'S'}">
+                                <h:outputText value="Registro inativado em - " style=" color: red; font-size: 12px"/>
+                                <h:outputText value="#{subcatChamadoFace.registroSelecionado.datainativo}" 
+                                              style=" color: red; font-size: 12px">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+                                </h:outputText>
+                            </c:if>                                        
+                            <p:spacer width="5" height="5"/>                           
+                            <p:growl id="messagesAlterar" showDetail="true" sticky="true" autoUpdate="true"/>
+                        </f:facet>
+                    </p:toolbar>
+                    <div class="ui-fluid">
+                        <p:panelGrid layout="grid" columns="3" 
+                                     columnClasses="ui-grid-col-3, ui-grid-col-8, ui-grid-col-1"                                          
+                                     id="pnlGrAlterar" styleClass="semBorda" 
+                                     rendered="#{subcatChamadoFace.registroSelecionado != null}"
+                                     style="border: none !important; background-color: #dddddd; overflow: auto; max-height: 480px!important;">
+                            
+                            <p:outputLabel value="Código" for="codigoAlterar" style="color: black"/>
+                            <p:inputText  id="codigoAlterar" style="color: red; font-weight: 700"
+                                          disabled="true"
+                                          value="#{subcatChamadoFace.registroSelecionado.codigo}"/>
+                            <p:spacer width="5"/>                                
+
+                            <p:outputLabel value="Descrição" for="descricaoAlterar" style="color: red"/>
+                            <p:inputText id="descricaoAlterar" value="#{subcatChamadoFace.registroSelecionado.descricao}"/>
+                            <p:spacer width="5"/>                                
+
+                            <p:outputLabel for="obsAlterar" value="Observação" style="color: black"/>
+                            <p:inputTextarea id="obsAlterar"  cols="40" rows="5" 
+                                             value="#{subcatChamadoFace.registroSelecionado.obs}"/>
+                            <p:spacer width="5"/>                                
+
+                        </p:panelGrid>
+                    </div>
+                <h:outputText value="Campo(s) obrigatório(s)." style="color: red; font-weight: 700"/>
+                <script type="text/javascript">
+                    jQuery('.monetario').priceFormat({
+                           prefix : 'R$ '
+                        });
+                    jQuery('.decimal').priceFormat({
+                           prefix : '  '
+                        });
+                </script>
+            </h:form>
+        </f:view>
+    </p:dialog>                        
+</html>

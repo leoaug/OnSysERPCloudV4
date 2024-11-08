@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComissaoRepresExcel" pageWidth="595" pageHeight="10000" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="93c98893-35b8-4cf4-81eb-f00ef93a4f26">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     representante.`CODIGO` AS representante_CODIGO,
+     representante.`NOME` AS representante_NOME,
+     representante.`COMISSAO` AS representante_COMISSAO,
+     doctosai.`DTLANCAMENTO` AS doctosai_DTLANCAMENTO,
+     doctosai.`NRODOCTO` AS doctosai_NRODOCTO,
+     doctosai.`DTEMISSAO` AS doctosai_DTEMISSAO,
+     participante.`CODIGO` AS participante_CODIGO,
+     participante.`RAZAOSOCIAL` AS participante_RAZAOSOCIAL,
+     doctosai.`VLTOTDOCTOLIQ` AS doctosai_VLTOTDOCTOLIQ,
+     ((doctosai.`VLTOTDOCTOLIQ` * representante.`COMISSAO`) / 100) AS ComissaoRepres
+FROM
+     `representante` representante INNER JOIN `participante` participante ON representante.`id` = participante.`REPRESENTANTE_id`
+     INNER JOIN `doctosai` doctosai ON participante.`id` = doctosai.`PARTICIPANTE_id`
+$P!{cCondicao}
+ORDER BY representante_CODIGO, doctosai_DTLANCAMENTO]]>
+	</queryString>
+	<field name="representante_CODIGO" class="java.lang.String"/>
+	<field name="representante_NOME" class="java.lang.String"/>
+	<field name="representante_COMISSAO" class="java.math.BigDecimal"/>
+	<field name="doctosai_DTLANCAMENTO" class="java.sql.Date"/>
+	<field name="doctosai_NRODOCTO" class="java.lang.String"/>
+	<field name="doctosai_DTEMISSAO" class="java.sql.Date"/>
+	<field name="participante_CODIGO" class="java.lang.String"/>
+	<field name="participante_RAZAOSOCIAL" class="java.lang.String"/>
+	<field name="doctosai_VLTOTDOCTOLIQ" class="java.math.BigDecimal"/>
+	<field name="ComissaoRepres" class="java.math.BigDecimal"/>
+	<variable name="vTotValorReprs" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{doctosai_VLTOTDOCTOLIQ}]]></variableExpression>
+	</variable>
+	<variable name="vTotComisRepres" class="java.math.BigDecimal" resetType="Group" resetGroup="Representante" calculation="Sum">
+		<variableExpression><![CDATA[$F{ComissaoRepres}]]></variableExpression>
+	</variable>
+	<variable name="counter" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA["1"]]></variableExpression>
+	</variable>
+	<group name="Representante" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{representante_CODIGO}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band height="17">
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="453" y="2" width="49" height="15" uuid="e107984a-17b9-477b-a311-5026ceec54d3"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{vTotValorReprs}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="453" y="1" width="142" height="1" uuid="548d23b8-bcf2-497d-a385-1f94f20f72e4"/>
+				</line>
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="551" y="2" width="44" height="15" uuid="7a751f6c-a3d9-4dc9-a2a9-39202bb186bb"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{vTotComisRepres}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="61" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="45" width="595" height="16" backcolor="#CCCCCC" uuid="20e72b7d-f2a4-42f1-becb-6edc0aef6674"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="0" y="25" width="595" height="20" uuid="53fcbc21-8d6d-4e8f-ba72-06f26b05c6de"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="551" y="45" width="44" height="15" uuid="890a2785-5459-46cf-b1f9-9a750e4cbbbc"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Comissão]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="502" y="45" width="49" height="15" uuid="d8a09e14-a420-4447-aeab-93e64df74145"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Perct]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="453" y="45" width="49" height="15" uuid="e8fdf6e3-8630-43af-af35-b6e1f1fb6993"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Valor ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="247" y="45" width="206" height="15" uuid="6c26403e-c326-4c6d-82df-4dabd7d60058"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Razão Social]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="218" y="45" width="29" height="15" uuid="722a9038-72b2-4cfe-b595-8bd7583afcd4"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[CodCli]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="167" y="45" width="51" height="15" uuid="14115e92-d9da-4331-9ca1-a3e3bd18f1ed"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Emissão]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="134" y="45" width="33" height="15" uuid="6d048348-f91d-4ac6-8c2c-5d6094d5b319"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Docto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="83" y="45" width="51" height="15" uuid="b9ca737d-416c-4f8d-b0f2-7d1a5e5d0758"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Data Movto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="45" width="82" height="15" uuid="8ac2c2f6-f2a4-440e-9ae9-2ebe38113b55"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Representante]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="60" width="595" height="1" uuid="eddfb7c0-09fb-4e93-84a7-3b7ca2422ac0"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="0" width="595" height="25" uuid="b18d1e51-1c8d-454b-941c-40cc649948bd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Extrato de Comissões]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="1" width="595" height="15" backcolor="#CCFFFF" uuid="ebdb9138-9df5-4e30-a3fc-b41123163297">
+					<printWhenExpression><![CDATA[(new Integer(($V{counter}.intValue())%2).equals(new Integer("1")))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="167" y="0" width="51" height="15" uuid="f8988009-b5a9-4dcf-b7cd-dddfa4fddec8"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{doctosai_DTEMISSAO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="218" y="0" width="29" height="15" uuid="951d6a56-fb30-4996-80d8-5d55720a7081"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{participante_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="247" y="0" width="206" height="15" uuid="e8582dda-c2d8-45f3-be03-27158fdbb717"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{participante_RAZAOSOCIAL}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="453" y="0" width="49" height="15" uuid="bf4c4cd3-ce42-4ea0-86d1-0d957fc46ced"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{doctosai_VLTOTDOCTOLIQ}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="502" y="0" width="39" height="15" uuid="e71e60e0-9c43-4d13-a633-4ea2c2726540"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{representante_COMISSAO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="551" y="0" width="44" height="15" uuid="ce458d6c-edec-4f2a-bf15-a9e2fce508e8"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ComissaoRepres}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="541" y="0" width="10" height="15" uuid="97bee918-99e5-4d22-b73a-21c5114a2c68"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[%]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="83" y="0" width="51" height="15" uuid="d253022b-57b9-488d-ae78-b3625d1d48be"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{doctosai_DTLANCAMENTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="83" height="15" uuid="d44b1e8b-a9f6-434f-a700-991717d13d42"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{representante_NOME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="134" y="0" width="33" height="15" uuid="f12639fa-8e44-43ef-82a0-7fe148df4b40"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{doctosai_NRODOCTO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

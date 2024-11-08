@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RazFinExcel" pageWidth="595" pageHeight="15000" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="zebra" isDefault="false" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style isDefault="false" style="zebra" mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="idEmpresa" class="java.lang.Integer"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="deSaldoIni" class="java.math.BigDecimal">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="deSaldoFin" class="java.math.BigDecimal">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cTitulo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     movtofin.`DTMOVTO` AS movtofin_DTMOVTO,
+     movtofin.`NRODOCTO` AS movtofin_NRODOCTO,
+     tipodoctofinanceiro.`CODIGO` AS tipodoctofinanceiro_CODIGO,
+     movtofin.`TPMOVTO` AS movtofin_TPMOVTO,
+     participante.`NOMEFANTASIA` AS participante_NOMEFANTASIA,
+     portador.`DESCRICAO` AS portador_DESCRICAO,
+     movtofin.`SERIE` AS movtofin_SERIE,
+     tipodoctofinanceiro.`TPDBCR` AS tipodoctofinanceiro_TPDBCR,
+case tipodoctofinanceiro.`TPDBCR`
+WHEN 'Saida'   THEN movtofin.`VLMOVTO` * -1
+WHEN 'Entrada' THEN movtofin.`VLMOVTO`
+END as movtofin_VLMOVTO
+FROM
+     `participante` participante INNER JOIN `movtofin` movtofin ON participante.`id` = movtofin.`PARTICIPANTE_id`
+     INNER JOIN `tipodoctofinanceiro` tipodoctofinanceiro ON movtofin.`TIPODOCTO_id` = tipodoctofinanceiro.`id`
+     INNER JOIN `portador` portador ON movtofin.`PORTADOR_id` = portador.`id`
+     INNER JOIN `empresa` empresa ON movtofin.`EMPRESA_id` = empresa.`id`
+$P!{cCondicao}]]>
+	</queryString>
+	<field name="movtofin_DTMOVTO" class="java.sql.Date"/>
+	<field name="movtofin_NRODOCTO" class="java.lang.String"/>
+	<field name="tipodoctofinanceiro_CODIGO" class="java.lang.String"/>
+	<field name="movtofin_TPMOVTO" class="java.lang.Integer"/>
+	<field name="participante_NOMEFANTASIA" class="java.lang.String"/>
+	<field name="portador_DESCRICAO" class="java.lang.String"/>
+	<field name="movtofin_SERIE" class="java.lang.String"/>
+	<field name="tipodoctofinanceiro_TPDBCR" class="java.lang.String"/>
+	<field name="movtofin_VLMOVTO" class="java.math.BigDecimal"/>
+	<group name="Empresa">
+		<groupExpression><![CDATA[$P{idEmpresa}]]></groupExpression>
+		<groupFooter>
+			<band height="20">
+				<textField pattern="¤ #,##0.00">
+					<reportElement x="462" y="0" width="93" height="15"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$P{deSaldoFin}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="345" y="0" width="117" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Saldo final :]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="75" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="39" width="345" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="345" y="39" width="117" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Saldo inicial :]]></text>
+			</staticText>
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="462" y="39" width="93" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$P{deSaldoIni}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="59" width="57" height="15" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dt.Movto.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="57" y="59" width="141" height="15" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Participante(Cliente/Fornec)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="198" y="59" width="69" height="15" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nro.Docto.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="267" y="59" width="28" height="15" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Serie]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="295" y="59" width="50" height="15" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tp.Docto.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="345" y="59" width="117" height="15" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Portador]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="462" y="59" width="93" height="15" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="74" width="555" height="1"/>
+			</line>
+			<textField>
+				<reportElement x="0" y="0" width="555" height="39"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cTitulo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="false">
+				<reportElement style="zebra" mode="Opaque" x="462" y="0" width="93" height="15" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{movtofin_VLMOVTO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="198" y="0" width="69" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{movtofin_NRODOCTO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="57" y="0" width="141" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{participante_NOMEFANTASIA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="345" y="0" width="117" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{portador_DESCRICAO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="267" y="0" width="28" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{movtofin_SERIE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="295" y="0" width="50" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tipodoctofinanceiro_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="57" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{movtofin_DTMOVTO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

@@ -1,0 +1,44 @@
+<html   xmlns:c="http://java.sun.com/jsp/jstl/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"                   
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"> 
+
+    <p:panelGrid layout="grid" columns="3" 
+                 columnClasses="ui-grid-col-3, ui-grid-col-8, ui-grid-col-1"                                      
+                 id="pnlGrPDVConsultar" styleClass="semBorda" 
+                 rendered="#{usuarioFace.registroSelecionado != null}"
+                 style="border: none !important; background-color: #dddddd">
+
+        <p:outputLabel value="Abertura de caixa" style="color: black"
+                       for="aberturaPDVConsultar"
+                       title="Se marcado o usuário pode efetuar abertura de caixa"/>
+        <p:selectBooleanCheckbox id="aberturaPDVConsultar" disabled="true" value="#{usuarioFace.registroSelecionado.aberturapdv}"/>
+        <p:spacer width="5"/>
+
+        <p:outputLabel value="Fechamento de caixa" style="color: black"
+                       for="fechamentoPDVConsultar"
+                       title="Se marcado o usuário pode efetuar fechaento de caixa"/>
+        <p:selectBooleanCheckbox disabled="true"
+                                 id="fechamentoPDVConsultar"
+                                 value="#{usuarioFace.registroSelecionado.fechamentopdv}"/>
+        <p:spacer width="5"/>
+
+        <p:outputLabel value="Sangria no caixa" style="color: black"
+                       for="sangriaPDVConsultar"
+                       title="Se marcado o usuário pode efetuar sangria no caixa"/>
+        <p:selectBooleanCheckbox 
+                        id="sangriaPDVConsultar" disabled="true"
+                        value="#{usuarioFace.registroSelecionado.sangriapdv}"/>        
+        <p:spacer width="5"/>
+
+        <p:outputLabel value="Suprimento no caixa" style="color: black" 
+                       for="suprimentoPDVConsultar"
+                       title="Se marcado o usuário pode efetuar suprimento no caixa"/>
+        <p:selectBooleanCheckbox disabled="true"
+                                 id="suprimentoPDVConsultar"
+                                 value="#{usuarioFace.registroSelecionado.suprimentopdv}"/>
+        <p:spacer width="5"/>
+        
+    </p:panelGrid>
+</html>

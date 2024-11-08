@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PedidoPorRepr" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="zebra" isDefault="false" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style isDefault="false" style="zebra" mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="idEmpresa" class="java.lang.Integer"/>
+	<parameter name="cCodIni" class="java.lang.String"/>
+	<parameter name="cCodFin" class="java.lang.String"/>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     regiao.`CODIGO` AS regiao_CODIGO,
+     regiao.`DESCRICAO` AS regiao_DESCRICAO,
+     representante.`CODIGO` AS representante_CODIGO,
+     representante.`APELIDO` AS representante_APELIDO,
+     participante.`CODIGO` AS participante_CODIGO,
+     participante.`NOMEFANTASIA` AS participante_NOMEFANTASIA,
+     item.`CODIGO` AS item_CODIGO,
+     item.`DESCRICAO` AS item_DESCRICAO,
+     unidademedida.`UN` AS unidademedida_UN,
+     unidademedida.`DESCRICAO` AS unidademedida_DESCRICAO,
+     itempedidovendas.`QUANTIDADE` AS itempedidovendas_QUANTIDADE,
+     itempedidovendas.`VLTOTITEM` AS itempedidovendas_VLTOTITEM,
+     itempedidovendas.`IPI` AS itempedidovendas_IPI,
+     pedidovendas.`NRPEDIDO` AS pedidovendas_NRPEDIDO
+FROM
+     `pedidovendas` pedidovendas INNER JOIN `itempedidovendas` itempedidovendas ON pedidovendas.`id` = itempedidovendas.`PEDIDOVENDAS_id`
+     INNER JOIN `item` item ON itempedidovendas.`ITEM_id` = item.`id`
+     INNER JOIN `unidademedida` unidademedida ON item.`UNIDADEMEDIDA_id` = unidademedida.`id`
+     INNER JOIN `participante` participante ON pedidovendas.`CLIENTE_id` = participante.`id`
+     INNER JOIN `representante` representante ON participante.`REPRESENTANTE_id` = representante.`id`
+     INNER JOIN `regiao` regiao ON representante.`REGIAO_id` = regiao.`id`]]>
+	</queryString>
+	<field name="regiao_CODIGO" class="java.lang.String"/>
+	<field name="regiao_DESCRICAO" class="java.lang.String"/>
+	<field name="representante_CODIGO" class="java.lang.String"/>
+	<field name="representante_APELIDO" class="java.lang.String"/>
+	<field name="participante_CODIGO" class="java.lang.String"/>
+	<field name="participante_NOMEFANTASIA" class="java.lang.String"/>
+	<field name="item_CODIGO" class="java.lang.String"/>
+	<field name="item_DESCRICAO" class="java.lang.String"/>
+	<field name="unidademedida_UN" class="java.lang.String"/>
+	<field name="unidademedida_DESCRICAO" class="java.lang.String"/>
+	<field name="itempedidovendas_QUANTIDADE" class="java.math.BigDecimal"/>
+	<field name="itempedidovendas_VLTOTITEM" class="java.math.BigDecimal"/>
+	<field name="itempedidovendas_IPI" class="java.math.BigDecimal"/>
+	<field name="pedidovendas_NRPEDIDO" class="java.lang.Integer"/>
+	<variable name="diasfa_HRTOTAL_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Cliente" calculation="Sum">
+		<variableExpression><![CDATA[$F{diasfa_HRTOTAL}]]></variableExpression>
+	</variable>
+	<variable name="diasfa_VLREPASSE_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Cliente" calculation="Sum">
+		<variableExpression><![CDATA[$F{diasfa_VLREPASSE}]]></variableExpression>
+	</variable>
+	<variable name="diasfa_HRTOTAL_2" class="java.math.BigDecimal" resetType="Group" resetGroup="Projeto" calculation="Sum">
+		<variableExpression><![CDATA[$F{diasfa_HRTOTAL}]]></variableExpression>
+	</variable>
+	<variable name="diasfa_VLREPASSE_2" class="java.math.BigDecimal" resetType="Group" resetGroup="Projeto" calculation="Sum">
+		<variableExpression><![CDATA[$F{diasfa_VLREPASSE}]]></variableExpression>
+	</variable>
+	<variable name="diasfa_HRTOTAL_3" class="java.math.BigDecimal" resetType="Group" resetGroup="Consultor" calculation="Sum">
+		<variableExpression><![CDATA[$F{diasfa_HRTOTAL}]]></variableExpression>
+	</variable>
+	<variable name="diasfa_VLREPASSE_3" class="java.math.BigDecimal" resetType="Group" resetGroup="Consultor" calculation="Sum">
+		<variableExpression><![CDATA[$F{diasfa_VLREPASSE}]]></variableExpression>
+	</variable>
+	<variable name="diasfa_HRTOTAL_4" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{diasfa_HRTOTAL}]]></variableExpression>
+	</variable>
+	<variable name="diasfa_VLREPASSE_4" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{diasfa_VLREPASSE}]]></variableExpression>
+	</variable>
+	<variable name="diasfa_VLREPASSE_5" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{diasfa_VLREPASSE}]]></variableExpression>
+	</variable>
+	<variable name="diasfa_HRTOTAL_5" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{diasfa_HRTOTAL}]]></variableExpression>
+	</variable>
+	<group name="Cliente">
+		<groupExpression><![CDATA[$F{participante_NOMEFANTASIA}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement x="100" y="0" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{participante_NOMEFANTASIA}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="0" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Cliente :]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="21">
+				<textField>
+					<reportElement x="370" y="0" width="95" height="20"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{diasfa_HRTOTAL_1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="238" y="0" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total do cliente :]]></text>
+				</staticText>
+				<textField pattern="¤ #,##0.00">
+					<reportElement x="465" y="0" width="89" height="20"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{diasfa_VLREPASSE_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="122" y="2" width="365" height="39"/>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relatório de horas trabalhadas]]></text>
+			</staticText>
+			<image>
+				<reportElement x="0" y="0" width="100" height="59"/>
+				<imageExpression class="java.awt.Image"><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="179" y="41" width="228" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="101" height="20" backcolor="#CCCCCC"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="101" y="0" width="455" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Apontamento]]></text>
+			</staticText>
+			<line>
+				<reportElement x="1" y="19" width="554" height="1"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="48" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="81" height="20" forecolor="#000000"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{diasfa_DATAMOVTO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="80" y="0" width="99" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{diasfa_HRINICIAL}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="179" y="0" width="99" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{diasfa_HRFINAL}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="278" y="0" width="92" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{diasfa_HRINTERVALO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="370" y="0" width="94" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{diasfa_HRTOTAL}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="464" y="0" width="89" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{diasfa_VLREPASSE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="24" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="0" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1"/>
+			</line>
+			<textField>
+				<reportElement x="435" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="0" width="40" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="121" y="0" width="128" height="16" forecolor="#0000FF"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[OnSys - Sistemas Online - iDesk]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="20">
+			<staticText>
+				<reportElement x="238" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Geral ==>]]></text>
+			</staticText>
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="465" y="0" width="89" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{diasfa_VLREPASSE_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="370" y="0" width="95" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{diasfa_HRTOTAL_5}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

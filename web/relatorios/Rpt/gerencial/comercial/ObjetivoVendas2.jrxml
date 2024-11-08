@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ObjetivoVendas2" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="objtivo" class="java.lang.Integer"/>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cPar" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     SUM(itempedidovendas.`QUANTIDADE`) AS itempedidovendas_QUANTIDADE,
+     SUM(itempedidovendas.`VLTOTITEM`) AS itempedidovendas_VLTOTITEM
+FROM
+     `pedidovendas` pedidovendas INNER JOIN `itempedidovendas` itempedidovendas ON pedidovendas.`id` = itempedidovendas.`PEDIDOVENDAS_id`
+$P!{cCondicao}]]>
+	</queryString>
+	<field name="itempedidovendas_QUANTIDADE" class="java.math.BigDecimal"/>
+	<field name="itempedidovendas_VLTOTITEM" class="java.math.BigDecimal"/>
+	<variable name="p10" class="java.lang.Integer">
+		<variableExpression><![CDATA[($P{objtivo}*10)/100]]></variableExpression>
+	</variable>
+	<variable name="p20" class="java.lang.Integer">
+		<variableExpression><![CDATA[($P{objtivo}*20)/100]]></variableExpression>
+	</variable>
+	<variable name="p30" class="java.lang.Integer">
+		<variableExpression><![CDATA[($P{objtivo}*30)/100]]></variableExpression>
+	</variable>
+	<variable name="p40" class="java.lang.Integer">
+		<variableExpression><![CDATA[($P{objtivo}*40)/100]]></variableExpression>
+	</variable>
+	<variable name="p50" class="java.lang.Integer">
+		<variableExpression><![CDATA[($P{objtivo}*50)/100]]></variableExpression>
+	</variable>
+	<variable name="p60" class="java.lang.Integer">
+		<variableExpression><![CDATA[($P{objtivo}*60)/100]]></variableExpression>
+	</variable>
+	<variable name="p70" class="java.lang.Integer">
+		<variableExpression><![CDATA[($P{objtivo}*70)/100]]></variableExpression>
+	</variable>
+	<variable name="p80" class="java.lang.Integer">
+		<variableExpression><![CDATA[($P{objtivo}*80)/100]]></variableExpression>
+	</variable>
+	<variable name="p90" class="java.lang.Integer">
+		<variableExpression><![CDATA[($P{objtivo}*90)/100]]></variableExpression>
+	</variable>
+	<group name="VALOR">
+		<groupExpression><![CDATA[$F{itempedidovendas_QUANTIDADE}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="73" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="100" height="52"/>
+				<imageExpression class="java.awt.Image"><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="100" y="0" width="355" height="52"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OBJETIVO DE VENDAS EM VOLUME]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="52" width="555" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20"/>
+	</columnHeader>
+	<pageFooter>
+		<band height="23">
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="1" y="2" width="100" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="139" y="2" width="168" height="20" forecolor="#0000FF"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[OnSys - Sistemas Online - iDesk]]></text>
+			</staticText>
+			<textField evaluationTime="Report">
+				<reportElement x="514" y="2" width="40" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="434" y="2" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="1" width="555" height="1"/>
+			</line>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="375" splitType="Stretch">
+			<meterChart>
+				<chart>
+					<reportElement x="0" y="0" width="555" height="337"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<valueDataset>
+					<valueExpression><![CDATA[$F{itempedidovendas_QUANTIDADE}]]></valueExpression>
+				</valueDataset>
+				<meterPlot shape="pie" units="Volume" tickInterval="10000.0" meterColor="#009999" needleColor="#0000FF" tickColor="#000000">
+					<plot/>
+					<tickLabelFont/>
+					<valueDisplay color="#CC0000"/>
+					<dataRange>
+						<lowExpression><![CDATA[0]]></lowExpression>
+						<highExpression><![CDATA[$P{objtivo}]]></highExpression>
+					</dataRange>
+					<meterInterval label="10" color="#CC0000" alpha="1.0">
+						<dataRange>
+							<lowExpression><![CDATA[0]]></lowExpression>
+							<highExpression><![CDATA[$V{p10}]]></highExpression>
+						</dataRange>
+					</meterInterval>
+					<meterInterval label="20" color="#FF0000" alpha="1.0">
+						<dataRange>
+							<lowExpression><![CDATA[$V{p10}]]></lowExpression>
+							<highExpression><![CDATA[$V{p20}]]></highExpression>
+						</dataRange>
+					</meterInterval>
+					<meterInterval label="30" color="#FF3300" alpha="1.0">
+						<dataRange>
+							<lowExpression><![CDATA[$V{p20}]]></lowExpression>
+							<highExpression><![CDATA[$V{p30}]]></highExpression>
+						</dataRange>
+					</meterInterval>
+					<meterInterval label="40" color="#FF6600" alpha="1.0">
+						<dataRange>
+							<lowExpression><![CDATA[$V{p30}]]></lowExpression>
+							<highExpression><![CDATA[$V{p40}]]></highExpression>
+						</dataRange>
+					</meterInterval>
+					<meterInterval label="50" color="#FF9900" alpha="1.0">
+						<dataRange>
+							<lowExpression><![CDATA[$V{p40}]]></lowExpression>
+							<highExpression><![CDATA[$V{p50}]]></highExpression>
+						</dataRange>
+					</meterInterval>
+					<meterInterval label="60" color="#FFCC00" alpha="1.0">
+						<dataRange>
+							<lowExpression><![CDATA[$V{p50}]]></lowExpression>
+							<highExpression><![CDATA[$V{p60}]]></highExpression>
+						</dataRange>
+					</meterInterval>
+					<meterInterval label="70" color="#FFFF00" alpha="1.0">
+						<dataRange>
+							<lowExpression><![CDATA[$V{p60}]]></lowExpression>
+							<highExpression><![CDATA[$V{p70}]]></highExpression>
+						</dataRange>
+					</meterInterval>
+					<meterInterval label="80" color="#CCFF00" alpha="1.0">
+						<dataRange>
+							<lowExpression><![CDATA[$V{p70}]]></lowExpression>
+							<highExpression><![CDATA[$V{p80}]]></highExpression>
+						</dataRange>
+					</meterInterval>
+					<meterInterval label="90" color="#66FF00" alpha="1.0">
+						<dataRange>
+							<lowExpression><![CDATA[$V{p80}]]></lowExpression>
+							<highExpression><![CDATA[$V{p90}]]></highExpression>
+						</dataRange>
+					</meterInterval>
+					<meterInterval label="100" color="#009900" alpha="1.0">
+						<dataRange>
+							<lowExpression><![CDATA[$V{p90}]]></lowExpression>
+							<highExpression><![CDATA[$P{objtivo}]]></highExpression>
+						</dataRange>
+					</meterInterval>
+				</meterPlot>
+			</meterChart>
+			<staticText>
+				<reportElement x="136" y="355" width="201" height="20"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR TOTAL EM REAIS =]]></text>
+			</staticText>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="322" y="355" width="115" height="20"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{itempedidovendas_VLTOTITEM}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

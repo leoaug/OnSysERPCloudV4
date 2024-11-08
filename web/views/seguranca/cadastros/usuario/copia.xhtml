@@ -1,0 +1,145 @@
+<html   xmlns:c="http://java.sun.com/jsp/jstl/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"                   
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"> 
+
+    <p:dialog widgetVar="dialogoCopiar" 
+              id="dialogoCopiar" 
+              positionType="absolute"   
+              position="top" 
+              style="max-width:1000px!important" 
+              responsive="true" 
+              width="95%" 
+              height="95%"
+              modal="true" 
+              header="#{usuarioFace.tituloDialogo}"
+              resizable="true">    
+    
+        <f:view contentType="text/html; charset=utf-8"> 
+            <h:form id="fmCopiar">                    
+                <script type="text/javascript" src="../../../../resources/js/jquery.price_format.js"></script> 
+                <script type="text/javascript" src="../../../../resources/js/locale-primefaces.js" ></script>
+                <p:panel header="Copiar usuário" style="background-color: #dddddd">
+                    <p:toolbar style="height: 35px">
+                        <f:facet name="left">
+                            <p:commandButton title="Salvar dados do registro corrente e voltar para lista de usuários." 
+                                             action="#{usuarioFace.fimCopiar(usuarioFace.loggedUser.empresa.codigo, false)}" 
+                                             style="height: 30px; width: 100px;"
+                                             styleClass="GreenButton"
+                                             icon="fa fa-check white"
+                                             update=":fmListar:dtb,messages"
+                                             value="Salvar"
+                                             process="@form"
+                                             onstart="PF('tbv').select(0);"
+                                             oncomplete="PF('tbv').select(0);"
+                                             onclick="PF('PrimeFaces.monitorDownload(startMessage, finishMessage)')"/>                                
+                            <p:spacer width="3" height="3"/>
+                            <p:commandButton style="height: 30px; width: 100px;"
+                                             styleClass="RedButton" update="@none"       
+                                             value="Voltar"
+                                             process="@this" immediate="true" 
+                                             icon="fa fa-reply Fs12 white" 
+                                             oncomplete="if (!args.validationFailed) PF('dialogoCopiar').hide()"
+                                             title="Voltar para lista." 
+                                             onstart="PF('tbv').select(0);"                                         
+                                             onclick="PF('PrimeFaces.monitorDownload(startMessage, finishMessage)')"
+                                             alt="Voltar para lista"/>
+                            <p:spacer width="3" height="3"/>
+                            <p:growl id="messages" showDetail="true"/>  
+                        </f:facet>
+                    </p:toolbar>
+                    <div class="ui-fluid">
+                        <p:focus for="email"/>
+                        <p:panelGrid layout="grid" columns="3" 
+                                     columnClasses="ui-grid-col-3, ui-grid-col-8, ui-grid-col-1"                                        
+                                     id="pnlGr" styleClass="semBorda" 
+                                     rendered="#{usuarioFace.registroSelecionado != null}"
+                                     style="border: none !important; background-color: #dddddd">
+
+                            <p:outputLabel value="Email" for="email" style="color: red"/>
+                            <p:inputText id="email" value="#{usuarioFace.registroSelecionado.email}"/>
+                            <p:spacer width="5"/>
+
+                            <p:outputLabel value="Nome" for="nome" style="color: red"/>
+                            <p:inputText id="nome" value="#{usuarioFace.registroSelecionado.nome}"/>
+                            <p:spacer width="5"/>
+
+                            <p:outputLabel value="Apelido" for="apelido" style="color: red"/>
+                            <p:inputText id="apelido" value="#{usuarioFace.registroSelecionado.apelido}"/>
+                            <p:spacer width="5"/>
+
+                            <p:outputLabel value="Senha" for="senha" style="color: red"/>
+                            <p:password id="senha" redisplay="true"
+                                            feedback="true" promptLabel="Digite sua senha." 
+                                            weakLabel="Fraco"
+                                            goodLabel="Intermediario" strongLabel="Forte"
+                                           value="#{usuarioFace.registroSelecionado.senha}"/>
+                            <p:spacer width="5"/>
+
+                            <p:outputLabel value="Tipo de usuário" for="tpusr" style="color: red"/>
+                            <p:selectOneMenu id="tpusr" value="#{usuarioFace.registroSelecionado.tipo}" required="true" >
+                                <f:selectItems value="#{usuarioFace.tipoUsuario}" var="item"  
+                                               itemLabel="#{item.toString()}" itemValue="#{item}"/>
+                            </p:selectOneMenu>
+                            <p:spacer width="5"/>
+
+                            <p:outputLabel for="recebeEmail" value="Recebe e-mail" style="color: black"/>
+                            <h:selectBooleanCheckbox id="recebeEmail" 
+                                                 title="Informe se o usuário recebe e-mail." 
+                                                 style="background:white"
+                                                 value="#{usuarioFace.registroSelecionado.recebeEmail}"/>
+                            <p:spacer width="5"/>        
+
+                            <p:outputLabel value="Dashboard" for="dashboard" style="color: red"/>
+                            <p:inputText id="dashboard" value="#{usuarioFace.registroSelecionado.dashboard}"/>
+                            <p:spacer width="5"/>
+
+                            <p:outputLabel value="Fornecedor" for="particip" style="color: black"/>
+                            <p:autoComplete id="particip" minQueryLength="3" converter="participanteConverter" 
+                                            value="#{usuarioFace.registroSelecionado.participante}" maxResults="10"    
+                                            completeMethod="#{fornecedorFace.completeFornecedor}" var="fornec"  
+                                            itemLabel="#{fornec.nomefantasia}" itemValue="#{fornec}"
+                                            queryDelay="3">                                             
+                                <p:column>#{fornec.codigo} - #{fornec.nomefantasia}</p:column>
+                                <p:ajax update="particip"/>
+                            </p:autoComplete>  
+                            <p:spacer width="5"/>
+
+                            <p:outputLabel value="Estabel. padrão" for="estabel" style="color: black"/>                                
+                            <p:selectOneMenu id="estabel" value="#{usuarioFace.registroSelecionado.estabelecimento}" var="p">
+                                <f:selectItem itemValue=" " itemLabel=" " /> 
+                                <f:selectItems var="itemSel" itemLabel="#{itemSel.codigo} - #{itemSel.nomefantasia}"  itemValue="#{itemSel}" 
+                                               value="#{estabelFace.listAtivos}"/>
+                                <f:converter converterId="estabelConverter"/>
+                                <p:ajax update="estabel"/>
+                                <p:column>#{p.codigo} - #{p.nomefantasia}</p:column>                                    
+                            </p:selectOneMenu>                                
+                            <p:spacer width="5"/>
+
+                            <p:outputLabel value="Empresa padrão" for="empresa" style="color: black"/>                                
+                            <p:selectOneMenu id="empresa" value="#{usuarioFace.registroSelecionado.empresa}" var="p">
+                                <f:selectItem itemValue=" " itemLabel=" " /> 
+                                <f:selectItems var="itemSel" itemLabel="#{itemSel.codigo} - #{itemSel.descricao}"  itemValue="#{itemSel}" 
+                                               value="#{usuarioEmpresaFace.getListaDeEmpresasDoUsuario(usuarioFace.loggedUser)}"/>
+                                <f:converter converterId="empresaConverter"/>
+                                <p:ajax update="empresa"/>
+                                <p:column>#{p.codigo} - #{p.descricao}</p:column>                                    
+                            </p:selectOneMenu>                                
+                            <p:spacer width="5"/>
+
+                            <p:outputLabel value="Idioma padrão" for="idiomaPadrao" style="color: black"/>                                
+                            <p:selectOneMenu id="idiomaPadrao" value="#{usuarioFace.registroSelecionado.idiomaPadrao}">
+                                <f:selectItem itemLabel="#{msg.label_portugues}"    itemValue="pt"/>
+                                <f:selectItem itemLabel="#{msg.label_ingles}"       itemValue="en"/>
+                                <f:selectItem itemLabel="#{msg.label_espanhol}"     itemValue="es"/>            
+                            </p:selectOneMenu>                                
+                            <p:spacer width="5"/>
+
+                        </p:panelGrid>                        
+                    </div>
+                </p:panel>
+            </h:form>
+        </f:view>
+    </p:dialog>
+</html>

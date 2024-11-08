@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TitAP" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1964f9aa-f002-4884-a34d-de068b4b18a8">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="zebra" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="idEmpresa" class="java.lang.Integer"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+/*
+case tipodoctofinanceiro.`TPDBCR`
+WHEN 'Debito' THEN  tituloapparcela.`VLSALDO`
+WHEN 'Credito' THEN tituloapparcela.`VLSALDO`
+END as tituloapparcela_VLSALDO,
+*/
+     tituloapparcela.`VLSALDO` as tituloapparcela_VLSALDO,
+     tituloap.`DATAEMISSAO` AS tituloap_DATAEMISSAO,
+     participante.`NOMEFANTASIA` AS participante_NOMEFANTASIA,
+     tituloap.`NRODOCTO` AS tituloap_NRODOCTO,
+     tituloap.`SERIE` AS tituloap_SERIE,
+     tipodoctofinanceiro.`CODIGO` AS tipodoctofinanceiro_CODIGO,
+     tipodoctofinanceiro.`TPDBCR` AS tipodoctofinanceiro_TPDBCR,
+/*
+case tipodoctofinanceiro.`TPDBCR`
+WHEN 'Debito' THEN  tituloapparcela.`VALORPARCELA`
+WHEN 'Credito' THEN tituloapparcela.`VALORPARCELA`
+END as tituloapparcela_VALORPARCELA,
+*/
+     tituloapparcela.`VALORPARCELA` AS tituloapparcela_VALORPARCELA,
+     tituloapparcela.`PARCELA` AS tituloapparcela_PARCELA,
+     tituloapparcela.`DATAVENCIMENTO` AS tituloapparcela_DATAVENCIMENTO,
+     empresa.`logoimg`  AS empresa_logo
+FROM
+     `tituloap` tituloap INNER JOIN `tituloapparcela` tituloapparcela ON tituloap.`id` = tituloapparcela.`TITULOAP_id`
+     LEFT OUTER JOIN `participante` participante ON tituloap.`PARTICIPANTE_id` = participante.`id`
+     INNER JOIN `tipodoctofinanceiro` tipodoctofinanceiro ON tituloap.`TIPODOCTO_id` = tipodoctofinanceiro.`id`
+     INNER JOIN `empresa` empresa ON tituloap.`EMPRESA_id` = empresa.`id`
+$P!{cCondicao}]]>
+	</queryString>
+	<field name="tituloapparcela_VLSALDO" class="java.math.BigDecimal"/>
+	<field name="tituloap_DATAEMISSAO" class="java.sql.Date"/>
+	<field name="participante_NOMEFANTASIA" class="java.lang.String"/>
+	<field name="tituloap_NRODOCTO" class="java.lang.String"/>
+	<field name="tituloap_SERIE" class="java.lang.String"/>
+	<field name="tipodoctofinanceiro_CODIGO" class="java.lang.String"/>
+	<field name="tipodoctofinanceiro_TPDBCR" class="java.lang.String"/>
+	<field name="tituloapparcela_VALORPARCELA" class="java.math.BigDecimal"/>
+	<field name="tituloapparcela_PARCELA" class="java.lang.Integer"/>
+	<field name="tituloapparcela_DATAVENCIMENTO" class="java.sql.Date"/>
+	<field name="empresa_logo" class="java.io.InputStream"/>
+	<variable name="tituloapparcela_VLSALDO_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{tituloapparcela_VLSALDO}]]></variableExpression>
+	</variable>
+	<variable name="tituloapparcela_VLSALDO_2" class="java.math.BigDecimal" resetType="Group" resetGroup="DtVencimento" calculation="Sum">
+		<variableExpression><![CDATA[$F{tituloapparcela_VLSALDO}]]></variableExpression>
+	</variable>
+	<variable name="tituloapparcela_VALORPARCELA_1" class="java.math.BigDecimal" resetType="Group" resetGroup="DtVencimento" calculation="Sum">
+		<variableExpression><![CDATA[$F{tituloapparcela_VALORPARCELA}]]></variableExpression>
+	</variable>
+	<variable name="tituloapparcela_VALORPARCELA_2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{tituloapparcela_VALORPARCELA}]]></variableExpression>
+	</variable>
+	<group name="DtVencimento">
+		<groupExpression><![CDATA[$F{tituloapparcela_DATAVENCIMENTO}]]></groupExpression>
+		<groupHeader>
+			<band height="15">
+				<textField pattern="dd/MM/yyyy">
+					<reportElement x="73" y="0" width="100" height="15" uuid="44f32667-8351-4a1c-a5c6-ea9c63c0c114"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{tituloapparcela_DATAVENCIMENTO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="0" width="73" height="15" uuid="77d8589b-184d-4b17-bc4d-12d7dc876093"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Vencimento :]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="471" y="0" width="84" height="20" uuid="e4dbf55d-d8de-4487-a9db-9792900946ab"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{tituloapparcela_VLSALDO_2}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="283" y="0" width="75" height="20" uuid="445e9983-f1a2-486f-b5b8-38b6493a36f7"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total do dia ==>]]></text>
+				</staticText>
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="391" y="0" width="80" height="20" uuid="91fac7e0-3c53-4b76-914a-604c92c914ad"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{tituloapparcela_VALORPARCELA_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="59" splitType="Stretch">
+			<staticText>
+				<reportElement x="100" y="0" width="360" height="39" uuid="d69d8e8a-d812-4417-ad8f-4487e1cb7bfa"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Títulos a pagar]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="39" width="360" height="20" uuid="5decf1ef-01b9-42e5-b5db-fca26152639b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="0" y="0" width="100" height="59" uuid="4af8b4a6-7614-49db-a476-bec2d9f08037"/>
+				<imageExpression><![CDATA[$F{empresa_logo}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="16" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="15" width="555" height="1" uuid="6eded335-0b33-4f78-a7d3-bb0917335cba"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="197" height="15" backcolor="#CCCCCC" uuid="04f9acce-8a1c-4f8b-859b-9bd42a20f19b"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Participante(Cliente ou Fornecedor)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="197" y="0" width="70" height="15" backcolor="#CCCCCC" uuid="cef1ec11-1a3c-4180-8cca-f1e5684a2d73"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nro.Docto.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="307" y="0" width="36" height="15" backcolor="#CCCCCC" uuid="9125363b-ea00-476d-b6c8-a3b5e0455a3f"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Serie]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="471" y="0" width="84" height="15" backcolor="#CCCCCC" uuid="8e3fca53-344a-44c4-b13e-5eb9a1fe062b"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Saldo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="343" y="0" width="48" height="15" backcolor="#CCCCCC" uuid="94be9776-b6d8-45b8-b60d-9fe2d5d846be"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tp.Docto.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="267" y="0" width="40" height="15" backcolor="#CCCCCC" uuid="f11301c1-e7d3-4456-add1-03d72404dfea"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Parcela]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="391" y="0" width="80" height="15" backcolor="#CCCCCC" uuid="6483319c-f334-49ec-a0a1-7f869b784026"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vl.Docto.]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="471" y="0" width="84" height="15" forecolor="#000000" uuid="b1cce99d-ef55-400c-8daf-19673bbc25b8"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tituloapparcela_VLSALDO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="197" y="0" width="70" height="15" forecolor="#000000" uuid="5fe3815f-3f60-4adb-bf93-a1c0a592c6ad"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tituloap_NRODOCTO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="197" height="15" forecolor="#000000" uuid="05ebf6b9-5d2f-41ee-958e-4b5beab9f5f7"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{participante_NOMEFANTASIA}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="307" y="0" width="36" height="15" forecolor="#000000" uuid="3bc603fc-0274-4ef3-8718-f1b9c433b8f3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tituloap_SERIE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="343" y="0" width="48" height="15" forecolor="#000000" uuid="3e9efae6-564b-40cd-903b-f316fc529a0f"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipodoctofinanceiro_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="267" y="0" width="40" height="15" forecolor="#000000" uuid="dd2f24b5-b1dc-4f0f-b423-516f122f98ec"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tituloapparcela_PARCELA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="zebra" mode="Opaque" x="391" y="0" width="80" height="15" forecolor="#000000" uuid="febec595-50dc-421d-9d85-eb7430320924"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tituloapparcela_VALORPARCELA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="0" y="0" width="100" height="20" uuid="3b40f0db-e047-4a62-a9b9-a5a15a9939b1"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1" uuid="7f6f99ee-ac17-4ba4-97b8-224465b960b9"/>
+			</line>
+			<textField>
+				<reportElement x="435" y="0" width="80" height="20" uuid="18b5c203-c08b-4aa8-af0c-88bd21a54ea5"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="0" width="40" height="20" uuid="d4bf7471-aebc-4a22-9f5e-25e79a2beb98"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="206" y="0" width="150" height="16" forecolor="#0000FF" uuid="4bb53f33-a632-41a2-a603-af3bd9893f88">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OnSys ERP Cloud - www.onsys.com.br]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="20">
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="471" y="0" width="84" height="20" uuid="e2cca7e9-7b76-493a-804b-249ee8a5bdaa"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{tituloapparcela_VLSALDO_1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="283" y="0" width="75" height="20" uuid="f33d0bd4-98ac-4696-bd09-df4d9215e83d"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total geral ==>]]></text>
+			</staticText>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="391" y="0" width="80" height="20" uuid="80a6c1dc-8ef5-4e70-bbec-12f368defbb7"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{tituloapparcela_VALORPARCELA_2}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

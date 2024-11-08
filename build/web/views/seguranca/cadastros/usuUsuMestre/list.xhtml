@@ -1,0 +1,143 @@
+<html xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                    xmlns:p="http://primefaces.org/ui"
+                    template="/WEB-INF/template.xhtml"
+                    xmlns:f="http://java.sun.com/jsf/core"
+                    xmlns:h="http://java.sun.com/jsf/html">
+        <ui:define name="conteudo">                
+            <f:view contentType="text/html; charset=utf-8">
+                <h:head>  
+                    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>  
+                </h:head>
+                <p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" widgetVar="statusDialog" />
+                <p:dialog modal="true" widgetVar="statusDialog" header="Processando..." draggable="false" closable="false" resizable="false">                               
+                    <p:graphicImage value="#{pageContext.servletContext.contextPath}/resources/imagens/onsys/bar180.gif" /> 
+                </p:dialog>         
+                <script type="text/javascript">
+                    function startMessage() {
+                         statusDialog.show();
+                    }
+                    function finishMessage() {
+                        statusDialog.hide();
+                    }
+                </script>
+                <body onload="#{usuarioFace.limparFiltros()}">
+                    <h:form>
+                        <p:panel>
+                            <p:toolbar style="height: 35px" id="toolbar">
+                                <f:facet name="left">
+                                    <c:if test="#{validaAcesso.validaAcesso('/views/seguranca/cadastros/usuUsuMestre/list.faces', 'E')}">
+                                        <p:commandButton title="Selecione um registro na lista abaixo para utilizar a função de alteração." 
+                                                         style="text-align: center; height: 30px; width: 120px;"
+                                                         action="#{usuUsuMestreFace.editar()}" id="bt_editar" 
+                                                         value="Alterar"
+                                                         styleClass="BrownButton"
+                                                         icon="fa fa-pencil Fs16 white" 
+                                                         ajax="true" onclick="PF('PrimeFaces.monitorDownload(startMessage, finishMessage)')">                                            
+                                        </p:commandButton>
+                                        <p:spacer width="4" height="3"/>  
+                                    </c:if>                          
+                                    <c:if test="#{validaAcesso.validaAcesso('/views/seguranca/cadastros/usuUsuMestre/list.faces', 'C')}">
+                                        <p:commandButton title="Selecione um registro na lista abaixo, para utilizar a função de consulta." 
+                                                         style="text-align: center; height: 30px; width: 120px;"
+                                                         styleClass="CyanButton"
+                                                         value="Consultar"
+                                                         action="#{usuUsuMestreFace.consultar()}" icon="fa fa-eye Fs16 white"
+                                                         ajax="true" onclick="PF('PrimeFaces.monitorDownload(startMessage, finishMessage)')">                                            
+                                        </p:commandButton>
+                                        <span class="ui-separator">
+                                                <span class="fa fa-ellipsis-v leaden"/>
+                                        </span>                                 
+                                    </c:if>                     
+                                    <p:menuButton style="text-align: center; height: 30px; width: 140px;" 
+                                                  value="Mais opções">  
+                                        <p:menuitem value="Relatório" icon="fa fa-print"/>
+                                        <c:if test="#{!favoritosFace.validaExistente()}">
+                                            <p:menuitem value="Adicionar aos favoritos" icon="fa fa-star-o" 
+                                                        actionListener="#{favoritosFace.criaFavorito(usuarioFace.loggedUser.empresa.codigo)}"/>
+                                        </c:if>
+                                        <c:if test="#{favoritosFace.validaExistente()}">
+                                            <p:menuitem value="Remover dos favoritos" icon="fa fa-star" 
+                                                        actionListener="#{favoritosFace.deletaFavorito()}"/>
+                                        </c:if>                                    
+                                        <p:menuitem value="Ajuda" icon="fa fa-question"/>
+                                    </p:menuButton>                                                    
+                                    <p:spacer width="3" height="3"/>
+                                    <p:commandButton id="limparFiltro"
+                                                     title="Atualizar lista e limpar filtros" 
+                                                     style="height: 30px; width: 30px;"
+                                                     onclick="PF('tabela').clearFilters()" 
+                                                     actionListener="#{usuarioFace.limparFiltros}"
+                                                     icon="fa fa-flash Fs14 white"
+                                                     update="dtb,toolbar">
+                                        <p:resetInput target="dtb"/>
+                                    </p:commandButton>                                
+                                    <p:spacer width="3" height="3"/>
+                                    <p:growl id="messages" showDetail="true"/>  
+                                </f:facet>                        
+                            </p:toolbar>
+                            <p:dataTable id="dtb" var="item" value="#{usuarioFace.lazy}" 
+                                         lazy="true" widgetVar="tabela"
+                                         first="0" 
+                                         selection="#{usuUsuMestreFace.usuarioMestreSelecionado}" 
+                                         selectionMode="single" filterDelay="1000"
+                                         rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}"
+                                         paginator="true" rows="10" paginatorPosition="top"                                              
+                                         emptyMessage="Não há registros a exibir"                                        
+                                         rowIndexVar="rowIx" reflow="true">
+
+                                <f:facet name="header">                                                     
+                                    <h:outputText value="SEG0136 - Usuário mestre x Usuário" styleClass="Fs14"/>
+                                    <p:spacer width="20" height="5"/>
+                                    <h:commandLink>
+                                        <p:graphicImage title="Gera planilha" value="#{pageContext.servletContext.contextPath}/resources/imagens/onsys/excel.png" width="20"/>
+                                        <p:dataExporter type="xls" target="dtb" fileName="SEG0136"/>                                    
+                                    </h:commandLink>
+                                    <p:spacer width="40" height="5"/>
+                                    <h:outputText value="  Filtrar  "/>
+                                    <p:inputText id="globalFilter" onkeyup="PF('tabela').filter()" styleClass="Fs12"  
+                                                 style="text-align: right; height: 10px"/>
+                                </f:facet>
+
+                                <p:ajax event="filter" update="dtb"/>
+
+                                <p:column style="width:16px; height: 25px; border-style: solid; border-color: #0000FF;" exportable="false">
+                                    <p:rowToggler/>
+                                </p:column>                            
+                                <p:column sortBy="#{item.email}" headerText="E-mail" 
+                                          filterStyle="width: 240px; overflow: hidden"
+                                          filterBy="#{item.email}" 
+                                          filterFunction="#{usuarioFace.filterByEmail}" 
+                                          filterValue="#{usuarioFace.emailFiltro}"
+                                          style="color: #0000FF; height: 25px;border-style: solid; border-color: #0000FF;">
+                                    <h:outputText value="#{item.email}" styleClass="Fs12" style="color: black"/>
+                                </p:column>
+                                <p:column sortBy="#{item.apelido}" filterBy="#{item.apelido}" 
+                                          filterStyle="width: 240px; overflow: hidden"
+                                          filterFunction="#{usuarioFace.filterByApelido}" 
+                                          filterValue="#{usuarioFace.apelidoFiltro}"
+                                          headerText="Apelido" 
+                                          style="color: #0000FF; height: 25px;border-style: solid; border-color: #0000FF;"> 
+                                    <h:outputText value="#{item.apelido}" styleClass="Fs12" style="color: black"/>
+                                </p:column>
+                                <p:rowExpansion>
+                                    <p:panelGrid  columns="2" 
+                                                  layout="grid" 
+                                                  style="background-color: #F2E6E6"
+                                                  columnClasses="ui-grid-col-2, ui-grid-col-10">
+
+                                        <h:outputText value="Nome" 
+                                                      styleClass="Fs12" style="color: black"/>
+                                        <h:outputText value="#{item.nome}" 
+                                                      styleClass="Fs12" style="color: black"/>
+
+                                     </p:panelGrid>
+                                </p:rowExpansion>                                
+                            </p:dataTable>
+                        </p:panel>                        
+                    </h:form>
+                </body>
+            </f:view>
+        </ui:define>
+    </ui:composition>        
+</html>

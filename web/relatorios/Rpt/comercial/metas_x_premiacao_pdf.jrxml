@@ -1,0 +1,885 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="metas_x_premiacao_pdf" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c1345e6-8589-40cf-98e8-9f7209a937ee">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="264"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="730"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cEmpresa" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pDataIni" class="java.lang.String"/>
+	<parameter name="pDataFim" class="java.lang.String"/>
+	<parameter name="ano" class="java.lang.String"/>
+	<parameter name="mes" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Fernando\\Projetos\\NeoSIGE\\web\\relatorios\\Rpt\\comercial\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pDataIniAnt" class="java.lang.String"/>
+	<parameter name="pDataFimAnt" class="java.lang.String"/>
+	<parameter name="cPar2" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT distinct
+     (SELECT SUM(1)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIni} AND pedidovendasX.DATAEMISSAO <= $P{pDataFim}) AND representanteX.id = representante.id
+ and pedidovendasX.VLTOTPEDIDO > 0
+  AND pedidovendasX.SITUACAO <> 'Cancelado'
+  AND pedidovendasX.SITUACAO <> 'Rejeitado'
+  AND pedidovendasX.SITUACAO <> 'Pendente'
+  AND pedidovendasX.SITUACAO <> 'Bloqueado'
+  and pedidovendasX.SITUACAO <> 'Obs') AS Real_PEDIDO,
+     (SELECT SUM(1)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND pedidovendasX.DATACANCELAMENTO >= $P{pDataIni} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIniAnt} AND pedidovendasX.DATAEMISSAO <= $P{pDataFimAnt}) AND representanteX.id = representante.id
+ and pedidovendasX.VLTOTPEDIDO > 0
+  AND (pedidovendasX.SITUACAO = 'Cancelado')) AS Ped_Cancelado,
+     ((SELECT SUM(1)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIni} AND pedidovendasX.DATAEMISSAO <= $P{pDataFim}) AND representanteX.id = representante.id
+ and pedidovendasX.VLTOTPEDIDO > 0
+  AND pedidovendasX.SITUACAO <> 'Cancelado'
+  AND pedidovendasX.SITUACAO <> 'Rejeitado'
+  AND pedidovendasX.SITUACAO <> 'Pendente'
+  AND pedidovendasX.SITUACAO <> 'Bloqueado'
+  and pedidovendasX.SITUACAO <> 'Obs') - CASE WHEN (SELECT SUM(1)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND pedidovendasX.DATACANCELAMENTO >= $P{pDataIni} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIniAnt} AND pedidovendasX.DATAEMISSAO <= $P{pDataFimAnt}) AND representanteX.id = representante.id
+ and pedidovendasX.VLTOTPEDIDO > 0
+  AND (pedidovendasX.SITUACAO = 'Cancelado')) IS NULL THEN 0
+  ELSE (SELECT SUM(1)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND pedidovendasX.DATACANCELAMENTO >= $P{pDataIni} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIniAnt} AND pedidovendasX.DATAEMISSAO <= $P{pDataFimAnt}) AND representanteX.id = representante.id
+ and pedidovendasX.VLTOTPEDIDO > 0
+  AND (pedidovendasX.SITUACAO = 'Cancelado')) END) AS Ped_real,
+
+CASE WHEN
+    ((SELECT SUM(pedidovendasX.`VLTOTPEDIDO`)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIni} AND pedidovendasX.DATAEMISSAO <= $P{pDataFim}) AND representanteX.id = representante.id
+and pedidovendasX.VLTOTPEDIDO > 0
+  AND pedidovendasX.SITUACAO <> 'Cancelado'
+  AND pedidovendasX.SITUACAO <> 'Rejeitado'
+  AND pedidovendasX.SITUACAO <> 'Pendente'
+  AND pedidovendasX.SITUACAO <> 'Bloqueado'
+  and pedidovendasX.SITUACAO <> 'Obs') - CASE WHEN (SELECT SUM(pedidovendasX.`VLTOTPEDIDO`)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND pedidovendasX.DATACANCELAMENTO >= $P{pDataIni} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIniAnt} AND pedidovendasX.DATAEMISSAO <= $P{pDataFimAnt}) AND representanteX.id = representante.id
+and pedidovendasX.VLTOTPEDIDO > 0
+  AND (pedidovendasX.SITUACAO = 'Cancelado')) IS NULL THEN 0
+    ELSE (SELECT SUM(pedidovendasX.`VLTOTPEDIDO`)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND pedidovendasX.DATACANCELAMENTO >= $P{pDataIni} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIniAnt} AND pedidovendasX.DATAEMISSAO <= $P{pDataFimAnt}) AND representanteX.id = representante.id
+and pedidovendasX.VLTOTPEDIDO > 0
+  AND (pedidovendasX.SITUACAO = 'Cancelado')) END) < 0 THEN 0
+ELSE
+
+  ((SELECT SUM(pedidovendasX.`VLTOTPEDIDO`)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIni} AND pedidovendasX.DATAEMISSAO <= $P{pDataFim}) AND representanteX.id = representante.id
+and pedidovendasX.VLTOTPEDIDO > 0
+  AND pedidovendasX.SITUACAO <> 'Cancelado'
+  AND pedidovendasX.SITUACAO <> 'Rejeitado'
+  AND pedidovendasX.SITUACAO <> 'Pendente'
+  AND pedidovendasX.SITUACAO <> 'Bloqueado'
+  and pedidovendasX.SITUACAO <> 'Obs') - CASE WHEN (SELECT SUM(pedidovendasX.`VLTOTPEDIDO`)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND pedidovendasX.DATACANCELAMENTO >= $P{pDataIni} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIniAnt} AND pedidovendasX.DATAEMISSAO <= $P{pDataFimAnt}) AND representanteX.id = representante.id
+and pedidovendasX.VLTOTPEDIDO > 0
+  AND (pedidovendasX.SITUACAO = 'Cancelado')) IS NULL THEN 0
+    ELSE (SELECT SUM(pedidovendasX.`VLTOTPEDIDO`)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND pedidovendasX.DATACANCELAMENTO >= $P{pDataIni} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIniAnt} AND pedidovendasX.DATAEMISSAO <= $P{pDataFimAnt}) AND representanteX.id = representante.id
+and pedidovendasX.VLTOTPEDIDO > 0
+  AND (pedidovendasX.SITUACAO = 'Cancelado')) END) END AS Real_VALOR,
+
+    CASE WHEN
+       (SELECT MAX(metapremiofaixa.`PREMIO`)
+        FROM metapremiofaixa
+        WHERE (metapremiofaixa.METAPREMIO_ID = metapremio.id) and (metapremiofaixa.`PERCINI` <= ((((SELECT SUM(1)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIni} AND pedidovendasX.DATAEMISSAO <= $P{pDataFim}) AND representanteX.id = representante.id
+ and pedidovendasX.VLTOTPEDIDO > 0
+  AND pedidovendasX.SITUACAO <> 'Cancelado'
+  AND pedidovendasX.SITUACAO <> 'Rejeitado'
+  AND pedidovendasX.SITUACAO <> 'Pendente'
+  AND pedidovendasX.SITUACAO <> 'Bloqueado'
+  and pedidovendasX.SITUACAO <> 'Obs') - CASE WHEN (SELECT SUM(1)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIniAnt} AND pedidovendasX.DATAEMISSAO <= $P{pDataFimAnt}) AND representanteX.id = representante.id
+ and pedidovendasX.VLTOTPEDIDO > 0
+  AND (pedidovendasX.SITUACAO = 'Cancelado')) IS NULL THEN 0
+  ELSE (SELECT SUM(1)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIniAnt} AND pedidovendasX.DATAEMISSAO <= $P{pDataFimAnt}) AND representanteX.id = representante.id
+ and pedidovendasX.VLTOTPEDIDO > 0
+  AND (pedidovendasX.SITUACAO = 'Cancelado')) END)/metapremiorepres.`METAPEDIDO`)*100))) IS NULL THEN 0
+    ELSE
+       (SELECT MAX(metapremiofaixa.`PREMIO`)
+        FROM metapremiofaixa
+        WHERE (metapremiofaixa.METAPREMIO_ID = metapremio.id) and (metapremiofaixa.`PERCINI` <= ((((SELECT SUM(1)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIni} AND pedidovendasX.DATAEMISSAO <= $P{pDataFim}) AND representanteX.id = representante.id
+ and pedidovendasX.VLTOTPEDIDO > 0
+  AND pedidovendasX.SITUACAO <> 'Cancelado'
+  AND pedidovendasX.SITUACAO <> 'Rejeitado'
+  AND pedidovendasX.SITUACAO <> 'Pendente'
+  AND pedidovendasX.SITUACAO <> 'Bloqueado'
+  and pedidovendasX.SITUACAO <> 'Obs') - CASE WHEN (SELECT SUM(1)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIniAnt} AND pedidovendasX.DATAEMISSAO <= $P{pDataFimAnt}) AND representanteX.id = representante.id
+ and pedidovendasX.VLTOTPEDIDO > 0
+  AND (pedidovendasX.SITUACAO = 'Cancelado')) IS NULL THEN 0
+  ELSE (SELECT SUM(1)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIniAnt} AND pedidovendasX.DATAEMISSAO <= $P{pDataFimAnt}) AND representanteX.id = representante.id
+ and pedidovendasX.VLTOTPEDIDO > 0
+  AND (pedidovendasX.SITUACAO = 'Cancelado')) END)/metapremiorepres.`METAPEDIDO`)*100))) END AS Premio,
+
+   CASE WHEN
+       (SELECT MAX(metapremiofaixa.`PREMIO`)
+        FROM metapremiofaixa
+        WHERE (metapremiofaixa.METAPREMIO_ID = metapremio.id) and (metapremiofaixa.`PERCINI` <= (((((SELECT SUM(pedidovendasX.`VLTOTPEDIDO`)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIni} AND pedidovendasX.DATAEMISSAO <= $P{pDataFim}) AND representanteX.id = representante.id
+and pedidovendasX.VLTOTPEDIDO > 0
+  AND pedidovendasX.SITUACAO <> 'Cancelado'
+  AND pedidovendasX.SITUACAO <> 'Rejeitado'
+  AND pedidovendasX.SITUACAO <> 'Pendente'
+  AND pedidovendasX.SITUACAO <> 'Bloqueado'
+  and pedidovendasX.SITUACAO <> 'Obs') - CASE WHEN (SELECT SUM(pedidovendasX.`VLTOTPEDIDO`)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIniAnt} AND pedidovendasX.DATAEMISSAO <= $P{pDataFimAnt}) AND representanteX.id = representante.id
+and pedidovendasX.VLTOTPEDIDO > 0
+  AND (pedidovendasX.SITUACAO = 'Cancelado')) IS NULL THEN 0
+    ELSE (SELECT SUM(pedidovendasX.`VLTOTPEDIDO`)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIniAnt} AND pedidovendasX.DATAEMISSAO <= $P{pDataFimAnt}) AND representanteX.id = representante.id
+and pedidovendasX.VLTOTPEDIDO > 0
+  AND (pedidovendasX.SITUACAO = 'Cancelado')) END)/metapremiorepres.`METAVALOR`)*100)))) IS NULL THEN 0
+    ELSE
+      ((SELECT MAX(metapremiofaixa.`PREMIO`)
+        FROM metapremiofaixa
+        WHERE (metapremiofaixa.METAPREMIO_ID = metapremio.id) and (metapremiofaixa.`PERCINI` <= (((((SELECT SUM(pedidovendasX.`VLTOTPEDIDO`)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIni} AND pedidovendasX.DATAEMISSAO <= $P{pDataFim}) AND representanteX.id = representante.id
+and pedidovendasX.VLTOTPEDIDO > 0
+  AND pedidovendasX.SITUACAO <> 'Cancelado'
+  AND pedidovendasX.SITUACAO <> 'Rejeitado'
+  AND pedidovendasX.SITUACAO <> 'Pendente'
+  AND pedidovendasX.SITUACAO <> 'Bloqueado'
+  and pedidovendasX.SITUACAO <> 'Obs') - CASE WHEN (SELECT SUM(pedidovendasX.`VLTOTPEDIDO`)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIniAnt} AND pedidovendasX.DATAEMISSAO <= $P{pDataFimAnt}) AND representanteX.id = representante.id
+and pedidovendasX.VLTOTPEDIDO > 0
+  AND (pedidovendasX.SITUACAO = 'Cancelado')) IS NULL THEN 0
+    ELSE (SELECT SUM(pedidovendasX.`VLTOTPEDIDO`)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIniAnt} AND pedidovendasX.DATAEMISSAO <= $P{pDataFimAnt}) AND representanteX.id = representante.id
+and pedidovendasX.VLTOTPEDIDO > 0
+  AND (pedidovendasX.SITUACAO = 'Cancelado')) END)/metapremiorepres.`METAVALOR`)*100))))*2)
+     END AS Comissao,
+
+     ((((SELECT SUM(1)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIni} AND pedidovendasX.DATAEMISSAO <= $P{pDataFim}) AND representanteX.id = representante.id
+ and pedidovendasX.VLTOTPEDIDO > 0
+  AND pedidovendasX.SITUACAO <> 'Cancelado'
+  AND pedidovendasX.SITUACAO <> 'Rejeitado'
+  AND pedidovendasX.SITUACAO <> 'Pendente'
+  AND pedidovendasX.SITUACAO <> 'Bloqueado'
+  and pedidovendasX.SITUACAO <> 'Obs') - CASE WHEN (SELECT SUM(1)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND pedidovendasX.DATACANCELAMENTO >= $P{pDataIni} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIniAnt} AND pedidovendasX.DATAEMISSAO <= $P{pDataFimAnt}) AND representanteX.id = representante.id
+ and pedidovendasX.VLTOTPEDIDO > 0
+  AND (pedidovendasX.SITUACAO = 'Cancelado')) IS NULL THEN 0
+  ELSE (SELECT SUM(1)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND pedidovendasX.DATACANCELAMENTO >= $P{pDataIni} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIniAnt} AND pedidovendasX.DATAEMISSAO <= $P{pDataFimAnt}) AND representanteX.id = representante.id
+ and pedidovendasX.VLTOTPEDIDO > 0
+  AND (pedidovendasX.SITUACAO = 'Cancelado')) END)/metapremiorepres.`METAPEDIDO`)*100) AS PercPedido,
+
+    ((((SELECT SUM(pedidovendasX.`VLTOTPEDIDO`)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIni} AND pedidovendasX.DATAEMISSAO <= $P{pDataFim}) AND representanteX.id = representante.id
+and pedidovendasX.VLTOTPEDIDO > 0
+  AND pedidovendasX.SITUACAO <> 'Cancelado'
+  AND pedidovendasX.SITUACAO <> 'Rejeitado'
+  AND pedidovendasX.SITUACAO <> 'Pendente'
+  AND pedidovendasX.SITUACAO <> 'Bloqueado'
+  and pedidovendasX.SITUACAO <> 'Obs') - CASE WHEN (SELECT SUM(pedidovendasX.`VLTOTPEDIDO`)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND pedidovendasX.DATACANCELAMENTO >= $P{pDataIni} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIniAnt} AND pedidovendasX.DATAEMISSAO <= $P{pDataFimAnt}) AND representanteX.id = representante.id
+and pedidovendasX.VLTOTPEDIDO > 0
+  AND (pedidovendasX.SITUACAO = 'Cancelado')) IS NULL THEN 0
+    ELSE (SELECT SUM(pedidovendasX.`VLTOTPEDIDO`)
+       FROM `participante` participanteX INNER JOIN `pedidovendas` pedidovendasX ON participanteX.`id` = pedidovendasX.`CLIENTE_id`
+       INNER JOIN `representante` representanteX ON pedidovendasX.`REPRESENTANTE_id` = representanteX.`id`
+       LEFT OUTER JOIN `regiao` regiaoX ON representanteX.`REGIAO_id` = regiaoX.id
+       WHERE pedidovendasX.`EMPRESA_id` = $P{cEmpresa} AND pedidovendasX.DATACANCELAMENTO >= $P{pDataIni} AND (pedidovendasX.DATAEMISSAO >= $P{pDataIniAnt} AND pedidovendasX.DATAEMISSAO <= $P{pDataFimAnt}) AND representanteX.id = representante.id
+and pedidovendasX.VLTOTPEDIDO > 0
+  AND (pedidovendasX.SITUACAO = 'Cancelado')) END)/metapremiorepres.`METAVALOR`)*100) AS PercValor,
+
+     representante.`CODIGO` AS representante_CODIGO,
+     TRIM(representante.`NOME`) AS representante_NOME,
+     metapremio.id AS metapremioID,
+     metapremiorepres.`METAPEDIDO` AS representante_METAPEDIDO,
+     metapremiorepres.`METAVALOR` AS representante_METAVALOR,
+     empresa.`logoimg`  AS empresa_logo,
+     regiao.`CODIGO` AS regiao_CODIGO,
+     regiao.`DESCRICAO` AS regiao_DESCRICAO,
+     (SELECT distinct usuario.`APELIDO`
+       FROM
+      `representante` representanteS INNER JOIN `usurepres` usurepres ON representanteS.`id` = usurepres.representante_id
+       INNER JOIN `usuario` usuario ON usurepres.usuario_id = usuario.id
+       where usuario.`TIPO` = 'Supervisor' and representanteS.id = representante.id and (representanteS.inativo = '' or representanteS.inativo is null or representanteS.inativo = 'N') limit 0,1) AS Supervisor
+FROM
+     `representante` representante INNER JOIN `metapremiorepres` metapremiorepres ON metapremiorepres.`REPRESENTANTE_id` = representante.`id`
+                               and metapremiorepres.ano = year($P{pDataIni}) and metapremiorepres.mes = month($P{pDataIni})
+     INNER JOIN `metapremio` metapremio ON metapremiorepres.`METAPREMIO_id` = metapremio.id
+     INNER JOIN `empresa` empresa ON representante.empresa_id = empresa.id
+     LEFT OUTER JOIN `regiao` regiao ON representante.`REGIAO_id` = regiao.id
+$P!{cCondicao}
+ORDER BY Supervisor, regiao_DESCRICAO, representante_NOME]]>
+	</queryString>
+	<field name="Real_PEDIDO" class="java.math.BigDecimal"/>
+	<field name="Ped_Cancelado" class="java.math.BigDecimal"/>
+	<field name="Ped_real" class="java.math.BigDecimal"/>
+	<field name="Real_VALOR" class="java.math.BigDecimal"/>
+	<field name="Premio" class="java.math.BigDecimal"/>
+	<field name="Comissao" class="java.math.BigDecimal"/>
+	<field name="PercPedido" class="java.math.BigDecimal"/>
+	<field name="PercValor" class="java.math.BigDecimal"/>
+	<field name="representante_CODIGO" class="java.lang.String"/>
+	<field name="representante_NOME" class="java.lang.String"/>
+	<field name="metapremioID" class="java.lang.Integer"/>
+	<field name="representante_METAPEDIDO" class="java.lang.Integer"/>
+	<field name="representante_METAVALOR" class="java.math.BigDecimal"/>
+	<field name="empresa_logo" class="java.io.InputStream"/>
+	<field name="regiao_CODIGO" class="java.lang.String"/>
+	<field name="regiao_DESCRICAO" class="java.lang.String"/>
+	<field name="Supervisor" class="java.lang.String"/>
+	<variable name="totRegMetaPedido" class="java.lang.Integer" resetType="Group" resetGroup="Regiao" calculation="Sum">
+		<variableExpression><![CDATA[$F{representante_METAPEDIDO}]]></variableExpression>
+	</variable>
+	<variable name="totRegRealPedido" class="java.math.BigDecimal" resetType="Group" resetGroup="Regiao" calculation="Sum">
+		<variableExpression><![CDATA[$F{Real_PEDIDO}]]></variableExpression>
+	</variable>
+	<variable name="totRegComissPedido" class="java.math.BigDecimal" resetType="Group" resetGroup="Regiao" calculation="Sum">
+		<variableExpression><![CDATA[$F{Premio}]]></variableExpression>
+	</variable>
+	<variable name="totRegMetaValor" class="java.math.BigDecimal" resetType="Group" resetGroup="Regiao" calculation="Sum">
+		<variableExpression><![CDATA[$F{representante_METAVALOR}]]></variableExpression>
+	</variable>
+	<variable name="totRegRelValor" class="java.math.BigDecimal" resetType="Group" resetGroup="Regiao" calculation="Sum">
+		<variableExpression><![CDATA[$F{Real_VALOR}]]></variableExpression>
+	</variable>
+	<variable name="totRegComissValor" class="java.math.BigDecimal" resetType="Group" resetGroup="Regiao" calculation="Sum">
+		<variableExpression><![CDATA[$F{Comissao}]]></variableExpression>
+	</variable>
+	<variable name="totMetaPedido" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{representante_METAPEDIDO}]]></variableExpression>
+	</variable>
+	<variable name="totRealPedido" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Real_PEDIDO}]]></variableExpression>
+	</variable>
+	<variable name="totComissPedido" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Premio}]]></variableExpression>
+	</variable>
+	<variable name="totMetaValo" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{representante_METAVALOR}]]></variableExpression>
+	</variable>
+	<variable name="totRealValor" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Real_VALOR}]]></variableExpression>
+	</variable>
+	<variable name="totComissValor" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Comissao}]]></variableExpression>
+	</variable>
+	<variable name="cont" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA["1"]]></variableExpression>
+	</variable>
+	<variable name="totComissao" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$F{Premio}.add($F{Comissao})]]></variableExpression>
+	</variable>
+	<variable name="totRegTotComiss" class="java.math.BigDecimal" resetType="Group" resetGroup="Regiao" calculation="Sum">
+		<variableExpression><![CDATA[$V{totComissao}]]></variableExpression>
+	</variable>
+	<variable name="totGerTotComiss" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$V{totComissao}]]></variableExpression>
+	</variable>
+	<variable name="totRegPedCancelado" class="java.math.BigDecimal" resetType="Group" resetGroup="Regiao" calculation="Sum">
+		<variableExpression><![CDATA[$F{Ped_Cancelado}]]></variableExpression>
+	</variable>
+	<variable name="totRegPedReal" class="java.math.BigDecimal" resetType="Group" resetGroup="Regiao" calculation="Sum">
+		<variableExpression><![CDATA[$F{Ped_real}]]></variableExpression>
+	</variable>
+	<variable name="totPedCancelado" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Ped_Cancelado}]]></variableExpression>
+	</variable>
+	<variable name="totPedReal" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Ped_real}]]></variableExpression>
+	</variable>
+	<group name="Supervisor">
+		<groupExpression><![CDATA[$F{Supervisor}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<staticText>
+					<reportElement x="0" y="0" width="58" height="20" uuid="af04f797-bad8-4f05-b079-7d627cb055ab"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Supervisor:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="58" y="0" width="573" height="20" uuid="856224e0-930d-46c6-a6d5-a76869af212b"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{Supervisor}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Regiao">
+		<groupExpression><![CDATA[$F{regiao_DESCRICAO}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<staticText>
+					<reportElement x="0" y="0" width="41" height="20" uuid="2ee69021-9714-4a6e-b66b-bbf71f2f46ab"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Região:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="41" y="0" width="590" height="20" uuid="d1b86af0-9804-4810-b73a-7fbc9382b677"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{regiao_DESCRICAO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="29">
+				<textField isBlankWhenNull="true">
+					<reportElement x="221" y="2" width="66" height="20" uuid="8c104363-f5b0-4382-932a-4e8298f54b8c"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{totRegMetaPedido}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="223" y="1" width="184" height="1" uuid="2861d090-fc79-4e05-9d17-6e5cbd4c74f7"/>
+				</line>
+				<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+					<reportElement x="287" y="2" width="40" height="20" uuid="9d3070a6-e8f8-4e8c-bfb9-1d0ff43bb4eb"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{totRegRealPedido}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="436" y="1" width="194" height="1" uuid="1db1b4b6-5559-484f-9d4d-4365ea718e67"/>
+				</line>
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="437" y="2" width="68" height="20" uuid="2bd90e5e-2fdb-4137-8c87-5800ef46bb9f"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{totRegComissPedido}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="508" y="2" width="64" height="20" uuid="54589bff-f32b-4c08-bd19-5a4fbd28443d"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{totRegMetaValor}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="572" y="2" width="58" height="20" uuid="503da9a6-abf0-4eb9-af8c-cc913a6c0308"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{totRegRelValor}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="665" y="1" width="137" height="1" uuid="07e1159f-3189-4f2a-bb8b-5d7189d92d2c"/>
+				</line>
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="665" y="2" width="72" height="20" uuid="8b08450d-92ec-4913-9793-def86ea7de37"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{totRegComissValor}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="145" y="2" width="76" height="20" uuid="d66f256d-5f2f-4433-9008-67d208a6c949"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TOTAL DA REGIÃO:]]></text>
+				</staticText>
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="737" y="2" width="66" height="20" uuid="db852834-779e-444c-8ddf-432f67505277"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{totRegTotComiss}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+					<reportElement x="327" y="2" width="40" height="20" uuid="e1c3dc95-c8c5-4837-b83e-3b91e8d613d8"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{totRegPedCancelado}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+					<reportElement x="367" y="2" width="39" height="20" uuid="3e02df88-f932-47de-8bdc-5f74079f405e"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{totRegPedReal}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="63" splitType="Stretch">
+			<staticText>
+				<reportElement x="109" y="3" width="693" height="39" uuid="78f91aa3-2895-43ed-9c31-4de76a714579"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relatório de metas X premiação]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="109" y="39" width="694" height="20" uuid="6f7cdf8a-6a14-474d-b9a1-98abfdac62b2"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="3" y="3" width="106" height="56" uuid="0747cd83-2b7e-4352-a5bb-30ff5385dcc9"/>
+				<imageExpression><![CDATA[$F{empresa_logo}]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="41" height="20" backcolor="#CCCCCC" uuid="f1593729-782c-4a5a-afa0-6170914a5ee1"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="41" y="0" width="182" height="20" backcolor="#CCCCCC" uuid="dc6ebb4b-8e10-4de1-8ca0-556ec852bed5"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Representantes]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="223" y="0" width="64" height="20" backcolor="#CCCCCC" uuid="8363dc1a-5b67-45ed-80c1-507a030e0121"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Meta pedido]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="287" y="0" width="40" height="20" backcolor="#CCCCCC" uuid="0fb20b97-c619-4dc7-a49b-46d9fb3df197"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qtd.Ped]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="407" y="0" width="29" height="20" backcolor="#CCCCCC" uuid="f5f59545-f37a-4662-a46f-74167d505395"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="436" y="0" width="69" height="20" backcolor="#CCCCCC" uuid="f6516e5d-e43c-403e-91e7-f8b67b0dd92d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Premiação pedido]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="505" y="0" width="67" height="20" backcolor="#CCCCCC" uuid="9f509dba-9168-448d-a201-31c6c04f585b"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Meta Valor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="572" y="0" width="58" height="20" backcolor="#CCCCCC" uuid="e3fd04d9-9862-4de3-b6e4-89d9a574f3ef"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Realizado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="630" y="0" width="35" height="20" backcolor="#CCCCCC" uuid="ecf47bc7-7839-4817-9ed8-4362f346cd24"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="665" y="0" width="72" height="20" backcolor="#CCCCCC" uuid="00699700-bc90-4837-80a1-cee642c460fb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Premiação valor]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="20" width="802" height="1" uuid="49b2c999-2fe3-480c-962f-92613118d5b9"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="737" y="0" width="66" height="20" backcolor="#CCCCCC" uuid="0a1549d6-c190-4647-be61-5e69d1153564"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Premiação total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="327" y="0" width="40" height="20" backcolor="#CCCCCC" uuid="5f8cb109-ce82-49ae-ba84-c19f91844453"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qtd.Canc.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="367" y="0" width="40" height="20" backcolor="#CCCCCC" uuid="e07e92ca-0394-496c-9433-c3e343e2be14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qtd.Real]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="802" height="15" backcolor="#CCFFFF" uuid="ca8940b2-50aa-4cd1-b1e4-22c03c789a30">
+					<printWhenExpression><![CDATA[new Boolean(new Integer(($V{cont}.intValue())%2).equals(new Integer("1")))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="287" y="0" width="40" height="15" forecolor="#000000" uuid="f89c9e84-d0f2-46ed-aadc-e186238b7188"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Real_PEDIDO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="407" y="0" width="29" height="15" forecolor="#000000" uuid="726e6e23-acd6-4185-9ffc-b180b1411222"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PercPedido}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="436" y="0" width="69" height="15" forecolor="#000000" uuid="0c04d787-67d7-4b5a-b1bb-b40e51a7951d"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Premio}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="505" y="0" width="67" height="15" forecolor="#000000" uuid="bc6cd57a-1664-479e-969e-600a153cb4ac"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{representante_METAVALOR}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="572" y="0" width="58" height="15" forecolor="#000000" uuid="b8cd1082-cd21-41b8-81fe-74e1313fed2f"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Real_VALOR}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="630" y="0" width="35" height="15" forecolor="#000000" uuid="3a342106-7d18-47d6-b205-d6602c74cb9d"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PercValor}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="665" y="0" width="72" height="15" forecolor="#000000" uuid="c1088d49-7deb-4539-8492-520bb8e637ad"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Comissao}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="0" y="0" width="41" height="15" forecolor="#000000" uuid="b20a00bf-3edd-408e-b52e-e3e4567e0e19"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{representante_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="737" y="0" width="66" height="15" forecolor="#000000" uuid="755af8aa-626f-41db-a0e0-8b320cb7e8f0"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totComissao}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="41" y="0" width="127" height="15" forecolor="#000000" uuid="3acb8746-9090-49c6-9214-76e09712e846"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{representante_NOME}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="327" y="0" width="40" height="15" forecolor="#000000" uuid="9d533125-fe46-4b55-a4ed-fa9a639a3a8b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Ped_Cancelado}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="367" y="0" width="40" height="15" forecolor="#000000" uuid="69f64079-1725-4bc8-811d-f993c07acbcf"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Ped_real}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="221" y="0" width="66" height="15" forecolor="#000000" uuid="3d3a2050-2cec-4f92-b646-5316e6b8bca5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{representante_METAPEDIDO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="28" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement x="762" y="2" width="40" height="20" uuid="575e8fda-5b16-4527-a273-27f5cb0b7961"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="275" y="2" width="260" height="16" forecolor="#0000FF" uuid="d81b23cf-c0d9-41a5-ba39-6839b78ca525"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OnSys ERP Cloud - www.onsys.com.br]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="682" y="2" width="80" height="20" uuid="f3c7a8c4-bed2-4e87-9a5f-a02b454690f8"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="0" y="2" width="100" height="20" uuid="9b6565e3-4af9-4cfa-a4de-38bf9e64f52f"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="1" width="802" height="1" uuid="67cabdaf-75be-49e8-b389-5ff3b6a1ae85"/>
+				<graphicElement>
+					<pen lineWidth="1.5"/>
+				</graphicElement>
+			</line>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="131" splitType="Stretch">
+			<line>
+				<reportElement x="223" y="1" width="183" height="1" uuid="361a6ba5-46a9-4149-9598-c616aa1a98c3"/>
+			</line>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement x="221" y="2" width="66" height="20" uuid="fe703418-a8db-42db-9c4e-31e289265d65"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totMetaPedido}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="287" y="2" width="40" height="20" uuid="a2e14ad0-9a9c-4d8b-92c9-6e876f2ac55d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totRealPedido}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="437" y="1" width="159" height="1" uuid="a0d5294f-43c1-4841-9a2f-4d39186bd9e2"/>
+			</line>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="436" y="2" width="69" height="20" uuid="71948623-52da-4640-98ea-8fb30f56476e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totComissPedido}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="505" y="2" width="67" height="20" uuid="f265c478-5625-47ab-b58d-1fd4a747c0f4"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totMetaValo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="572" y="2" width="58" height="20" uuid="e2e9321e-461d-4551-a010-b8528b338c0a"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totRealValor}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="665" y="2" width="72" height="20" uuid="cf698327-b609-4d6e-b889-be06cf70f3c4"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totComissValor}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="631" y="1" width="171" height="1" uuid="fbb96ef8-f81a-4ea5-9328-482209eb0e2b"/>
+			</line>
+			<staticText>
+				<reportElement x="145" y="2" width="76" height="20" uuid="dfbc7f8b-5d34-45f4-93f0-89cd0e890417"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL GERAL :]]></text>
+			</staticText>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="737" y="2" width="66" height="20" uuid="493acf54-a2cf-4124-8c14-432cf3ae9c3c"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totGerTotComiss}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement x="327" y="2" width="40" height="20" uuid="7947b42c-9e7e-43d5-bbe3-042f4cdce37e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totPedCancelado}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement x="367" y="2" width="39" height="20" uuid="9c469cf9-ebcd-44c6-ade9-9bb00921233f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totPedReal}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="0" y="28" width="200" height="100" uuid="717b564c-c207-4215-9a83-df2dff2b427c"/>
+				<subreportParameter name="pDataIni">
+					<subreportParameterExpression><![CDATA[$P{pDataIni}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="pDataFim">
+					<subreportParameterExpression><![CDATA[$P{pDataFim}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="pDataFimAnt">
+					<subreportParameterExpression><![CDATA[$P{pDataFimAnt}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="pDataIniAnt">
+					<subreportParameterExpression><![CDATA[$P{pDataIniAnt}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="cEmpresa">
+					<subreportParameterExpression><![CDATA[$P{cEmpresa}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="cPar2">
+					<subreportParameterExpression><![CDATA[$P{cPar2}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="cCondicao">
+					<subreportParameterExpression><![CDATA[$P{cCondicao}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "metas_x_premiacaoSub_pdf.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>

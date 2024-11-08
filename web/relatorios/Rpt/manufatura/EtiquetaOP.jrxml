@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EtiquetaOP" pageWidth="578" pageHeight="300" orientation="Landscape" columnWidth="538" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="nEtiq" class="java.lang.String"/>
+	<parameter name="cPesoBru" class="java.lang.Double"/>
+	<parameter name="cPesoLiq" class="java.lang.Double"/>
+	<parameter name="cCondicao" class="java.lang.String"/>
+	<parameter name="dtFabricacao" class="java.util.Date"/>
+	<parameter name="dtValidade" class="java.util.Date"/>
+	<queryString>
+		<![CDATA[SELECT
+     ordprod.`DATAFABRICACAO` AS ordprod_DATAFABRICACAO,
+     ordprod.`DATAVALIDADE` AS ordprod_DATAVALIDADE,
+     ordprod.`LOTE` AS ordprod_LOTE,
+     ordprod.`PESOBRUTO` AS ordprod_PESOBRUTO,
+     ordprod.`PESOLIQ` AS ordprod_PESOLIQ,
+     ordprod.`TIPOPROD` AS ordprod_TIPOPROD,
+     ordprod.`NRPEDCLI` AS ordprod_NRPEDCLI,
+     participante.`CODIGO` AS participante_CODIGO,
+     participante.`NOMEFANTASIA` AS participante_NOMEFANTASIA,
+     item.`CODIGO` AS item_CODIGO,
+     item.`DESCRICAO` AS item_DESCRICAO,
+     tt_onsys.`char1` AS tt_onsys_char1
+FROM
+     `participante` participante INNER JOIN `ordprod` ordprod ON participante.`id` = ordprod.`CLIENTE_id`
+     INNER JOIN `item` item ON ordprod.`ITEM_id` = item.`id`,
+     `tt-onsys` tt_onsys
+$P!{cCondicao}
+ORDER BY tt_onsys_char1]]>
+	</queryString>
+	<field name="ordprod_DATAFABRICACAO" class="java.sql.Date"/>
+	<field name="ordprod_DATAVALIDADE" class="java.sql.Date"/>
+	<field name="ordprod_LOTE" class="java.lang.String"/>
+	<field name="ordprod_PESOBRUTO" class="java.math.BigDecimal"/>
+	<field name="ordprod_PESOLIQ" class="java.math.BigDecimal"/>
+	<field name="ordprod_TIPOPROD" class="java.lang.String"/>
+	<field name="ordprod_NRPEDCLI" class="java.lang.String"/>
+	<field name="participante_CODIGO" class="java.lang.String"/>
+	<field name="participante_NOMEFANTASIA" class="java.lang.String"/>
+	<field name="item_CODIGO" class="java.lang.String"/>
+	<field name="item_DESCRICAO" class="java.lang.String"/>
+	<field name="tt_onsys_char1" class="java.lang.String"/>
+	<group name="codigo" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{tt_onsys_char1}]]></groupExpression>
+		<groupHeader>
+			<band height="260">
+				<textField isBlankWhenNull="true">
+					<reportElement x="39" y="100" width="37" height="28"/>
+					<textElement>
+						<font size="18" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{ordprod_TIPOPROD}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="40" y="128" width="369" height="28"/>
+					<textElement>
+						<font size="18" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{item_DESCRICAO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="409" y="128" width="129" height="28"/>
+					<textElement>
+						<font size="18" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{item_CODIGO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="98" y="211" width="57" height="12"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+					<text><![CDATA[4593]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="255" y="201" width="53" height="12"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{ordprod_LOTE}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="255" y="210" width="22" height="12"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{tt_onsys_char1}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="277" y="210" width="39" height="12"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["/"+$P{nEtiq}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.0000;-#,##0.0000" isBlankWhenNull="true">
+					<reportElement x="255" y="219" width="53" height="12"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$P{cPesoBru}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.0000;-#,##0.0000" isBlankWhenNull="true">
+					<reportElement x="255" y="229" width="53" height="12"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$P{cPesoLiq}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="377" y="201" width="100" height="12"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{ordprod_NRPEDCLI}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="377" y="211" width="36" height="12"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{participante_CODIGO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="413" y="211" width="10" height="13"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[-]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="423" y="211" width="115" height="13"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{participante_NOMEFANTASIA}]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+					<reportElement x="98" y="202" width="57" height="12"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.util.Date"><![CDATA[$P{dtFabricacao}]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+					<reportElement x="98" y="221" width="57" height="12"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.util.Date"><![CDATA[$P{dtValidade}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+</jasperReport>

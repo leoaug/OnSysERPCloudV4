@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Carteira_ped_familia_PDF" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5ded86ed-2270-422d-8644-23669e4b8aba">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="OnSys"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<style name="zebra" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT distinct
+     item.`CODIGO` AS item_CODIGO,
+     item.`DESCRICAO` AS item_DESCRICAO,
+     subcatitem.`DESCRICAO` AS subcatitem_DESCRICAO,
+     empresa.logoimg  AS empresa_logo,
+     SUM(itempedidovendas.`QUANTIDADE`) AS itempedidovendas_QUANTIDADE,
+     SUM(itempedidovendas.`PERCDESC`) AS itempedidovendas_PERCDESC,
+     SUM(itempedidovendas.`VLTOTLIQITEM` + itempedidovendas.`IPI` + itempedidovendas.`VLICMSSUBSTITU`) AS itempedidovendas_VLTOTLIQITEM
+FROM
+     pedidovendas pedidovendas LEFT OUTER JOIN participante participante ON pedidovendas.CLIENTE_id = participante.id
+     LEFT OUTER JOIN `itempedidovendas` itempedidovendas ON pedidovendas.`id` = itempedidovendas.`PEDIDOVENDAS_id`
+     LEFT OUTER JOIN `item` item ON itempedidovendas.`ITEM_id` = item.`id`
+     LEFT OUTER JOIN `subcatitem` subcatitem ON item.`SUBCATITEM_id` = subcatitem.id
+     LEFT OUTER JOIN empresa       empresa       ON participante.empresa_id = empresa.id
+     LEFT OUTER JOIN `enderecoparticipante` enderecoparticipante ON participante.`id` = enderecoparticipante.`PARTICIPANTE_id`
+     LEFT OUTER JOIN representante representante ON pedidovendas.REPRESENTANTE_id = representante.id
+     LEFT OUTER JOIN `regiao` regiao ON representante.`REGIAO_id` = regiao.`id`
+     LEFT OUTER JOIN `tabelaPreco` tabelaPreco ON participante.`TABELAPRECO_id` = tabelaPreco.`id`
+$P!{cCondicao}
+GROUP BY item_CODIGO,
+item_DESCRICAO, subcatitem_DESCRICAO
+ORDER BY subcatitem_DESCRICAO, itempedidovendas_QUANTIDADE DESC]]>
+	</queryString>
+	<field name="item_CODIGO" class="java.lang.String"/>
+	<field name="item_DESCRICAO" class="java.lang.String"/>
+	<field name="subcatitem_DESCRICAO" class="java.lang.String"/>
+	<field name="empresa_logo" class="java.io.InputStream"/>
+	<field name="itempedidovendas_QUANTIDADE" class="java.math.BigDecimal"/>
+	<field name="itempedidovendas_PERCDESC" class="java.math.BigDecimal"/>
+	<field name="itempedidovendas_VLTOTLIQITEM" class="java.math.BigDecimal"/>
+	<variable name="totFamQuant" class="java.math.BigDecimal" resetType="Group" resetGroup="Familia" calculation="Sum">
+		<variableExpression><![CDATA[$F{itempedidovendas_QUANTIDADE}]]></variableExpression>
+	</variable>
+	<variable name="totFamValor" class="java.math.BigDecimal" resetType="Group" resetGroup="Familia" calculation="Sum">
+		<variableExpression><![CDATA[$F{itempedidovendas_VLTOTLIQITEM}]]></variableExpression>
+	</variable>
+	<variable name="totGerQuant" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{itempedidovendas_QUANTIDADE}]]></variableExpression>
+	</variable>
+	<variable name="totGerValor" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{itempedidovendas_VLTOTLIQITEM}]]></variableExpression>
+	</variable>
+	<group name="Familia" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{subcatitem_DESCRICAO}]]></groupExpression>
+		<groupHeader>
+			<band height="28">
+				<staticText>
+					<reportElement x="0" y="0" width="81" height="20" uuid="10f55925-8831-4660-bdc5-5afa76992282"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Sub. Categoria:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="81" y="0" width="346" height="20" uuid="e7407a09-cde9-49c6-872d-51ead125948e"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{subcatitem_DESCRICAO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="29">
+				<line>
+					<reportElement x="427" y="1" width="128" height="1" uuid="40a9029e-aaf2-4fb5-9b11-38a74b25ea0c"/>
+				</line>
+				<textField pattern="#,##0;-#,##0">
+					<reportElement x="423" y="2" width="51" height="20" uuid="d83cac3b-4169-48a5-a8c9-4ecd3ee39cd5"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{totFamQuant}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="474" y="2" width="81" height="20" uuid="81cdce29-ad86-4a34-88da-35646eb90330"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{totFamValor}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="323" y="0" width="100" height="20" uuid="e0bee285-bc4b-494b-a822-b1a7799276cc"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total da SubCategoria ==>]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="55" splitType="Stretch">
+			<staticText>
+				<reportElement x="119" y="0" width="347" height="35" uuid="345570fa-f281-4b20-9110-b61be7db1dee"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pedidos emitidos]]></text>
+			</staticText>
+			<image>
+				<reportElement x="0" y="0" width="119" height="50" uuid="7021d4f1-1a6f-43c6-bf31-3a73f2034927"/>
+				<imageExpression><![CDATA[$F{empresa_logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="119" y="35" width="347" height="20" uuid="5d0ce21b-1e95-4faf-958d-889576a61a51"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="84" height="20" backcolor="#CCCCCC" uuid="42b9c7e5-2e09-4860-9f2e-70e270b7bfef"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="84" y="0" width="339" height="20" backcolor="#CCCCCC" uuid="1f0c6794-bdd2-436d-a7e9-c217ad350de0"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descrição]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="423" y="0" width="51" height="20" backcolor="#CCCCCC" uuid="2ab14955-03dc-46c6-858e-1f7373efc931"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quantidade]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="474" y="0" width="81" height="20" backcolor="#CCCCCC" uuid="6e6fa00a-bac9-49c4-bddc-f0a81069b8f2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="20" width="555" height="1" uuid="b2c9d1ae-6fe8-4759-9224-419f810fffe3"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="84" height="15" forecolor="#000000" uuid="2c1d4e18-a9a3-45fb-9c69-74ac8aa95c74"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{item_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="zebra" mode="Opaque" x="84" y="0" width="339" height="15" forecolor="#000000" uuid="7a1892f0-b54d-4582-a92f-abd838b4b2ce"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{item_DESCRICAO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0">
+				<reportElement style="zebra" mode="Opaque" x="423" y="0" width="51" height="15" forecolor="#000000" uuid="e904fae8-ec90-495a-bc75-5c2d6b4a0d8d"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{itempedidovendas_QUANTIDADE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="474" y="0" width="81" height="15" forecolor="#000000" uuid="e4b821ce-87fa-419c-a40d-8eb710069331"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{itempedidovendas_VLTOTLIQITEM}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="29" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="2" y="3" width="100" height="20" uuid="655f758c-aeba-47cb-8ec6-7d0b928c4359"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="164" y="3" width="237" height="16" forecolor="#0000FF" uuid="f4d446ec-06b5-48ea-a72c-e10915e9f533"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OnSys ERP Cloud - www.onsys.com.br]]></text>
+			</staticText>
+			<textField evaluationTime="Report">
+				<reportElement x="517" y="3" width="40" height="20" uuid="e2c6118b-3e87-4fb8-b4dd-f3afc99b787f"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="437" y="3" width="80" height="20" uuid="b8d2875c-01e3-4328-b0e9-aa8742a727d9"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="1" width="555" height="1" uuid="eaa80613-c87e-4b33-9ada-62a1ed02de03"/>
+			</line>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="28" splitType="Stretch">
+			<line>
+				<reportElement x="427" y="2" width="128" height="1" uuid="75d517ab-b811-4b37-9ae1-76c3eefeb3b1"/>
+			</line>
+			<textField pattern="#,##0;-#,##0">
+				<reportElement x="423" y="3" width="51" height="20" uuid="fcc26021-afb2-4c2b-8e51-a20e2376fc37"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totGerQuant}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="474" y="3" width="81" height="20" uuid="4919b1ce-a72d-42fd-8c01-bfc9beb12468"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totGerValor}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="323" y="2" width="100" height="20" uuid="5f3a106c-584e-4781-8ab8-a36f4a28d615"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Geral ==>]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

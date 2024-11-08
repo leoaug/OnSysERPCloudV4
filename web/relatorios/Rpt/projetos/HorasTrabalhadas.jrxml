@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="HorasTrabalhadas" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f0a42325-b204-442c-9ef8-dd1ed09e2502">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="39"/>
+	<property name="ireport.y" value="248"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="onsys"/>
+	<style name="zebra" forecolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#CCFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="idEmpresa" class="java.lang.Integer"/>
+	<parameter name="cCodIni" class="java.lang.String"/>
+	<parameter name="cCodFin" class="java.lang.String"/>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     diasfa.`DATAMOVTO` AS diasfa_DATAMOVTO,
+     diasfa.`HRFINAL` AS diasfa_HRFINAL,
+     diasfa.`HRINICIAL` AS diasfa_HRINICIAL,
+     diasfa.`HRINTERVALO` AS diasfa_HRINTERVALO,
+     diasfa.`HRTOTAL` AS diasfa_HRTOTAL,
+     diasfa.`VLREPASSE` AS diasfa_VLREPASSE,
+     empresa.`logoimg` AS empresa_logo,
+     usuario.`APELIDO` AS usuario_APELIDO,
+     diasfa.`HRFINALRELOGIO` AS diasfa_HRFINALRELOGIO,
+     diasfa.`HRINICIALRELOGIO` AS diasfa_HRINICIALRELOGIO,
+     diasfa.`HRINTERVALORELOGIO` AS diasfa_HRINTERVALORELOGIO,
+     diasfa.`HRTOTALRELOGIO` AS diasfa_HRTOTALRELOGIO,
+     componenteeap.`DESCRICAO` AS componenteeap_DESCRICAO
+FROM `fichaaprop` fichaaprop
+  INNER JOIN `diasfa` diasfa       ON fichaaprop.`id` = diasfa.`FICHAAPROP_id`
+  INNER JOIN `usuario`    usuario          ON fichaaprop.`USUARIO_id` = usuario.`id`
+  INNER JOIN `empresa` empresa ON fichaaprop.`empresa_id` = empresa.`id`
+  INNER JOIN `componenteeap` componenteeap ON diasfa.`PACOTE_id`  = componenteeap.`id`
+$P!{cCondicao}]]>
+	</queryString>
+	<field name="diasfa_DATAMOVTO" class="java.sql.Date"/>
+	<field name="diasfa_HRFINAL" class="java.math.BigDecimal"/>
+	<field name="diasfa_HRINICIAL" class="java.math.BigDecimal"/>
+	<field name="diasfa_HRINTERVALO" class="java.math.BigDecimal"/>
+	<field name="diasfa_HRTOTAL" class="java.math.BigDecimal"/>
+	<field name="diasfa_VLREPASSE" class="java.math.BigDecimal"/>
+	<field name="usuario_APELIDO" class="java.lang.String"/>
+	<field name="diasfa_HRFINALRELOGIO" class="java.lang.String"/>
+	<field name="diasfa_HRINICIALRELOGIO" class="java.lang.String"/>
+	<field name="diasfa_HRINTERVALORELOGIO" class="java.lang.String"/>
+	<field name="diasfa_HRTOTALRELOGIO" class="java.lang.String"/>
+	<field name="componenteeap_DESCRICAO" class="java.lang.String"/>
+	<field name="empresa_logo" class="java.io.InputStream"/>
+	<variable name="diasfa_HRTOTAL_3" class="java.math.BigDecimal" resetType="Group" resetGroup="Consultor" calculation="Sum">
+		<variableExpression><![CDATA[$F{diasfa_HRTOTAL}]]></variableExpression>
+	</variable>
+	<variable name="diasfa_VLREPASSE_3" class="java.math.BigDecimal" resetType="Group" resetGroup="Consultor" calculation="Sum">
+		<variableExpression><![CDATA[$F{diasfa_VLREPASSE}]]></variableExpression>
+	</variable>
+	<variable name="diasfa_HRTOTAL_4" class="java.math.BigDecimal" resetType="Group" resetGroup="PACOTE" calculation="Sum">
+		<variableExpression><![CDATA[$F{diasfa_HRTOTAL}]]></variableExpression>
+	</variable>
+	<variable name="diasfa_VLREPASSE_4" class="java.math.BigDecimal" resetType="Group" resetGroup="PACOTE" calculation="Sum">
+		<variableExpression><![CDATA[$F{diasfa_VLREPASSE}]]></variableExpression>
+	</variable>
+	<variable name="diasfa_VLREPASSE_5" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{diasfa_VLREPASSE}]]></variableExpression>
+	</variable>
+	<variable name="diasfa_HRTOTAL_5" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{diasfa_HRTOTAL}]]></variableExpression>
+	</variable>
+	<variable name="TotMinutos" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="TotMinutosGeral" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<group name="Consultor">
+		<groupExpression><![CDATA[$F{usuario_APELIDO}]]></groupExpression>
+		<groupHeader>
+			<band height="21">
+				<staticText>
+					<reportElement x="0" y="0" width="100" height="20" uuid="aed92e98-3630-456b-988f-d42e2e91100a"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Consultor :]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="100" y="0" width="392" height="20" uuid="ebbbfae7-f420-477a-8a43-4bcf59cd2f50"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{usuario_APELIDO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="27">
+				<staticText>
+					<reportElement x="238" y="2" width="125" height="20" uuid="180a62f0-69bc-4a52-8705-12252ca5511d"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total do consultor     ===>]]></text>
+				</staticText>
+				<textField pattern="">
+					<reportElement x="390" y="2" width="65" height="20" uuid="5b7a6df9-975e-4c36-8059-485f802c3699"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{diasfa_HRTOTAL_3}.setScale(0, java.math.RoundingMode.DOWN)]]></textFieldExpression>
+				</textField>
+				<textField pattern="¤ #,##0.00">
+					<reportElement x="465" y="2" width="90" height="20" uuid="6fa7f0d0-e93c-4e2e-9644-16321966d94c"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{diasfa_VLREPASSE_3}]]></textFieldExpression>
+				</textField>
+				<textField pattern="##00">
+					<reportElement x="456" y="2" width="10" height="20" uuid="7b1c6c5d-2b53-44bb-a9d5-a5c05f257f36"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{diasfa_HRTOTAL_3}.subtract($V{diasfa_HRTOTAL_3}.setScale(0, java.math.RoundingMode.DOWN)).doubleValue() * 60.0]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="389" y="1" width="166" height="1" uuid="494708be-b56e-4da5-ad2a-5ac19b57c2e6"/>
+				</line>
+				<staticText>
+					<reportElement x="455" y="4" width="3" height="15" uuid="95286f3c-780c-4bd5-bb15-467a6637d5a7"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<text><![CDATA[:]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="PACOTE">
+		<groupExpression><![CDATA[$F{componenteeap_DESCRICAO}]]></groupExpression>
+		<groupHeader>
+			<band height="21">
+				<staticText>
+					<reportElement x="0" y="0" width="100" height="20" uuid="60697bae-f035-4de1-88bb-eea66f29f627"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Pacote :]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="100" y="0" width="456" height="20" uuid="e308c888-30fc-4843-8785-e099338a46d9"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{componenteeap_DESCRICAO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="29">
+				<staticText>
+					<reportElement x="238" y="2" width="125" height="20" uuid="d63bb359-b215-413f-94bd-c08b340fd507"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total do pacote         ===>]]></text>
+				</staticText>
+				<textField pattern="">
+					<reportElement x="390" y="4" width="65" height="20" uuid="b49e6b21-1737-402b-afe7-a822aa1ed223"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{diasfa_HRTOTAL_4}.setScale(0, java.math.RoundingMode.DOWN)]]></textFieldExpression>
+				</textField>
+				<textField pattern="##00">
+					<reportElement x="456" y="4" width="10" height="20" uuid="309477ca-50a9-4a44-84e5-99f7a43ebb64"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{diasfa_HRTOTAL_4}.subtract($V{diasfa_HRTOTAL_4}.setScale(0, java.math.RoundingMode.DOWN)).doubleValue() * 60.0]]></textFieldExpression>
+				</textField>
+				<textField pattern="¤ #,##0.00">
+					<reportElement x="465" y="4" width="90" height="20" uuid="7c4e6d6e-3620-4224-b87c-e7c28676df64"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{diasfa_VLREPASSE_4}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="388" y="1" width="167" height="1" uuid="2edcd1b3-154b-4e90-bf4f-7dcc556d5220"/>
+				</line>
+				<staticText>
+					<reportElement x="455" y="6" width="3" height="15" uuid="f0a5209e-4160-4dac-9d8d-9682943a0aa0"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<text><![CDATA[:]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="100" y="2" width="356" height="39" uuid="d8e3c83a-d052-4e4a-b78c-50e529187cd2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relatório de horas trabalhadas]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="41" width="356" height="20" uuid="352056fe-3684-4e76-8616-35fe05da383e"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="80" height="20" backcolor="#CCCCCC" uuid="fe8dda85-3899-4686-9078-3a01846047df"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="465" y="0" width="91" height="20" backcolor="#CCCCCC" uuid="9602f830-aae4-49f7-985c-430fe033e5a1"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor do repasse]]></text>
+			</staticText>
+			<line>
+				<reportElement x="1" y="20" width="554" height="1" uuid="158854c9-dfda-40f7-be3d-5e60bbb4184b"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="80" y="0" width="99" height="20" backcolor="#CCCCCC" uuid="d2bb8db1-8470-40cd-bfbd-042cd0965819"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hr. Inicial]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="179" y="0" width="99" height="20" backcolor="#CCCCCC" uuid="d6a20e60-49c3-4939-8623-f68a8fa9d469"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hr. Final]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="278" y="0" width="92" height="20" backcolor="#CCCCCC" uuid="73411c2d-1eaa-4695-aa62-f99290ad2fa6"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hr. Intervalo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="370" y="0" width="95" height="20" backcolor="#CCCCCC" uuid="98c8e9a9-b661-4d0c-9fc8-38fb366893e3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total de Horas]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement style="zebra" mode="Opaque" x="1" y="0" width="81" height="20" forecolor="#000000" uuid="250eb28b-221f-45c3-ba7e-28748e86c6be"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{diasfa_DATAMOVTO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="81" y="0" width="99" height="20" forecolor="#000000" uuid="d3ec20f1-711e-4c09-983a-f2277047d603"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{diasfa_HRINICIALRELOGIO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="180" y="0" width="99" height="20" forecolor="#000000" uuid="136b5829-5b1d-41c5-9854-e152be42b5b2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{diasfa_HRFINALRELOGIO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="279" y="0" width="92" height="20" forecolor="#000000" uuid="fd473472-cc44-4102-8d77-08fabd7916b3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{diasfa_HRINTERVALORELOGIO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="371" y="0" width="95" height="20" forecolor="#000000" uuid="3c527569-ecd3-40ab-aa02-b945b33b6639"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{diasfa_HRTOTALRELOGIO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement style="zebra" mode="Opaque" x="466" y="0" width="89" height="20" forecolor="#000000" uuid="7d84414c-ab48-40ac-84c0-e4602716f283"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{diasfa_VLREPASSE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="24" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="0" y="0" width="100" height="20" uuid="8659e11a-751f-4ae4-81c8-795422a3fe1c"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1" uuid="6f964606-2789-43c1-9ae0-2e11a6fe2b53"/>
+			</line>
+			<textField>
+				<reportElement x="435" y="0" width="80" height="20" uuid="b2c2b520-fd48-4a18-b404-bf9c6267c766"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="0" width="40" height="20" uuid="fa9b8d53-f15b-40d3-9729-781e0de63c14"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="167" y="0" width="242" height="16" forecolor="#0000FF" uuid="5b2ddfb3-2b8a-426b-bf53-6ea87d8af729"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OnSys ERP Cloud - www.onsys.com.br]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="22">
+			<staticText>
+				<reportElement x="240" y="2" width="125" height="20" uuid="b2d0bb6f-4f8c-4ce8-b951-22d3ddb9b814"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Geral                ===>]]></text>
+			</staticText>
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="467" y="2" width="89" height="20" uuid="fcc3f8b0-2ddc-47e7-94b9-01d4e1f55468"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{diasfa_VLREPASSE_5}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##00">
+				<reportElement x="456" y="2" width="10" height="20" uuid="c54e48af-c1f9-4529-bc6e-f3ebac8c7869"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{diasfa_HRTOTAL_5}.subtract($V{diasfa_HRTOTAL_5}.setScale(0, java.math.RoundingMode.DOWN)).doubleValue() * 60.0]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="390" y="2" width="65" height="20" uuid="8c6e72b7-7a7d-4a81-b84c-701937fd57b9"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{diasfa_HRTOTAL_5}.setScale(0, java.math.RoundingMode.DOWN)]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="389" y="1" width="166" height="1" uuid="a5993deb-ba00-48a4-90cb-0200cbf6db14"/>
+			</line>
+			<staticText>
+				<reportElement x="455" y="4" width="3" height="15" uuid="359b65dc-0f81-4655-80e8-f175a6a3ad70"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,51 @@
+<html   xmlns:c="http://java.sun.com/jsp/jstl/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"                   
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"> 
+
+        <c:if test="#{programaFace.operacao eq 'I'}">                  
+            <p:focus for="codigo"/>
+        </c:if>
+        <c:if test="#{programaFace.operacao eq 'A'}">                  
+            <p:focus for="desc"/>
+        </c:if>                
+        <p:panelGrid layout="grid" columns="3" 
+                     columnClasses="ui-grid-col-3, ui-grid-col-8, ui-grid-col-1"                                          
+                     id="pnlGr" styleClass="semBorda" 
+                     rendered="#{programaFace.registroSelecionado != null}"
+                     style="border: none !important; background-color: #dddddd; overflow: auto; max-height: 480px!important;">
+
+            <c:if test="#{programaFace.operacao eq 'I'}">
+                <p:outputLabel value="Código" for="codigo" style="color: red"/>
+                <p:inputText  id="codigo" value="#{programaFace.registroSelecionado.codigo}"/>
+            </c:if>
+            <c:if test="#{programaFace.operacao eq 'A'}">
+                <p:outputLabel value="Código" for="codigo" style="color: black"/>
+                <p:inputText  id="codigo" disabled="true" style="color: blue; font-weight: 700; opacity: 1!important"
+                              value="#{programaFace.registroSelecionado.codigo}"/>
+            </c:if>                            
+            <p:spacer width="5"/>                
+
+            <p:outputLabel value="Decrição interna" for="desc" style="color: red;"/>
+            <p:inputText id="desc" value="#{programaFace.registroSelecionado.descricao}"/>
+            <p:spacer width="5"/>  
+
+            <p:outputLabel value="Decrição menu" for="descmenu" style="color: red;"/>
+            <p:inputText id="descmenu" value="#{programaFace.registroSelecionado.descricaomenu}"/>
+            <p:spacer width="5"/>  
+
+            <p:outputLabel value="Decrição atalho" for="descatalho" style="color: red;"/>
+            <p:inputText id="descatalho" value="#{programaFace.registroSelecionado.descatalho}"/>
+            <p:spacer width="5"/>  
+
+            <p:outputLabel value="Caminho" for="caminho" style="color: red;"/>
+            <p:inputText id="caminho" value="#{programaFace.registroSelecionado.caminho}"/>
+            <p:spacer width="5"/>  
+
+            <p:outputLabel value="Visualizar no menu" for="vermenu" style="color: black;"/>
+            <p:selectBooleanCheckbox id="vermenu" value="#{programaFace.registroSelecionado.vermenu}"/>
+            <p:spacer width="5"/>  
+
+        </p:panelGrid>
+</html>

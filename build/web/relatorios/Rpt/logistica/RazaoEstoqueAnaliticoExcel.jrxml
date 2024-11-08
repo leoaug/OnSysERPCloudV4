@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RazaoEstoqueAnaliticoExcel" pageWidth="1150" pageHeight="190000" orientation="Landscape" columnWidth="1150" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="logo" class="java.awt.Image"/>
+	<parameter name="cPar" class="java.lang.String"/>
+	<parameter name="cCondicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     item.`CODIGO` AS item_CODIGO,
+     item.`DESCRICAO` AS item_DESCRICAO,
+     movtoestoque.`DTMOVTO` AS movtoestoque_DTMOVTO,
+     movtoestoque.`NRODOCTO` AS movtoestoque_NRODOCTO,
+     movtoestoque.`ORIGEM` AS movtoestoque_ORIGEM,
+     CASE movtoestoque.`TIPOMOVTO` WHEN 'E' THEN movtoestoque.`QTDMOVTO` ELSE movtoestoque.`QTDMOVTO` * -1 END movtoestoque_QTDMOVTO,
+     movtoestoque.`SERIE` AS movtoestoque_SERIE,
+     CASE movtoestoque.`TIPOMOVTO` WHEN 'E' THEN 'Entrada' ELSE 'Saida' END Tipo,
+     movtoestoque.`TIPOMOVTO` AS movtoestoque_TIPOMOVTO,
+  empresa.logoimg  AS empresa_logo,
+     deposito.`DESCRICAO` AS deposito_DESCRICAO,
+ unidademedida.`UN` AS unidademedida_UN,
+     localizacao.`DESCRICAO` AS localizacao_DESCRICAO,
+     tipodoctologistica.`CODIGO` AS tipodoctologistica_CODIGO,
+     deposito.`CODIGO` AS deposito_CODIGO,
+     localizacao.`CODIGO` AS localizacao_CODIGO,
+     CASE movtoestoque.`TIPOMOVTO` WHEN 'E' THEN movtoestoque.`VLMOVTO` ELSE movtoestoque.`VLMOVTO` * -1 END movtoestoque_VLMOVTO,
+     movtoestoque.`LOTE` AS movtoestoque_LOTE
+FROM
+     `item` item INNER JOIN `movtoestoque` movtoestoque ON item.`id` = movtoestoque.`ITEM_id`
+     INNER JOIN `deposito` deposito ON movtoestoque.`DEPOSITO_id` = deposito.`id`
+     INNER JOIN empresa       empresa       ON movtoestoque.empresa_id = empresa.id
+     INNER JOIN `unidademedida` unidademedida ON item.`UNIDADEMEDIDA_id` = unidademedida.`id`
+     INNER JOIN `tipodoctologistica` tipodoctologistica ON movtoestoque.`TIPODOCTOLOGISTICA_id` = tipodoctologistica.`id`
+     INNER JOIN `localizacao` localizacao ON movtoestoque.`localizacao_id` = localizacao.`id`
+$P!{cCondicao}
+ORDER BY item_DESCRICAO, movtoestoque_TIPOMOVTO, movtoestoque_DTMOVTO, tipodoctologistica_CODIGO]]>
+	</queryString>
+	<field name="item_CODIGO" class="java.lang.String"/>
+	<field name="item_DESCRICAO" class="java.lang.String"/>
+	<field name="movtoestoque_DTMOVTO" class="java.sql.Date"/>
+	<field name="movtoestoque_NRODOCTO" class="java.lang.String"/>
+	<field name="movtoestoque_ORIGEM" class="java.lang.String"/>
+	<field name="movtoestoque_QTDMOVTO" class="java.math.BigDecimal"/>
+	<field name="movtoestoque_SERIE" class="java.lang.String"/>
+	<field name="Tipo" class="java.lang.String"/>
+	<field name="movtoestoque_TIPOMOVTO" class="java.lang.String"/>
+	<field name="deposito_DESCRICAO" class="java.lang.String"/>
+	<field name="localizacao_DESCRICAO" class="java.lang.String"/>
+	<field name="tipodoctologistica_CODIGO" class="java.lang.String"/>
+	<field name="deposito_CODIGO" class="java.lang.String"/>
+	<field name="localizacao_CODIGO" class="java.lang.String"/>
+	<field name="movtoestoque_VLMOVTO" class="java.math.BigDecimal"/>
+	<field name="movtoestoque_LOTE" class="java.lang.String"/>
+	<field name="empresa_logo" class="java.io.InputStream"/>
+	<field name="unidademedida_UN" class="java.lang.String"/>
+	<variable name="cont" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA["1"]]></variableExpression>
+	</variable>
+	<group name="Descricao">
+		<groupExpression><![CDATA[$F{item_DESCRICAO}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="64" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="47" width="890" height="16" backcolor="#CCCCCC"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="0" y="28" width="888" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cPar}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="40" y="48" width="85" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="125" y="48" width="246" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descrição]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="391" y="48" width="56" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="447" y="48" width="59" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nro. Docto.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="506" y="48" width="35" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Serie]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="541" y="48" width="50" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Deposito]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="591" y="48" width="36" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Local.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="678" y="48" width="65" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo Docto.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="743" y="48" width="65" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qtd.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="888" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Razão de estoque - analítico]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="48" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[E/S]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="371" y="48" width="20" height="15" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[UN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="627" y="47" width="51" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lote]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="808" y="47" width="80" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="890" height="14" backcolor="#CCFFFF">
+					<printWhenExpression><![CDATA[new Boolean(new Integer(($V{cont}.intValue())%2).equals(new Integer("1")))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="125" y="0" width="246" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{item_DESCRICAO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="391" y="0" width="56" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{movtoestoque_DTMOVTO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="447" y="0" width="59" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{movtoestoque_NRODOCTO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="506" y="0" width="35" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{movtoestoque_SERIE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="541" y="0" width="50" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{deposito_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="591" y="0" width="36" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{localizacao_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="680" y="0" width="63" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tipodoctologistica_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.0000;-#,##0.0000">
+				<reportElement x="743" y="0" width="65" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{movtoestoque_QTDMOVTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="40" y="0" width="85" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{item_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{movtoestoque_TIPOMOVTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="371" y="0" width="20" height="15" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{unidademedida_UN}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="627" y="0" width="53" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{movtoestoque_LOTE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.0000;-#,##0.0000">
+				<reportElement x="808" y="0" width="80" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{movtoestoque_VLMOVTO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
